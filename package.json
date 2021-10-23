@@ -1,0 +1,24 @@
+{
+  "name": "progetto-swe",
+  "version": "1.0.0",
+  "description": "Progetto per il corso di ingegneria del software. Anno di corso 2021/2022",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm run tsc && node ./out/index",
+    "tsc": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://aminsep.disi.unibo.it/gitlab/gruppo-4/progetto-swe.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.13"
+  }
+}
