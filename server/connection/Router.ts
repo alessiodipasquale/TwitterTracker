@@ -1,12 +1,14 @@
-import { IRequest, IResponse } from '../config/Express';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import { test } from '../routes/test';
 
 export default abstract class Router {
     public static init(app: any): void {
-        
-        const auth = (req: IRequest, res: IResponse, next: Function) => {
-        };
 
-        //app.post();
-        //app.get(auth...);
+        app.use(bodyParser.json());
+        app.use(cors());
+
+        app.get('/test',test);
+
     }
 }

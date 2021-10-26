@@ -4,7 +4,7 @@ import Server from './server/connection/Server';
 
 const TwitterTracker = async () => {
     Config.init();
-    await Database.init();
+   // await Database.init();
     Server.start();
 };
 
