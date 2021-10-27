@@ -16,4 +16,9 @@ export default abstract class Config {
         return Config._port;
     }
 
+    public static get distPath(): string {
+        return Constants.distPath;
+
+    }
+
 }
