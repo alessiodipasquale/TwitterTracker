@@ -114,3 +114,7 @@ out/
 public/dist/
 dist/
 *.sh
+
+# Altro
+.innometrics.db
+package-lock.json
