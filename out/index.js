@@ -40,13 +40,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var Config_1 = __importDefault(require("./server/config/Config"));
+var Twitter_1 = __importDefault(require("./server/config/Twitter"));
 var Server_1 = __importDefault(require("./server/connection/Server"));
 var TwitterTracker = function () { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        Config_1.default.init();
-        // await Database.init();
-        Server_1.default.start();
-        return [2 /*return*/];
+        switch (_a.label) {
+            case 0:
+                Config_1.default.init();
+                // await Database.init();
+                return [4 /*yield*/, Twitter_1.default.init()];
+            case 1:
+                // await Database.init();
+                _a.sent();
+                Server_1.default.start();
+                return [2 /*return*/];
+        }
     });
 }); };
 TwitterTracker();

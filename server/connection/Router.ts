@@ -8,7 +8,7 @@ export default abstract class Router {
         app.use(bodyParser.json());
         app.use(cors());
 
-        app.get('/test',test);
+        app.post('/searchTweet', test)
 
     }
 }

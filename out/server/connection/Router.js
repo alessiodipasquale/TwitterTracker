@@ -12,7 +12,7 @@ var Router = /** @class */ (function () {
     Router.init = function (app) {
         app.use(body_parser_1.default.json());
         app.use((0, cors_1.default)());
-        app.get('/test', test_1.test);
+        app.post('/searchTweet', test_1.test);
     };
     return Router;
 }());

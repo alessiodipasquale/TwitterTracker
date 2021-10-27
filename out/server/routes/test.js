@@ -35,12 +35,24 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.test = void 0;
-var test = function () { return function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+var Error_1 = require("./../config/Error");
+var Twitter_1 = __importDefault(require("../config/Twitter"));
+var test = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var query;
     return __generator(this, function (_a) {
-        res.send('funziono');
+        query = { q: req.body.text, count: req.body.count };
+        Twitter_1.default.searchTweet(query)
+            .then(function (data) {
+            res.send(data);
+        }).catch(function (err) {
+            throw new Error_1.BadRequest('INCORRECT_BODY', "Il body non \u00E8 corretto");
+        });
         return [2 /*return*/];
     });
-}); }; };
+}); };
 exports.test = test;
