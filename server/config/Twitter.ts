@@ -12,8 +12,14 @@ export default abstract class Twitter {
         })
     }
 
-    public static async searchTweet(query: any) {
-        return await this.twit.get('search/tweets', query);
+    public static async searchTweetsByKeyword(query: any) {
+        //search all tweets that contain keyword
+        return await this.twit.get('search/tweets', query); 
+    }
+
+    public static async getUserInformations(query: any) {
+        //return information about user passed as param
+        return await this.twit.get('users/show', {screen_name: 'colamonaco_stef'}); 
     }
 
 

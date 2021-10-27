@@ -1,6 +1,6 @@
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import { test } from '../routes/test';
+import { test, test2 } from '../routes/test';
 
 export default abstract class Router {
     public static init(app: any): void {
@@ -8,7 +8,8 @@ export default abstract class Router {
         app.use(bodyParser.json());
         app.use(cors());
 
-        app.post('/searchTweet', test)
+        app.post('/searchTweetsByKeyword', test)
+        app.get('/getUserData', test2)
 
     }
 }
