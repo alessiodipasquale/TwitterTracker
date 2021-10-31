@@ -14,12 +14,33 @@ export default abstract class Twitter {
 
     public static async searchTweetsByKeyword(query: any) {
         //search all tweets that contain keyword
-        return await this.twit.get('search/tweets', query); 
+        return await this.twit.get('search/tweets', query);
+    }
+
+    public static async searchTweetsByHashtag(hashtags: string[], c = 15) {
+      // the q field of query is made from the hashtags array
+
+      for (var i = 0; i < hashtags.length; i++){
+        if (hashtags[i].indexOf('#') == -1) {
+          hashtags[i] = "#".concat(hashtags[i]);
+        }
+      }
+
+      var query = {q: hashtags.join(' ')};
+
+      return await this.twit.get('search/tweets', query);
+    }
+
+    public static async searchTweetsByAuthor(author: string, c = 15) {
+
+        var query = {q: "from:".concat(author), count:c};  // see search operators
+
+        return await this.twit.get('search/tweets', query);
     }
 
     public static async getUserInformations(query: any) {
         //return information about user passed as param
-        return await this.twit.get('users/show', {screen_name: 'colamonaco_stef'}); 
+        return await this.twit.get('users/show', {screen_name: 'colamonaco_stef'});
     }
 
 

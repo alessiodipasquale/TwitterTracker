@@ -5,7 +5,7 @@ Twitter.init();
 
 describe('Tweet Search By Keyword utests', () => {
 	const query = { q: "nasa", count: 10 }
-	
+
 	describe('#NonEmptySearch', () => {
 		it('should find at least some tweets', async function() {
 			/* expects to find some tweets */
@@ -17,7 +17,7 @@ describe('Tweet Search By Keyword utests', () => {
 				});
 		});
 	});
-	
+
 	describe('#SimpleQuery', () => {
 		it('should have a non-empty body', async function() {
 			/* expects to find some text */
