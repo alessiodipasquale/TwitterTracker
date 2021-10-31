@@ -4,7 +4,7 @@ import {expect} from 'chai';
 Twitter.init();
 
 describe('Tweet Search By Keyword utests', () => {
-	const query = { q: "nasa", count: 10 }
+	const query = { q: "I made a tweet.", count: 10 }
 
 	describe('#NonEmptySearch', () => {
 		it('should find at least some tweets', async function() {

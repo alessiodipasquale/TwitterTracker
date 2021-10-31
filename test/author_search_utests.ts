@@ -5,7 +5,7 @@ Twitter.init();
 
 describe('Tweet Search By Author utests', () => {
 
-    var author: string = "NASA";
+    var author: string = "Ingegneria del Software - Gruppo 4";
 
     describe('#CorrectAuthor', () => {
       it('should be by the correct author', async function() {

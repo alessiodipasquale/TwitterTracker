@@ -5,7 +5,7 @@ Twitter.init();
 
 describe('Tweet Search By Hashtags utests', () => {
 
-    var hashtag: string[] = ['halloween',];
+    var hashtag: string[] = ['vcMsa4GxBaV4PuHsbaBYX6VMSCvqwVQQJtTJ8b7zbDdQHLSJLkjm26Jvy4KUQbmqeQKcRGpSVcjuP3NbXWnADGUNBfj33f38WCVD'];
 
 
     describe('#IncludeHashtag', () => {
