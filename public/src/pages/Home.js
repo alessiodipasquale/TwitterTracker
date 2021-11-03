@@ -1,6 +1,6 @@
 import React, { Component, useImperativeHandle, useState } from 'react';
 import Axios from 'axios';
-function Homepage() {
+function Home() {
     const url="http://localhost:3000/searchTweetsByKeyword";
     const [data, setData] = useState({
         text:"",
@@ -54,4 +54,4 @@ function Homepage() {
     );
 }
 
-export default Homepage
+export default Home
