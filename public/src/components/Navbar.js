@@ -18,7 +18,7 @@ function Navbar() {
           <Link to='#' className='menu-bars'>
             <FaIcons.FaBars onClick={showSidebar} />
           </Link>
-          <h3 style={{color: 'white', marginLeft:'1rem', marginBottom: '9px'}}>Twitter Tracker - Progetto Ingegneria del Software - Gruppo 4 </h3>
+          <h3 style={{color: 'white', marginLeft:'1rem', marginTop: '15px'}}>Twitter Tracker - Progetto Ingegneria del Software - Gruppo 4 </h3>
         </div>
         <nav className={sidebar ? 'nav-menu active' : 'nav-menu'}>
           <ul className='nav-menu-items' onClick={showSidebar}>
