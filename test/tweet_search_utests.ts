@@ -9,7 +9,7 @@ describe('Tweet Search By Keyword utests', () => {
 	describe('#NonEmptySearch', () => {
 		it('should find at least some tweets', async function() {
 			/* expects to find some tweets */
-			Twitter.searchTweetsByKeyword(query)
+			await Twitter.searchTweetsByKeyword(query)
 				.then(data => {
 					let res: any = JSON.parse(JSON.stringify(data));
 					expect(res.data).not.to.be.empty;
