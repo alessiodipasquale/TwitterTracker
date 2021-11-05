@@ -40,6 +40,8 @@ export const searchTweetsByAuthor: any = async(req: IRequest, res:IResponse) : P
     })
 }
 export const searchTweetsByLocation: any = async(req: IRequest, res:IResponse) : Promise<void> => {
+    const radius = (req.body.radius/1000)+'km'
+    console.log(req.body);
     const geocode = req.body.latitude + "," + req.body.longitude + "," + req.body.radius;
     const q = "";
     const query = {q:q, geocode: geocode};
