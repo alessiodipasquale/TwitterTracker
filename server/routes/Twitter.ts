@@ -20,9 +20,9 @@ export default abstract class Twitter {
       return await this.twit.get('search/tweets', query);
     }
 
-    public static async searchTweetsByAuthor(query: any) {
+    /*public static async searchTweetsByAuthor(query: any) {
         return await this.twit.get('search/tweets', query);
-    }
+    }*/
 
     public static async searchTweetsByLocation(query: any) {  // strings assuming thats what the form will semnd
       return await this.twit.get('search/tweets', query);
