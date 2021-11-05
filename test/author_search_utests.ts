@@ -1,4 +1,4 @@
-import Twitter from "../server/config/Twitter";
+import Twitter from "../server/routes/Twitter";
 import {expect} from 'chai';
 
 Twitter.init();
@@ -6,10 +6,12 @@ Twitter.init();
 describe('Tweet Search By Author utests', () => {
 
     var author: string = "Ingegneria del Software - Gruppo 4";
+    var q = "";
+    var query = {q: q, author:author};
 
     describe('#CorrectAuthor', () => {
       it('should be by the correct author', async function() {
-        Twitter.searchTweetsByAuthor(author).then(data => {
+        Twitter.searchTweetsByAuthor(query).then(data => {
 
           let res: any = JSON.parse(JSON.stringify(data));
 

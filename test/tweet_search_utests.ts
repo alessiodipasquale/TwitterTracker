@@ -1,4 +1,4 @@
-import Twitter from "../server/config/Twitter";
+import Twitter from "../server/routes/Twitter";
 import {expect} from 'chai';
 
 Twitter.init();
