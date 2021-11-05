@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMap} from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Popup, useMap, LayerGroup, Circle} from 'react-leaflet'
 import L from "leaflet";
 import icon from "../constants";
 
+import { Col, Row, Container, Form, Button} from "react-bootstrap";
+
+let center = [49.1951, 16.6068];
+const radius = 3000;
+const fillBlueOptions = { fillColor: 'blue' }
 
 function GeographicFilter() {
   function LocationMarker() {
@@ -15,13 +20,12 @@ function GeographicFilter() {
       map.locate().on("locationfound", function (e) {
         setPosition(e.latlng);
         map.flyTo(e.latlng, map.getZoom());
-        const radius = e.accuracy;
         const circle = L.circle(e.latlng, radius);
         circle.addTo(map);
         setBbox(e.bounds.toBBoxString().split(","));
       });
     }, [map]);
-
+    center = position;
     return position === null ? null : (
       <Marker position={position} icon={icon}>
         <Popup>
@@ -36,12 +40,31 @@ function GeographicFilter() {
     );
   }
   return (
-
+    <Container fluid  style={{padding: '2%'}} >
+    <Form>
+      <Row>
+        <Col>
+        <Form.Group className="mb-3" controlId="formBasicEmail">
+          <Form.Label>Insert city</Form.Label>
+          <Form.Control type="text" placeholder="Enter city" />
+        </Form.Group>
+        </Col>
+        <Col>
+        <Form.Group className="mb-3" controlId="formBasicEmail">
+          <Form.Label>Insert radius</Form.Label>
+          <Form.Control type="number" placeholder="Enter Radius" />
+        </Form.Group>
+        </Col>
+        <Col style={{display: 'flex', alignItems: 'flex-end', marginBottom: '1rem'}}>
+          <Button variant="primary">Search Tweets</Button>{' '}
+        </Col>
+      </Row>
+    </Form>
   <MapContainer
-    center={[49.1951, 16.6068]}
+    center={center}
     zoom={13}
-    scrollWheelZoom
-    style={{ height: "50vh", width: '50%', margin: '2%', zIndex: '-999'}}
+    scrollWheelZoom={false}
+    style={{ height: "80vh", width: '50%', borderRadius: '3%'}}
   >
     <TileLayer
       attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -50,7 +73,7 @@ function GeographicFilter() {
     <LocationMarker />
   </MapContainer>
     
-
+</Container>
 
   );
 }

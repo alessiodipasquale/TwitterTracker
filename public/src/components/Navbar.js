@@ -23,7 +23,7 @@ const Navbar = ({ collapsed, toggled, handleToggleSidebar }) => {
       <SidebarHeader>
         <div
           style={{
-            padding: '5 px 24px',
+            padding: '24px',
             textTransform: 'uppercase',
             fontWeight: 'bold',
             fontSize: 14,
@@ -42,7 +42,7 @@ const Navbar = ({ collapsed, toggled, handleToggleSidebar }) => {
       <Menu iconShape="square">
             {SidebarData.map((item, index) => {
               return (
-                  <MenuItem icon={item.icon}>{item.title}
+                  <MenuItem key={item.cName} icon={item.icon}>{item.title}
                   <Link to={item.path}></Link>
                   </MenuItem> 
               )
@@ -52,16 +52,14 @@ const Navbar = ({ collapsed, toggled, handleToggleSidebar }) => {
 
       <SidebarFooter style={{ textAlign: 'center', fontSize: '0.8em' }}>
       
-        Di Pasquale Alessio<div style={{marginBottom: '3px'}}/>
-        Colamonaco Stefano<div style={{marginBottom: '3px'}}/>
-        Corradetti Andrea<div style={{marginBottom: '3px'}}/>
-        Leonardo Naldi <div style={{marginBottom: '3px'}}/>
-        Filip Radović <div style={{marginBottom: '3px'}}/>
+        Alessio Di Pasquale <br />
+        Stefano Colamonaco<br />
+        Andrea Corradetti<br />
+        Leonardo Naldi <br />
+        Filip Radović <br />
       </SidebarFooter>
     </ProSidebar>
   );
-
- 
 };
 
 
