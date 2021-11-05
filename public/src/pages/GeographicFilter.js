@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap, LayerGroup, Circle} from 'react-leaflet'
 import L, { LatLng } from "leaflet";
 import icon from "../constants";
+import Axios from 'axios';
 
 import { Col, Row, Container, Form, Button} from "react-bootstrap";
 import { GeoSearchControl, MapBoxProvider } from "leaflet-geosearch";
 
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
 const provider = new OpenStreetMapProvider();
+
 // add to leaflet
 
 
@@ -25,6 +27,8 @@ function GeographicFilter() {
   });
 
   const [map, setMap] = useState(null);
+
+  const [tweets,setTweets]=useState([])
 
 
   function handle(e, value) {
@@ -62,7 +66,19 @@ async function  SearchField  ( ) {
   setCirc({circ: circle});
 
   circle.addTo(map);
+
+  getTweetsByLocation(res.y, res.x, data.radius);
 };
+
+function getTweetsByLocation(latitude, longitude, radius){
+  const url="http://localhost:3000/searchTweetsByLocation";
+
+  Axios.post(url, {latitude,longitude,radius})
+  .then(res => {
+      console.log(res)
+      setTweets(res.data.data.statuses)
+  });
+}
 
   return (
     <Container fluid  style={{padding: '2%'}} >
@@ -99,6 +115,20 @@ async function  SearchField  ( ) {
     />
 
   </MapContainer>
+
+  {
+                
+                tweets && tweets.map(tweet=>{
+                    return(
+                        <div key={tweet.id} style={{alignItems:'center',margin:'20px 60px'}}>
+                        <h4>{tweet.text}</h4>
+                        <p>{tweet.user.name}</p>
+                        <br></br>
+                    </div>
+                    )
+            
+                    })
+                }
     
 </Container>
 
