@@ -1,47 +1,68 @@
 import React, { useState } from 'react';
-import * as FaIcons from 'react-icons/fa';
-import * as AiIcons from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import { SidebarData } from './SidebarData';
-import './Navbar.css';
-import { IconContext } from 'react-icons';
+import {
+  ProSidebar,
+  Menu,
+  MenuItem,
+  SubMenu,
+  SidebarHeader,
+  SidebarFooter,
+  SidebarContent,
+} from 'react-pro-sidebar';
 
-function Navbar() {
-  const [sidebar, setSidebar] = useState(false);
-
-  const showSidebar = () => setSidebar(!sidebar);
-
+const Navbar = ({ collapsed, toggled, handleToggleSidebar }) => {
   return (
-    <>
-      <IconContext.Provider value={{ color: '#fff' }}>
-        <div className='navbar' style={{display: 'flex', alignItems: 'center', justifyContent: 'start'}}>
-          <Link to='#' className='menu-bars'>
-            <FaIcons.FaBars onClick={showSidebar} />
-          </Link>
-          <h3 style={{color: 'white', marginLeft:'1rem', marginTop: '15px'}}>Twitter Tracker - Progetto Ingegneria del Software - Gruppo 4 </h3>
+    <ProSidebar
+      image= {false}
+      collapsed={collapsed}
+      toggled={toggled}
+      breakPoint="md"
+      onToggle={handleToggleSidebar}
+    >
+      <SidebarHeader>
+        <div
+          style={{
+            padding: '5 px 24px',
+            textTransform: 'uppercase',
+            fontWeight: 'bold',
+            fontSize: 14,
+            letterSpacing: '1px',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          Twitter Tracker
         </div>
-        <nav className={sidebar ? 'nav-menu active' : 'nav-menu'}>
-          <ul className='nav-menu-items' onClick={showSidebar}>
-            <li className='navbar-toggle'>
-              <Link to='#' className='menu-bars'>
-                <AiIcons.AiOutlineClose />
-              </Link>
-            </li>
+        
+      </SidebarHeader>
+
+      <SidebarContent>
+      <Menu iconShape="square">
             {SidebarData.map((item, index) => {
               return (
-                <li key={index} className={item.cName}>
-                  <Link to={item.path}>
-                    {item.icon}
-                    <span>{item.title}</span>
-                  </Link>
-                </li>
-              );
+                  <MenuItem icon={item.icon}>{item.title}
+                  <Link to={item.path}></Link>
+                  </MenuItem> 
+              )
             })}
-          </ul>
-        </nav>
-      </IconContext.Provider>
-    </>
+        </Menu>
+      </SidebarContent>
+
+      <SidebarFooter style={{ textAlign: 'center', fontSize: '0.8em' }}>
+      
+        Di Pasquale Alessio<div style={{marginBottom: '3px'}}/>
+        Colamonaco Stefano<div style={{marginBottom: '3px'}}/>
+        Corradetti Andrea<div style={{marginBottom: '3px'}}/>
+        Leonardo Naldi <div style={{marginBottom: '3px'}}/>
+        Filip Radović <div style={{marginBottom: '3px'}}/>
+      </SidebarFooter>
+    </ProSidebar>
   );
-}
+
+ 
+};
+
 
 export default Navbar;

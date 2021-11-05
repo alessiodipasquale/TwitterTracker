@@ -1,21 +1,13 @@
 import './App.css';
-import Home from './pages/Home';
-import Navbar from './components/Navbar';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import Reports from './pages/GeographicFilter';
-import GeographicFilter from './pages/GeographicFilter';
+import 'react-pro-sidebar/dist/css/styles.css';
+import Layout from './components/Layout';
+import './App.scss';
 
 
 function App() {
   return (
     <>
-      <Router>
-        <Navbar />
-        <Switch>
-          <Route path='/' exact component={Home} />
-          <Route path='/geographic-filter' component={GeographicFilter} />
-        </Switch>
-      </Router>
+      <Layout />
     </>
   );
 }
