@@ -4,9 +4,12 @@ import Twitter from "./Twitter";
 import { buildQ } from "../Utils/Utils";
 
 export const searchByKeyword: any = async(req: IRequest, res:IResponse) : Promise<void> => {
-    const q = req.body.text;
-    const count = req.body.count;
-    const query = {q: q, count: count};
+    const q = req.body.text ?? "";
+    const count = req.body.count ?? 15;
+    const author = req.body.author ?? "";
+    const remove: string = req.body.remove ?? "";
+
+    const query = {q: buildQ({base_query: q, author:author, remove:remove.split(" ")}), count: count};
 
     Twitter.searchTweetsByKeyword(query)
     .then(data => {
@@ -40,7 +43,7 @@ export const searchTweetsByLocation: any = async(req: IRequest, res:IResponse) :
         res.send(data)
     }).catch(err => {
         throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
-    })  
+    })
 }
 export const searchTweetsByHashtag: any = async(req: IRequest, res:IResponse) : Promise<void> => {
     const count: string = req.body.count;
@@ -64,5 +67,5 @@ export const getUserInformations: any = async(req: IRequest, res:IResponse) : Pr
         res.send(data)
     }).catch(err => {
         throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
-    })    
+    })
 }
