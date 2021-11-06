@@ -15,7 +15,7 @@ export const searchByKeyword: any = async(req: IRequest, res:IResponse) : Promis
         throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
     })
 }
-/*export const searchTweetsByAuthor: any = async(req: IRequest, res:IResponse) : Promise<void> => {
+export const searchTweetsByAuthor: any = async(req: IRequest, res:IResponse) : Promise<void> => {
     const count: string = req.body.count;
     const q = buildQ({author: req.body.author});
     const query: any = {q:q, count: count};
@@ -26,7 +26,7 @@ export const searchByKeyword: any = async(req: IRequest, res:IResponse) : Promis
     }).catch(err => {
         throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
     })
-}*/                 // Need v2 apis
+}
 export const searchTweetsByLocation: any = async(req: IRequest, res:IResponse) : Promise<void> => {
     const radius = (req.body.radius/1000)+'km'
     console.log(req.body);

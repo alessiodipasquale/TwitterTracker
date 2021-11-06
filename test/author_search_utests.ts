@@ -1,13 +1,13 @@
-/*import Twitter from "../server/routes/Twitter";
+import Twitter from "../server/routes/Twitter";
 import {expect} from 'chai';
+import  searchTweetsByAuthor from "../server/routes/Twitter"
 
 Twitter.init();
 
 describe('Tweet Search By Author utests', () => {
-
-    var screen_name: string = "Elon Musk";
-    var q = "";
-    var query = {q: q, screen_name:screen_name};
+    var author = "Elon Musk" 
+    var q = "from:"+author;
+    var query = {q: q};
 
     describe('#CorrectAuthor', () => {
       it('should be by the correct author', async function() {
@@ -17,10 +17,9 @@ describe('Tweet Search By Author utests', () => {
 
           for (var i = 0; i < res.data.statuses.length; i++) {
               var tweet = res.data.statuses[i];
-              expect(tweet.user.name).to.equal(screen_name);
+              expect(tweet.user.name).to.equal(author);
           }
         });
       });
     });
 });
-*/                  // Need v2 apis
