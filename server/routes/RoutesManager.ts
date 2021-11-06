@@ -30,7 +30,7 @@ export const searchTweetsByAuthor: any = async(req: IRequest, res:IResponse) : P
 export const searchTweetsByLocation: any = async(req: IRequest, res:IResponse) : Promise<void> => {
     const radius = (req.body.radius/1000)+'km'
     console.log(req.body);
-    const geocode = req.body.latitude + "," + req.body.longitude + "," + req.body.radius;
+    const geocode = req.body.latitude + "," + req.body.longitude + "," + radius;
     const q = "";
     const query = {q:q, geocode: geocode};
 
@@ -40,6 +40,18 @@ export const searchTweetsByLocation: any = async(req: IRequest, res:IResponse) :
     }).catch(err => {
         throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
     })  
+}
+export const searchTweetsByHashtag: any = async(req: IRequest, res:IResponse) : Promise<void> => {
+    const count: string = req.body.count;
+    const q = buildQ({hashtags: req.body.hashtags});
+    const query: any = {q:q, count: count};
+
+    Twitter.searchTweetsByHashtag(query)
+    .then(data => {
+        res.send(data)
+    }).catch(err => {
+        throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
+    })
 }
 export const getUserInformations: any = async(req: IRequest, res:IResponse) : Promise<void> => {
     const screen_name: string = req.body.username;

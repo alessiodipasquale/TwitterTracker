@@ -1,6 +1,5 @@
 import Twitter from "../server/routes/Twitter";
 import {expect} from 'chai';
-import  searchTweetsByAuthor from "../server/routes/Twitter"
 
 Twitter.init();
 
