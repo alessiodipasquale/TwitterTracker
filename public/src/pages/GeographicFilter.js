@@ -20,6 +20,8 @@ function GeographicFilter() {
   const [data, setData] = useState({
     city:"",
     radius: 3000,
+    keyword: "",
+    count: 10
   });
 
   const [circ,setCirc] = useState({
@@ -70,10 +72,10 @@ async function  SearchField  ( ) {
   getTweetsByLocation(res.y, res.x, data.radius);
 };
 
-function getTweetsByLocation(latitude, longitude, radius){
+function getTweetsByLocation(latitude, longitude){
   const url="http://localhost:3000/searchTweetsByLocation";
 
-  Axios.post(url, {latitude,longitude,radius})
+  Axios.post(url, {latitude,longitude,radius: data.radius, text: data.keyword, count: data.count })
   .then(res => {
       console.log(res)
       setTweets(res.data.data.statuses)
@@ -94,6 +96,18 @@ function getTweetsByLocation(latitude, longitude, radius){
         <Form.Group className="mb-3" controlId="radius">
           <Form.Label>Insert radius</Form.Label>
           <Form.Control onChange={(e)=>{handle(e, parseInt(e.target.value))}} type="number" placeholder="Enter Radius" value={data.radius}/>
+        </Form.Group>
+        </Col>
+        <Col>
+        <Form.Group className="mb-3" controlId="keyword">
+          <Form.Label>Insert Keyword</Form.Label>
+          <Form.Control onChange={(e)=>{handle(e, e.target.value)}} type="text" placeholder="Enter Keyword" value={data.keyword}/>
+        </Form.Group>
+        </Col>
+        <Col>
+        <Form.Group className="mb-3" controlId="count">
+          <Form.Label>Insert count</Form.Label>
+          <Form.Control onChange={(e)=>{handle(e, parseInt(e.target.value))}} type="number" placeholder="Enter Number of elements" value={data.count}/>
         </Form.Group>
         </Col>
         <Col style={{display: 'flex', alignItems: 'flex-end', marginBottom: '1rem'}}>

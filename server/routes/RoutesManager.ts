@@ -31,8 +31,9 @@ export const searchTweetsByLocation: any = async(req: IRequest, res:IResponse) :
     const radius = (req.body.radius/1000)+'km'
     console.log(req.body);
     const geocode = req.body.latitude + "," + req.body.longitude + "," + radius;
-    const q = "";
-    const query = {q:q, geocode: geocode};
+    const q = req.body.text ? req.body.text : "";
+    const count = req.body.count ? req.body.count : 10;
+    const query = {q:q, geocode: geocode, count: count};
 
     Twitter.searchTweetsByLocation(query)
     .then(data => {
