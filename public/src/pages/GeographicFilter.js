@@ -4,7 +4,7 @@ import L, { LatLng } from "leaflet";
 import icon from "../constants";
 import Axios from 'axios';
 
-import { Col, Row, Container, Form, Button} from "react-bootstrap";
+import { Col, Row, Container, Form, Button, Card} from "react-bootstrap";
 import { GeoSearchControl, MapBoxProvider } from "leaflet-geosearch";
 
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
@@ -101,35 +101,54 @@ function getTweetsByLocation(latitude, longitude, radius){
         </Col>
       </Row>
     </Form>
-  <MapContainer
-    center={center}
-    zoom={13}
-    scrollWheelZoom={false}
-    style={{ height: "80vh", width: '50%', borderRadius: '3%'}}
-    whenCreated={setMap}
-  >
 
-    <TileLayer
-      attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-    />
+    <Row>
+      <Col>
+          <MapContainer
+          center={center}
+          zoom={13}
+          scrollWheelZoom={false}
+          style={{ height: "85vh", width: '100%', borderRadius: '4%'}}
+          whenCreated={setMap}
+          >
 
-  </MapContainer>
+          <TileLayer
+            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
 
-  {
+        </MapContainer>
+
+      </Col>
+      <Col>
+      <div style={{ height: '85vh', overflow: 'scroll'}}>
+        <Card.Body>
+           {
+        
+
                 
                 tweets && tweets.map(tweet=>{
                     return(
-                        <div key={tweet.id} style={{alignItems:'center',margin:'20px 60px'}}>
-                        <h4>{tweet.text}</h4>
-                        <p>{tweet.user.name}</p>
-                        <br></br>
-                    </div>
+                      <Card key={tweet.id}>
+                        <Card.Body>
+
+                          <Card.Title  style={{display: 'flex'}}><strong>{tweet.user.name}</strong><div className="text-muted" style={{marginLeft: '6px'}}>@{tweet.user.screen_name} · {new Date(tweet.created_at).toLocaleDateString()}</div></Card.Title>
+                          <Card.Subtitle className="mb-2 text-muted">{tweet.place ? (tweet.place.full_name ? tweet.place.full_name : (tweet.place.name ? tweet.place.name : '')) : tweet.user.location}</Card.Subtitle>
+                          <Card.Text>{tweet.text}</Card.Text>
+                        </Card.Body> 
+                      </Card>
+                        
                     )
             
                     })
                 }
+            </Card.Body>
+        </div>
     
+      </Col>
+    </Row>
+  
+  
 </Container>
 
   );
