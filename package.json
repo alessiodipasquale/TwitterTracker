@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npm run tsc && node ./out/index",
     "tsc": "tsc",
-    "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register 'test/**/*.ts'"
+    "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha --timeout 100000 -r ts-node/register 'test/**/*.ts'"
   },
   "repository": {
     "type": "git",
