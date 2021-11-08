@@ -118,7 +118,7 @@ function getTweetsByLocation(latitude, longitude){
     </Form>
 
     <Row>
-      <Col>
+      <Col lg={6}>
           <MapContainer
           center={center}
           zoom={13}
@@ -135,7 +135,7 @@ function getTweetsByLocation(latitude, longitude){
         </MapContainer>
 
       </Col>
-      <Col>
+      <Col lg={6}>
       <Card style={{ height: '85vh', overflow: 'scroll'}}>
         
           {tweets.length == 0 ?

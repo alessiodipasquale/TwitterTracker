@@ -40,7 +40,7 @@ function Home() {
     return(
         <Container fluid  style={{padding: '2%'}} >
         <Row>
-        <Col>
+        <Col lg={6}>
         <Form>
           <Row>
             <Col>
@@ -73,7 +73,7 @@ function Home() {
           </Row>
         </Form>
         </Col>
-        <Col>
+        <Col lg={6}>
 
            <Card style={{ height: '95vh', overflow: 'scroll'}}>
         
