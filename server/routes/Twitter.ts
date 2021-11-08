@@ -24,11 +24,15 @@ export default abstract class Twitter {
         return await this.twit.get('search/tweets', query);
     }
 
-    public static async searchTweetsByLocation(query: any) {  // strings assuming thats what the form will semnd
+    public static async searchTweetsByLocation(query: any) { 
       return await this.twit.get('search/tweets', query);
     }
 
-    public static async getUserInformations(query: any) {     // returns information about user passed as param
+    public static async getUserInformations(query: any) {
         return await this.twit.get('users/show', query);
+    }
+
+    public static async getRetweetsByTweetId(query: any) {     
+        return await this.twit.get('statuses/retweets/:id', query);
     }
 }

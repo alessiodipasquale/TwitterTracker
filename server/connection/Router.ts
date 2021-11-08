@@ -1,6 +1,6 @@
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import { searchByKeyword, getUserInformations, searchTweetsByLocation, searchTweetsByAuthor, searchTweetsByHashtag } from '../routes/RoutesManager';
+import { searchByKeyword, getUserInformations, searchTweetsByLocation, searchTweetsByAuthor, searchTweetsByHashtag,getRetweetsByTweetId, getRetweetersByTweetId } from '../routes/RoutesManager';
 import express from 'express';
 import Config from '../config/Config';
 
@@ -16,5 +16,9 @@ export default abstract class Router {
         app.post('/searchTweetsByHashtag', searchTweetsByHashtag);
         app.post('/searchTweetsByLocation', searchTweetsByLocation);
         app.post('/getUserData', getUserInformations);
+
+        app.get('/getRetweets/:tweetId', getRetweetsByTweetId ); 
+        app.get('/getRetweets/:tweetId', getRetweetersByTweetId );
+
     }
 }

@@ -69,3 +69,31 @@ export const getUserInformations: any = async(req: IRequest, res:IResponse) : Pr
         throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
     })
 }
+export const getRetweetsByTweetId: any = async(req: IRequest, res:IResponse) : Promise<void> => {
+    const id: string = req.params.id;
+    const count = 10;
+    const query = {id:id, count:count};
+
+    Twitter.getRetweetsByTweetId(query)
+    .then(data => {
+        res.send(data)
+    }).catch(err => {
+        throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
+    })
+}
+export const getRetweetersByTweetId: any = async(req: IRequest, res:IResponse) : Promise<void> => {
+    const id: string = req.params.id;
+    const count = 10;
+    const query = {id:id, count:count};
+
+    Twitter.getRetweetsByTweetId(query)
+    .then((data:any) => {
+        const users:any[] = [];
+        for(let element of data){
+            users.push(element.user)
+        }
+        res.send(data)
+    }).catch(err => {
+        throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
+    })
+}

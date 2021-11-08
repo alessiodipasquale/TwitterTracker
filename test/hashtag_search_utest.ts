@@ -5,9 +5,9 @@ Twitter.init();
 
 describe('Tweet Search By Hashtags utests', () => {
 
-    var hashtags: string[] = ['LOVE'];
+    var hashtags: string[] = ['I MADE A TWEET WITH A SPECIFIC HASHTAG #VCMSA4GXBAV4PUHSBABYX6VMSCVQWVQQJTTJ8B7ZBDDQHLSJLKJM'];
     var count = 1;
-    var q = "#LOVE";
+    var q = "#vcMsa4GxBaV4PuHsbaBYX6VMSCvqwVQQJtTJ8b7zbDdQHLSJLkjm26Jvy4KUQbmqeQKcRGpSVcjuP3NbXWnADGUNBfj33f38WCVD";
     var query = {q: q, count:count};
 
     describe('#IncludeHashtag', () => {
