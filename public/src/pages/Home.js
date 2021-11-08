@@ -75,15 +75,29 @@ function Home() {
         </Col>
         <Col>
 
-            <div style={{ height: '85vh', overflow: 'scroll'}}>
+           <Card style={{ height: '95vh', overflow: 'scroll'}}>
+        
+          {tweets.length == 0 ?
+            <Card.Body  style={{display: "flex", justifyContent: "center", alignItems: "center", textAlign: 'center'}}>
+            <div >
+              <h3 className="text-muted">
+                I tuoi tweet compariranno qui.<br/> Esegui una rircerca
+              </h3>
+            </div>
+            </Card.Body> :
+
+
         <Card.Body>
-           {
-                tweets && tweets.map(tweet=>{
-                    return <TweetCard tweet={tweet} />;
-                })
-            }
-            </Card.Body>
-        </div>
+          {
+              tweets && tweets.map(tweet=>{
+                  return(
+                    <TweetCard tweet={tweet} />    
+              )})
+          }
+         </Card.Body>
+          }
+            
+        </Card>
 
         </Col>
 

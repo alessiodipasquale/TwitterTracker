@@ -8,6 +8,7 @@ import { Col, Row, Container, Form, Button, Card} from "react-bootstrap";
 import { GeoSearchControl, MapBoxProvider } from "leaflet-geosearch";
 
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
+import TweetCard from "../components/TweetCard";
 const provider = new OpenStreetMapProvider();
 
 // add to leaflet
@@ -135,29 +136,35 @@ function getTweetsByLocation(latitude, longitude){
 
       </Col>
       <Col>
-      <div style={{ height: '85vh', overflow: 'scroll'}}>
-        <Card.Body>
-           {
+      <Card style={{ height: '85vh', overflow: 'scroll'}}>
         
+          {tweets.length == 0 ?
+            <Card.Body  style={{display: "flex", justifyContent: "center", alignItems: "center", textAlign: 'center'}}>
+            <div >
+              <h3 className="text-muted">
+                I tuoi tweet compariranno qui.<br/> Esegui una rircerca
+              </h3>
+            </div>
+            </Card.Body> :
 
-                
-                tweets && tweets.map(tweet=>{
-                    return(
-                      <Card key={tweet.id}>
-                        <Card.Body>
 
-                          <Card.Title  style={{display: 'flex'}}><strong>{tweet.user.name}</strong><div className="text-muted" style={{marginLeft: '6px'}}>@{tweet.user.screen_name} · {new Date(tweet.created_at).toLocaleDateString()}</div></Card.Title>
-                          <Card.Subtitle className="mb-2 text-muted">{tweet.place ? (tweet.place.full_name ? tweet.place.full_name : (tweet.place.name ? tweet.place.name : '')) : tweet.user.location}</Card.Subtitle>
-                          <Card.Text>{tweet.text}</Card.Text>
-                        </Card.Body> 
-                      </Card>
-                        
-                    )
+        <Card.Body>
+        {
+     
+
+             
+             tweets && tweets.map(tweet=>{
+                 return(
+                   <TweetCard tweet = {tweet} />
+                     
+                 )
+         
+                 })
+             }
+         </Card.Body>
+          }
             
-                    })
-                }
-            </Card.Body>
-        </div>
+        </Card>
     
       </Col>
     </Row>
