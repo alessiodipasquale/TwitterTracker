@@ -3,9 +3,9 @@ import Axios from 'axios';
 import { Card, Form, Row, Col, Button, Container } from 'react-bootstrap';
 
 import TweetCard from '../components/TweetCard';
+import { searchTweet } from '../services/searchTweet-service';
 
 function Home() {
-    const url="http://localhost:3000/searchTweetsByKeyword";
     const [data, setData] = useState({
         text:"",
         count:"",
@@ -20,19 +20,12 @@ function Home() {
         const newdata = {...data};
         newdata[e.target.id] = e.target.value;
         setData(newdata);
-        console.log(newdata)
     }
 
     function submit(e) {
         e.preventDefault();
-        Axios.post(url, {
-            text: data.text,
-            count: parseInt(data.count),
-            author: data.author,
-            remove: data.remove,
-        })
+        searchTweet(data.text, parseInt(data.count),data.author,data.remove)
         .then(res => {
-            console.log(res.data.data.statuses)
             setTweets(res.data.data.statuses)
         });
     }
@@ -91,7 +84,7 @@ function Home() {
           {
               tweets && tweets.map(tweet=>{
                   return(
-                    <TweetCard tweet={tweet} />    
+                    <TweetCard tweet={tweet} showOptions={true} />    
               )})
           }
          </Card.Body>

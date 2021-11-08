@@ -70,10 +70,9 @@ export const getUserInformations: any = async(req: IRequest, res:IResponse) : Pr
     })
 }
 export const getRetweetsByTweetId: any = async(req: IRequest, res:IResponse) : Promise<void> => {
-    const id: string = req.params.id;
+    const id: string = req.params.tweetId;
     const count = 10;
     const query = {id:id, count:count};
-
     Twitter.getRetweetsByTweetId(query)
     .then(data => {
         res.send(data)
@@ -82,17 +81,17 @@ export const getRetweetsByTweetId: any = async(req: IRequest, res:IResponse) : P
     })
 }
 export const getRetweetersByTweetId: any = async(req: IRequest, res:IResponse) : Promise<void> => {
-    const id: string = req.params.id;
+    const id: string = req.params.tweetId;
     const count = 10;
     const query = {id:id, count:count};
 
     Twitter.getRetweetsByTweetId(query)
     .then((data:any) => {
         const users:any[] = [];
-        for(let element of data){
+        for(let element of data.data){
             users.push(element.user)
         }
-        res.send(data)
+        res.send(users)
     }).catch(err => {
         throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
     })

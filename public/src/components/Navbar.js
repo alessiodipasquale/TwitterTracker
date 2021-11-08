@@ -10,6 +10,7 @@ import {
   SidebarFooter,
   SidebarContent,
 } from 'react-pro-sidebar';
+import { FaGithub } from 'react-icons/fa';
 
 const Navbar = ({ collapsed, toggled, handleToggleSidebar }) => {
   return (
@@ -52,11 +53,24 @@ const Navbar = ({ collapsed, toggled, handleToggleSidebar }) => {
 
       <SidebarFooter style={{ textAlign: 'center', fontSize: '0.8em' }}>
       
-        Alessio Di Pasquale <br />
-        Stefano Colamonaco<br />
-        Andrea Corradetti<br />
-        Leonardo Naldi <br />
-        Filip Radović <br />
+      <div
+          className="sidebar-btn-wrapper"
+          style={{
+            padding: '20px 24px',
+          }}
+        >
+          <a
+            href="https://aminsep.disi.unibo.it/gitlab/gruppo-4/progetto-swe"
+            target="_blank"
+            className="sidebar-btn"
+            rel="noopener noreferrer"
+          >
+            <FaGithub />
+            <span style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
+              View Source
+            </span>
+          </a>
+        </div>
       </SidebarFooter>
     </ProSidebar>
   );

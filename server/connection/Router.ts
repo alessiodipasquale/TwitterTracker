@@ -18,7 +18,7 @@ export default abstract class Router {
         app.post('/getUserData', getUserInformations);
 
         app.get('/getRetweets/:tweetId', getRetweetsByTweetId ); 
-        app.get('/getRetweets/:tweetId', getRetweetersByTweetId );
+        app.get('/getRetweeters/:tweetId', getRetweetersByTweetId );
 
     }
 }

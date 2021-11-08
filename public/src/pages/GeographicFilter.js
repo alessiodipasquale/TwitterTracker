@@ -9,6 +9,7 @@ import { GeoSearchControl, MapBoxProvider } from "leaflet-geosearch";
 
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
 import TweetCard from "../components/TweetCard";
+import { getTweetsByLocation } from "../services/geographic-service";
 const provider = new OpenStreetMapProvider();
 
 // add to leaflet
@@ -70,18 +71,10 @@ async function  SearchField  ( ) {
 
   circle.addTo(map);
 
-  getTweetsByLocation(res.y, res.x, data.radius);
+  getTweetsByLocation(res.y, res.x, data.radius, data.keyword, data.count)
+  .then(res => setTweets(res.data.data.statuses) );
 };
 
-function getTweetsByLocation(latitude, longitude){
-  const url="http://localhost:3000/searchTweetsByLocation";
-
-  Axios.post(url, {latitude,longitude,radius: data.radius, text: data.keyword, count: data.count })
-  .then(res => {
-      console.log(res)
-      setTweets(res.data.data.statuses)
-  });
-}
 
   return (
     <Container fluid  style={{padding: '2%'}} >
@@ -155,7 +148,7 @@ function getTweetsByLocation(latitude, longitude){
              
              tweets && tweets.map(tweet=>{
                  return(
-                   <TweetCard tweet = {tweet} />
+                   <TweetCard tweet = {tweet} showOptions={true}/>
                      
                  )
          
