@@ -8,6 +8,7 @@ import { getRetweetersByTweetId, getRetweetsByTweetId } from '../services/retwee
 function TweetCard({tweet, showOptions}) {
   const [retweetModalShow, setRetweetModalShow] = useState(false);
   const [retweeterModalShow, setRetweeterModalShow] = useState(false);
+  const [searchableModalShow, setSearchableTextModal] = useState(false);
 
   const [retweets, setRetweets] = useState(false);
   const [retweeters, setRetweeters] = useState(false);
@@ -23,9 +24,10 @@ function TweetCard({tweet, showOptions}) {
           </div>
           <div>
           { showOptions ?
-            <DropdownButton disabled={tweet.retweeted_status} id="dropdown-basic-button" title="Azioni">
-              <Dropdown.Item onClick={() => showRetweetModal(tweet)}>Show Retweets</Dropdown.Item>
-              <Dropdown.Item onClick={() => showRetweeterModal(tweet)}>Show Retweeters account</Dropdown.Item>
+            <DropdownButton id="dropdown-basic-button" title="Azioni">
+              <Dropdown.Item disabled={tweet.retweeted_status} onClick={() => showRetweetModal(tweet)}>Show Retweets</Dropdown.Item>
+              <Dropdown.Item disabled={tweet.retweeted_status} onClick={() => showRetweeterModal(tweet)}>Show Retweeters account</Dropdown.Item>
+              <Dropdown.Item onClick={() => showSearchableTextModal(tweet)}>Search tweet text</Dropdown.Item>
             </DropdownButton>
             : null
           }
@@ -59,7 +61,28 @@ function TweetCard({tweet, showOptions}) {
     })
   }
 
+  function showSearchableTextModal() {
+      setSearchableTextModal(true)
+
+  }
+
   function Modals() {
+
+    const openInNewTab = (url) => {
+      const newWindow = window.open(url, '_blank', 'noopener,noreferrer');
+      if (newWindow) newWindow.opener = null;
+    };
+
+    const searchWord = (word) => {
+      return (() => {openInNewTab(`https://www.google.com/search?q=${word}`);});
+    };
+
+    function makeClickable(paragraph) {
+      const words = paragraph.split(/ /g);
+      return words.map(w =>
+        <span onClick={searchWord(w)}>{w} </span>
+      );
+    }
 
     return (
       <>
@@ -89,7 +112,7 @@ function TweetCard({tweet, showOptions}) {
                   </Card>
                 );
             })
-          
+
           }
           </Modal.Body>
         </Modal>
@@ -109,17 +132,35 @@ function TweetCard({tweet, showOptions}) {
           {
               retweets && retweets.map(tweet=>{
                   return(
-                    <TweetCard tweet={tweet} showOptions={false}/>    
+                    <TweetCard tweet={tweet} showOptions={false}/>
               )})
-          
+
+          }
+          </Modal.Body>
+        </Modal>
+
+        <Modal
+          size="lg"
+          show={searchableModalShow}
+          onHide={() => setSearchableTextModal(false)}
+          aria-labelledby="example-modal-sizes-title-lg"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title id="example-modal-sizes-title-lg">
+              Click on a word to search it.
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+          {
+            makeClickable(tweet.text)
           }
           </Modal.Body>
         </Modal>
       </>
     );
   }
-  
-  
+
+
 }
 
 
