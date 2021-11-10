@@ -1,7 +1,7 @@
 import qParams from "./Interfaces/QueryParams"
 
+/* Builds the q field */
 export function buildQ(q: qParams): string {
-    // builds the q field
   
     var query: string = "";
   
