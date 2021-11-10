@@ -80,7 +80,7 @@ function TweetCard({tweet, showOptions}) {
     function makeClickable(paragraph) {
       const words = paragraph.split(/ /g);
       return words.map(w =>
-        <span onClick={searchWord(w)}>{w} </span>
+        <span onClick={searchWord(w)}>  {w}  •</span>
       );
     }
 
