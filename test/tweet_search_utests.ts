@@ -4,7 +4,9 @@ import {expect} from 'chai';
 Twitter.init();
 
 describe('Tweet Search By Keyword utests', () => {
-	const query = { q: "I made a tweet.", count: 10 }
+	const query = { q: "I made a tweet.", count: 10 };
+	const id: string = "1454832552271884290";
+	const idQuery = { id:id }; 
 
 	describe('#NonEmptySearch', () => {
 		it('should find at least some tweets', async function() {
@@ -31,4 +33,15 @@ describe('Tweet Search By Keyword utests', () => {
 				});
 		});
 	});
+
+	describe('#SearchById', () => {
+		it('should find a specific tweet', async function() {
+			await Twitter.searchTweetById(idQuery)
+				.then(data => {
+					let res: any = JSON.parse(JSON.stringify(data));
+					expect(res.data.id_str).to.equal(id);
+				});
+		});
+	});
+	
 });

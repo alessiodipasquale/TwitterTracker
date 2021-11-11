@@ -3,6 +3,18 @@ import { IRequest, IResponse } from '../config/Express';
 import Twitter from "./Twitter";
 import { buildQ } from "../Utils/Utils";
 
+export const searchTweetById: any = async(req: IRequest, res:IResponse) : Promise<void> => {
+
+    const id: string = req.params.tweetId;
+    const query = {id:id};
+
+    Twitter.searchTweetById(query)
+    .then(data => {
+        res.send(data)
+    }).catch(err => {
+        throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
+    })
+}
 export const searchByKeyword: any = async(req: IRequest, res:IResponse) : Promise<void> => {
     const q = req.body.text ?? "";
     const count = req.body.count ?? 15;
@@ -91,6 +103,17 @@ export const getRetweetersByTweetId: any = async(req: IRequest, res:IResponse) :
             users.push(element.user)
         }
         res.send(users)
+    }).catch(err => {
+        throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
+    })
+}
+export const getSentimentFromTweet: any = async(req: IRequest, res:IResponse) : Promise<void> => {
+    const id: string = req.params.tweetId;
+    const query = {id:id};
+
+    Twitter.getSentimentFromTweet(query)
+    .then(data => {
+        res.send(data);
     }).catch(err => {
         throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
     })

@@ -1,4 +1,5 @@
 import Twit from "twit";
+import Sentiment from "sentiment";
 
 export default abstract class Twitter {
     private static twit: Twit;
@@ -10,6 +11,10 @@ export default abstract class Twitter {
             access_token: '1447929992550227969-Xbpzos9Tiu6MUZNY4njk9ZPXCpnncE',
             access_token_secret:'M2f7dsdiFslNLqRl0FMUv3OpVummKPg2aQhQ4yGfF6XPM'
         })
+    }
+
+    public static async searchTweetById(query: any) {
+        return await this.twit.get('statuses/show/:id',query);
     }
 
     public static async searchTweetsByKeyword(query: any) {  // search all tweets that contain keyword
@@ -34,5 +39,12 @@ export default abstract class Twitter {
 
     public static async getRetweetsByTweetId(query: any) {     
         return await this.twit.get('statuses/retweets/:id', query);
+    }
+
+    public static async getSentimentFromTweet(query: any) {     
+        const data: any = await this.searchTweetById(query);
+        var sentiment = new Sentiment();
+        var result = sentiment.analyze(data.data.text);
+        return result;
     }
 }
