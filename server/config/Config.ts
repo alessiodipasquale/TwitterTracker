@@ -21,4 +21,9 @@ export default abstract class Config {
 
     }
 
+    public static get sentimentAnalysisOptions(): any {
+        return Constants.sentimentAnalysisOptions;
+
+    }
+
 }

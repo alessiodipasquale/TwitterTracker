@@ -1,4 +1,10 @@
 {
     "port": 3000,
-    "distPath":"./public/build"
+    "distPath":"./public/build",
+    "sentimentAnalysisOptions": {
+        "extras": {
+            "malissimo": -5,
+            "male": -2
+          }
+    }
 }
