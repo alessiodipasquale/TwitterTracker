@@ -74,13 +74,20 @@ function TweetCard({tweet, showOptions}) {
     };
 
     const searchWord = (word) => {
-      return (() => {openInNewTab(`https://www.google.com/search?q=${word}`);});
+      return (() => {
+        if(word.startsWith('http')) 
+          openInNewTab(word)
+        else
+          openInNewTab(`https://www.google.com/search?q=${word}`);
+      });
     };
 
     function makeClickable(paragraph) {
       const words = paragraph.split(/ /g);
       return words.map(w =>
-        <span onClick={searchWord(w)}>  {w}  •</span>
+        <Card name="searchButton" id="searchButton" role="button" style={{margin: '6px', cursor: 'pointer'}}onClick={searchWord(w)}> 
+          <Card.Body style= {{padding: '9px'}}> {w}</Card.Body> 
+        </Card>
       );
     }
 
@@ -150,7 +157,7 @@ function TweetCard({tweet, showOptions}) {
               Click on a word to search it.
             </Modal.Title>
           </Modal.Header>
-          <Modal.Body>
+          <Modal.Body style={{display: 'flex', flexFlow: 'wrap'}}>
           {
             makeClickable(tweet.text)
           }
