@@ -45,7 +45,7 @@ export default abstract class Twitter {
     public static async getSentimentFromTweet(query: any) {     
         const data: any = await this.searchTweetById(query);
         var sentiment = new Sentiment();
-        const options: any = Config.sentimentAnalysisOptions();
+        const options: any = Config.sentimentAnalysisOptions;
         var result = sentiment.analyze(data.data.text, options);
         return result;
     }
