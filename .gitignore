@@ -120,3 +120,6 @@ dist/
 # Altro
 .innometrics.db
 package-lock.json
+
+# SonarQube
+.scannerwork
