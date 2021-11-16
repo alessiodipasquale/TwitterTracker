@@ -34,6 +34,8 @@ function GeographicFilter() {
 
   const [tweets,setTweets]=useState([])
 
+  const [markers, setMarkers] = useState([])
+
 
   function handle(e, value) {
     const newdata = {...data};
@@ -60,6 +62,10 @@ async function  SearchField  ( ) {
   const lat = new LatLng(res.y, res.x);
 
   center = [res.y, res.x]
+
+  markers.forEach(marker => {
+    marker.removeFrom(map);
+  })
   
 
   map.flyTo(lat, map.getZoom());
@@ -71,8 +77,30 @@ async function  SearchField  ( ) {
 
   circle.addTo(map);
 
+  const markersList = [];
+
   getTweetsByLocation(res.y, res.x, data.radius, data.keyword, data.count)
-  .then(res => setTweets(res.data.data.statuses) );
+  .then(res => {
+    setTweets(res.data.data.statuses);
+
+    console.log(res)
+    res.data.data.statuses.forEach(tweet => {
+      if(tweet.geo) {
+        const lat = new LatLng(tweet.geo.coordinates[0], tweet.geo.coordinates[1]);
+        const marker = L.marker(lat).addTo(map)  
+        markersList.push(marker);      
+      } else {
+        if(tweet.place) {
+          console.log("Aggiungo place");
+          const lat = new LatLng(tweet.place.bounding_box.coordinates[0][0][0],tweet.place.bounding_box.coordinates[0][0][1]);
+          const marker = L.marker(lat).addTo(map)  
+          markersList.push(marker);            
+        }
+      }
+      setMarkers(markersList);
+    })
+   })
+  .catch(err => console.log(err));
 };
 
 
@@ -105,7 +133,7 @@ async function  SearchField  ( ) {
         </Form.Group>
         </Col>
         <Col style={{display: 'flex', alignItems: 'flex-end', marginBottom: '1rem'}}>
-          <Button onClick={() => SearchField()} variant="primary">Search Tweets</Button>{' '}
+          <Button disabled={data.city == ""} onClick={() => SearchField()} variant="primary">Search Tweets</Button>{' '}
         </Col>
       </Row>
     </Form>
