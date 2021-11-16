@@ -30,7 +30,7 @@ function Home() {
         searchTweet(data.text, parseInt(data.count),data.author,data.remove)
         .then(res => {
             setTweets(res.data.data.statuses)
-        });
+        }).catch(err => console.log(err));
     }
 
     return(
@@ -104,7 +104,7 @@ function Home() {
           </Row>
 
           <Row>
-            <Button disabled={data.text==""} onClick={(e) => submit(e)} variant="primary">Search Tweets</Button>
+            <Button disabled={data.text=="" && data.author =="" } onClick={(e) => submit(e)} variant="primary">Search Tweets</Button>
           </Row>
         </Form>
 
