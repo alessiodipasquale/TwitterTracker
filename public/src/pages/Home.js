@@ -104,7 +104,7 @@ function Home() {
           </Row>
 
           <Row>
-            <Button onClick={(e) => submit(e)} variant="primary">Search Tweets</Button>
+            <Button disabled={data.text==""} onClick={(e) => submit(e)} variant="primary">Search Tweets</Button>
           </Row>
         </Form>
 

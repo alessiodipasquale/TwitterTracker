@@ -9,7 +9,7 @@ export default abstract class Config {
     private static env: any;
 
     public static async init() {
-        Config._port = process.env.PORT ? parseInt(process.env.PORT) : Constants.port;
+        Config._port = Constants.port;
     }
 
     public static get port(): number {
