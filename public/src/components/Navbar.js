@@ -10,10 +10,11 @@ import {
   SidebarFooter,
   SidebarContent,
 } from 'react-pro-sidebar';
-import { FaGithub } from 'react-icons/fa';
+import { FaBars, FaGithub } from 'react-icons/fa';
 
 const Navbar = ({ collapsed, toggled, handleToggleSidebar }) => {
   return (
+    <>
     <ProSidebar
       image= {false}
       collapsed={collapsed}
@@ -73,6 +74,10 @@ const Navbar = ({ collapsed, toggled, handleToggleSidebar }) => {
         </div>
       </SidebarFooter>
     </ProSidebar>
+    <div className="btn-toggle" style={{position: 'absolute' ,margin: '3%'}} onClick={() => handleToggleSidebar(true)}>
+      <FaBars />
+    </div>
+    </>
   );
 };
 
