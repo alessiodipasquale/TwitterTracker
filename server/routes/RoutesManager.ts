@@ -20,8 +20,10 @@ export const searchByKeyword: any = async(req: IRequest, res:IResponse) : Promis
     const count = req.body.count ?? 15;
     const author = req.body.author ?? "";
     const remove: string = req.body.remove ?? "";
+    const since: string = req.body.since ?? "";
+    const until: string = req.body.until ?? "";
 
-    const query = {q: buildQ({base_query: q, author:author, remove:remove.split(" ")}), count: count};
+    const query = {q: buildQ({base_query: q, author:author, remove:remove.split(" "), since, until}), count: count};
 
     Twitter.searchTweetsByKeyword(query)
     .then(data => {

@@ -11,12 +11,14 @@ function Home() {
         count:"",
         author: "",
         remove: "",
+        since: null,
+        until: null
     });
 
     const [since, setSince] = useState(null);
     const [until, setUntil] = useState(null);
 
-    const [tweets,setTweets]=useState([])
+    const [tweets,setTweets] = useState([])
 
 
     function handle(e) {
@@ -27,7 +29,7 @@ function Home() {
 
     function submit(e) {
         e.preventDefault();
-        searchTweet(data.text, parseInt(data.count),data.author,data.remove)
+        searchTweet(data.text, parseInt(data.count),data.author,data.remove, data.since, data.until)
         .then(res => {
             setTweets(res.data.data.statuses)
         }).catch(err => console.log(err));

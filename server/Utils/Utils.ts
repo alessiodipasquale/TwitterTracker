@@ -5,7 +5,7 @@ export function buildQ(q: qParams): string {
   
     var query: string = "";
   
-    if (q.base_query) query = q.base_query;
+    if (q.base_query) query = q.base_query.concat(" ");
   
     if (q.hashtags){
       for (var i = 0; i < q.hashtags.length; i++){
@@ -38,6 +38,5 @@ export function buildQ(q: qParams): string {
   
         query = query.concat(q.remove.join(" ")).concat(" ");
     }
-  
     return query;
   };
