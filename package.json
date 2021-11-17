@@ -6,7 +6,9 @@
   "scripts": {
     "start": "npm run tsc && node ./out/index",
     "tsc": "tsc",
-    "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha --timeout 100000 -r ts-node/register 'test/**/*.ts'"
+    "test-backend": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha --timeout 100000 -r ts-node/register 'test/**/*.ts'",
+    "test-frontend": "npm --prefix ./public/ run test -- --watchAll=false",
+    "test": "npm run test-backend && npm run test-frontend"
   },
   "repository": {
     "type": "git",
