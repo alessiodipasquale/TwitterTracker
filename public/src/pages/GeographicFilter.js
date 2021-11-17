@@ -170,7 +170,7 @@ async function  SearchField  ( ) {
             <Card.Body  style={{display: "flex", justifyContent: "center", alignItems: "center", textAlign: 'center'}}>
             <div >
               <h3 className="text-muted">
-                I tuoi tweet compariranno qui.<br/> Esegui una rircerca
+                Your Tweets will appear here.<br/> Do a research.
               </h3>
             </div>
             </Card.Body> :
