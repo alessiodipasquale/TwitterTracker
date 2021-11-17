@@ -87,13 +87,20 @@ async function  SearchField  ( ) {
     res.data.data.statuses.forEach(tweet => {
       if(tweet.geo) {
         const lat = new LatLng(tweet.geo.coordinates[0], tweet.geo.coordinates[1]);
-        const marker = L.marker(lat).addTo(map)  
+        const marker = L.marker(lat).bindTooltip("@"+tweet.user.screen_name).addTo(map)/*.on('click', (e) => {
+          console.log(e);
+          console.log(tweet);
+
+          tweets.find(tw => tw == tweet)
+        });*/
         markersList.push(marker);      
       } else {
         if(tweet.place) {
           console.log("Aggiungo place");
           const lat = new LatLng(tweet.place.bounding_box.coordinates[0][0][0],tweet.place.bounding_box.coordinates[0][0][1]);
-          const marker = L.marker(lat).addTo(map)  
+          const marker = L.marker(lat).bindTooltip("@"+tweet.user.screen_name).addTo(map)/*.on('click', (e) => {
+            console.log(tweet);
+          });  */
           markersList.push(marker);            
         }
       }
