@@ -3,6 +3,7 @@ import cors from 'cors';
 import { searchByKeyword, getUserInformations, searchTweetsByLocation, searchTweetsByAuthor, searchTweetsByHashtag,getRetweetsByTweetId, getRetweetersByTweetId, getSentimentFromTweet } from '../routes/RoutesManager';
 import express from 'express';
 import Config from '../config/Config';
+import { errorHandler } from '../config/Error';
 
 export default abstract class Router {
     public static init(app: any): void {
@@ -27,5 +28,6 @@ export default abstract class Router {
 
         app.get('/getSentimentFromTweet/:tweetId', getSentimentFromTweet );
 
+        app.use(errorHandler());
     }
 }

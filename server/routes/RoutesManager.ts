@@ -29,6 +29,7 @@ export const searchByKeyword: any = async(req: IRequest, res:IResponse) : Promis
     .then(data => {
         res.send(data)
     }).catch(err => {
+        res.status(400).send({ error: 'INCORRECT_BODY', description: `Il body non è corretto` });
         throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
     })
 }
