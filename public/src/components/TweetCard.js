@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { Card, Col, Dropdown, DropdownButton, Modal, Row } from 'react-bootstrap';
+import ReactWordcloud from 'react-wordcloud';
+import { select } from 'd3-selection';
+
 import { getRetweetersByTweetId, getRetweetsByTweetId } from '../services/retweet-service';
 import { getSentimentFromTweet } from '../services/sentiment-analysis';
 import positiveImg from '../images/happy.png';
@@ -58,7 +61,7 @@ function TweetCard({tweet, showOptions}) {
       setRetweetModalShow(true)
     });
   }
-  
+
   function showSentimentModal() {
     getSentimentFromTweet(tweet.id_str)
     .then((res) => {
@@ -90,22 +93,46 @@ function TweetCard({tweet, showOptions}) {
       if (newWindow) newWindow.opener = null;
     };
 
-    const searchWord = (word) => {
-      return (() => {
-        if(word.startsWith('http')) 
+    function searchWord(word) {
+        if(word.startsWith('http'))
           openInNewTab(word)
         else
           openInNewTab(`https://www.google.com/search?q=${word}`);
-      });
     };
+
+    function getCallback(callback) {
+      return function (word, event) {
+        const isActive = callback !== "onWordMouseOut";
+        const element = event.target;
+        const text = select(element);
+        text
+          .on("click", () => {
+            if (isActive) {
+              searchWord(word.text);
+            }
+          })
+          .transition()
+          .attr("background", "white")
+          .attr("font-size", isActive ? "250%" : "100%");
+      };
+    }
 
     function makeClickable(paragraph) {
       const words = paragraph.split(/ /g);
-      return words.map(w =>
-        <Card name="searchButton" id="searchButton" role="button" style={{margin: '6px', cursor: 'pointer'}}onClick={searchWord(w)}> 
-          <Card.Body style= {{padding: '9px'}}> {w}</Card.Body> 
-        </Card>
-      );
+      const wordcloud_data = new Array(words.length);
+
+      const callbacks = {
+        getWordTooltip: (word) => "",
+        onWordClick: getCallback("onWordClick"),
+        onWordMouseOut: getCallback("onWordMouseOut"),
+        onWordMouseOver: getCallback("onWordMouseOver"),
+      }
+
+      for (var i = 0; i < words.length; i++) {
+        wordcloud_data[i] ={'text': words[i], 'value': Math.floor(Math.random() * 100)};
+      }
+
+      return (<ReactWordcloud words={wordcloud_data} callbacks={callbacks} />);
     }
 
     return (
@@ -218,11 +245,11 @@ function TweetCard({tweet, showOptions}) {
                         Negative
                       </Card.Header>
                       <Card.Body style= {{display: 'flex', flexFlow: 'wrap'}}>
-                      {   
+                      {
                         sentiments.negative && sentiments.negative.map(negativeText=>{
                           return(
-                            <Card name="negativeText" id="negativeText" role="text" style={{margin: '6px'}}> 
-                              <Card.Body style= {{padding: '9px'}}> {negativeText}</Card.Body> 
+                            <Card name="negativeText" id="negativeText" role="text" style={{margin: '6px'}}>
+                              <Card.Body style= {{padding: '9px'}}> {negativeText}</Card.Body>
                             </Card>
                           )})
                       }
@@ -235,11 +262,11 @@ function TweetCard({tweet, showOptions}) {
                         Positive
                       </Card.Header>
                       <Card.Body style= {{display: 'flex', flexFlow: 'wrap'}}>
-                      {   
+                      {
                         sentiments.positive && sentiments.positive.map(positiveText=>{
                           return(
-                            <Card name="positiveText" id="positiveText" role="text" style={{margin: '6px'}}> 
-                              <Card.Body style= {{padding: '9px'}}> {positiveText}</Card.Body> 
+                            <Card name="positiveText" id="positiveText" role="text" style={{margin: '6px'}}>
+                              <Card.Body style= {{padding: '9px'}}> {positiveText}</Card.Body>
                             </Card>
                       )})
                       }
@@ -248,7 +275,7 @@ function TweetCard({tweet, showOptions}) {
                   </Col>
                 </Row>
                 :
-                <h3 style={{textAlign: 'center'}}>It wasn't possible to make Sentiment Analysis on this tweet.</h3>  
+                <h3 style={{textAlign: 'center'}}>It wasn't possible to make Sentiment Analysis on this tweet.</h3>
                 : null
               }
           </Modal.Body>
