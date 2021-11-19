@@ -1,6 +1,11 @@
 {
   "name": "public",
   "version": "0.1.0",
+  "jest": {
+    "transformIgnorePatterns": [
+      "node_modules/(?!@ngrx|(?!create.js)|ng-dynamic)"
+    ]
+  },
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.14.1",
@@ -47,6 +52,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.16.0",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.6.5"
   }
 }
