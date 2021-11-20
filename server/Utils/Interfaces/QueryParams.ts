@@ -5,4 +5,5 @@ export default interface qParams {
     since?: string;          // since date, "yyyy-mm-dd" format
     until?: string;          // until date, same format
     remove?: string[];       // array of words to be filtered out
+    attitude?: string;
 };

@@ -22,8 +22,9 @@ export const searchByKeyword: any = async(req: IRequest, res:IResponse) : Promis
     const remove: string = req.body.remove ?? "";
     const since: string = req.body.since ?? "";
     const until: string = req.body.until ?? "";
+    const attitude: string = req.body.attitude ?? "";
 
-    const query = {q: buildQ({base_query: q, author:author, remove:remove.split(" "), since, until}), count: count};
+    const query = {q: buildQ({base_query: q, author:author, remove:remove.split(" "), since, until,attitude}), count: count};
 
     Twitter.searchTweetsByKeyword(query)
     .then(data => {
@@ -120,4 +121,36 @@ export const getSentimentFromTweet: any = async(req: IRequest, res:IResponse) : 
     }).catch(err => {
         throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
     })
+}
+
+export const getSentimentFromGroupOfTweets: any = async(req: IRequest, res:IResponse) : Promise<void> => {
+    let ids: string[] = [];
+    let analysis: any[] = [];
+    let tweets = req.data.data.statuses;
+    for(let t of tweets){
+        ids.push(t.id_str);
+    }
+    for(let id of ids){
+        const query = {id:id};
+        Twitter.getSentimentFromTweet(query)
+        .then(data => {
+            analysis.push(data);
+        }).catch(err => {
+            throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
+        })
+    }
+    let value = 0;
+    let positive = [];
+    let negative = [];
+    for(let element of analysis){
+        value += element.score;
+        for(let goodElem of element.positive){
+            positive.push(goodElem);
+        }
+        for(let badElem of element.negative){
+            negative.push(badElem);
+        }
+    }
+    let toReturn = {value, positive, negative};
+    res.send(toReturn);
 }

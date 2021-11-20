@@ -38,5 +38,8 @@ export function buildQ(q: qParams): string {
   
         query = query.concat(q.remove.join(" ")).concat(" ");
     }
+    if (q.attitude) {  
+      query = query.concat(q.attitude).concat(" ");
+    }
     return query;
   };
