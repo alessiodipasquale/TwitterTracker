@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Card, Col, Dropdown, DropdownButton, Modal, Row } from 'react-bootstrap';
-import ReactWordcloud from 'react-wordcloud';
-import { select } from 'd3-selection';
+
+import WordCloud from 'react-d3-cloud';
 
 import { getRetweetersByTweetId, getRetweetsByTweetId } from '../services/retweet-service';
 import { getSentimentFromTweet } from '../services/sentiment-analysis';
@@ -100,39 +100,17 @@ function TweetCard({tweet, showOptions}) {
           openInNewTab(`https://www.google.com/search?q=${word}`);
     };
 
-    function getCallback(callback) {
-      return function (word, event) {
-        const isActive = callback !== "onWordMouseOut";
-        const element = event.target;
-        const text = select(element);
-        text
-          .on("click", () => {
-            if (isActive) {
-              searchWord(word.text);
-            }
-          })
-          .transition()
-          .attr("background", "white")
-          .attr("font-size", isActive ? "250%" : "100%");
-      };
-    }
-
     function makeClickable(paragraph) {
+
       const words = paragraph.split(/ /g);
-      const wordcloud_data = new Array(words.length);
 
-      const callbacks = {
-        getWordTooltip: (word) => "",
-        onWordClick: getCallback("onWordClick"),
-        onWordMouseOut: getCallback("onWordMouseOut"),
-        onWordMouseOver: getCallback("onWordMouseOver"),
-      }
-
-      for (var i = 0; i < words.length; i++) {
-        wordcloud_data[i] ={'text': words[i], 'value': Math.floor(Math.random() * 100)};
-      }
-
-      return (<ReactWordcloud words={wordcloud_data} callbacks={callbacks} />);
+      return (<WordCloud
+        data={words.map(function(w) { return {text:w, value:30}; })}
+        fontSize={(word)=> 25}
+        onWordClick={(event, d) => {
+          console.log(`onWordClick: ${d.text}`);
+          searchWord(d.text);
+        }}/>);
     }
 
     return (
