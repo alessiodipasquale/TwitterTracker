@@ -104,13 +104,16 @@ function TweetCard({tweet, showOptions}) {
 
       const words = paragraph.split(/ /g);
 
-      return (<WordCloud
+      return (
+      <WordCloud
         data={words.map(function(w) { return {text:w, value:30}; })}
         fontSize={(word)=> 25}
         onWordClick={(event, d) => {
           console.log(`onWordClick: ${d.text}`);
           searchWord(d.text);
-        }}/>);
+        }}
+        />
+      );
     }
 
     return (
@@ -179,7 +182,7 @@ function TweetCard({tweet, showOptions}) {
               Click on a word to search it.
             </Modal.Title>
           </Modal.Header>
-          <Modal.Body style={{display: 'flex', flexFlow: 'wrap'}}>
+          <Modal.Body>
           {
             makeClickable(tweet.text)
           }
