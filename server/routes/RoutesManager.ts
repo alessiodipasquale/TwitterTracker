@@ -20,6 +20,7 @@ export const searchByKeyword: any = async(req: IRequest, res:IResponse) : Promis
 
     const q = req.body.text ?? "";
 
+    //TODO: ci sarebbe da generalizzare questo per passare eventuali altri parametri opzionali dal body della richesta
     const optionalParams = {
       start_time: req.body.since,
       end_time: req.body.until,
@@ -31,8 +32,12 @@ export const searchByKeyword: any = async(req: IRequest, res:IResponse) : Promis
     const remove: string = req.body.remove ?? "";
     const attitude: string = req.body.attitude ?? "";
     
+    //Questo rimuove le cose vuote
     let queryOptions = Object.fromEntries(Object.entries(optionalParams).filter(([_, v]) => v != null && v !==""));
+
     console.log(queryOptions);
+
+    //andrebbero rinominate alcune cose per renderle uguali alla documentazione dell'api, eg. author dovrebbe diventare from
     const query = buildQ({base_query: q, author:author, remove:remove.split(" ") ,attitude})
 
     console.log(query)
