@@ -8,15 +8,23 @@ export default abstract class Twitter {
     private static roClient: TwitterApiReadOnly;
 
     public static async init() {
-        const twitterClient = new TwitterApi({
-            appKey: 'xCjANsVSmJ5hwKKJz6oSZiwOC',
-            appSecret: 'zPzz9otwrXFcMsCDNCubDXG97SNQcCbJEuVeQwa3P5fVlcZV4o',
+        /*const twitterClient = new TwitterApi({
+            appKey: 'xCjANsVSmJ5hwKKJz6oSZiwOC', 
+            appSecret: 'zPzz9otwrXFcMsCDNCubDXG97SNQcCbJEuVeQwa3P5fVlcZV4o', 
             // Following access tokens are not required if you are
             // at part 1 of user-auth process (ask for a request token)
             // or if you want a app-only client (see below)
             accessToken: '1447929992550227969-Xbpzos9Tiu6MUZNY4njk9ZPXCpnncE',
             accessSecret: 'M2f7dsdiFslNLqRl0FMUv3OpVummKPg2aQhQ4yGfF6XPM',
-        }); 
+
+            //prof:
+            // API key: C4iQSlFz3Z1I6DrTvHQyrcK2T
+            // API secret: svWpG4WnU6YdyFYMv6IljepHvPozB5zcZg37wj05XZiZIaKCvl
+            //barer token: AAAAAAAAAAAAAAAAAAAAAOKvNwEAAAAAoWNV8XrBS7KsdCqAZ6GHEkWZXm8%3D0pUlsutplEvsnmu9NQLbSjjvGq1zTs7YFKSxDtQr3bQHitkpN5
+        
+        }); */
+        //i dati nel commento precedente non dovrebbero essere necessari, usiamo il bearer token fornito dal professore
+        const twitterClient = new TwitterApi("AAAAAAAAAAAAAAAAAAAAAOKvNwEAAAAAoWNV8XrBS7KsdCqAZ6GHEkWZXm8%3D0pUlsutplEvsnmu9NQLbSjjvGq1zTs7YFKSxDtQr3bQHitkpN5")
         Twitter.roClient = twitterClient.readOnly;
 
         Twitter.twit = new Twit({
@@ -30,8 +38,7 @@ export default abstract class Twitter {
     public static async searchTweetById(query: any) {
         //return await this.twit.get('statuses/show/:id',query);
         const data =  await Twitter.roClient.v1.singleTweet(query.id);
-        const result = {data} 
-        return result;
+        return {data};
 
     }
 
