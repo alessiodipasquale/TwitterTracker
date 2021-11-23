@@ -17,16 +17,22 @@ export const searchTweetById: any = async(req: IRequest, res:IResponse) : Promis
 }
 export const searchByKeyword: any = async(req: IRequest, res:IResponse) : Promise<void> => {
     const q = req.body.text ?? "";
-    const count = req.body.count ?? 15;
+
+    const optionalParams = {
+      start_time: req.body.since ?? "",
+      end_time: req.body.until ?? "",
+      max_results: req.body.count ?? 15
+    }
+
+ 
     const author = req.body.author ?? "";
     const remove: string = req.body.remove ?? "";
-    const since: string = req.body.since ?? "";
-    const until: string = req.body.until ?? "";
+
     const attitude: string = req.body.attitude ?? "";
 
-    const query = {q: buildQ({base_query: q, author:author, remove:remove.split(" "), since, until,attitude}), count: count};
+    const query = buildQ({base_query: q, author:author, remove:remove.split(" ") ,attitude})
 
-    Twitter.searchTweetsByKeyword(query)
+    Twitter.searchTweetsByKeyword(query, optionalParams)
     .then(data => {
         res.send(data)
     }).catch(err => {

@@ -1,5 +1,5 @@
 import Twit from "twit";
-import TwitterApi, { TwitterApiReadOnly } from 'twitter-api-v2';
+import TwitterApi, { Tweetv2SearchParams, TwitterApiReadOnly } from 'twitter-api-v2';
 import Sentiment from "sentiment";
 import Config from "../config/Config";
 
@@ -37,13 +37,13 @@ export default abstract class Twitter {
 
     public static async searchTweetById(query: any) {
         //return await this.twit.get('statuses/show/:id',query);
-        const data =  await Twitter.roClient.v1.singleTweet(query.id);
+        const data =  await Twitter.roClient.v2.searchAll(query);
         return {data};
 
     }
 
-    public static async searchTweetsByKeyword(query: any) {  // search all tweets that contain keyword
-        return await this.twit.get('search/tweets', query);
+    public static async searchTweetsByKeyword(query: string, options: Partial<Tweetv2SearchParams> | undefined) {  // search all tweets that contain keyword
+        return await Twitter.roClient.v2.searchAll(query, options);
     }
 
     public static async searchTweetsByHashtag(query: any) {
