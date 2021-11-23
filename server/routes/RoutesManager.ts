@@ -16,26 +16,34 @@ export const searchTweetById: any = async(req: IRequest, res:IResponse) : Promis
     })
 }
 export const searchByKeyword: any = async(req: IRequest, res:IResponse) : Promise<void> => {
+    console.log(req.body)
+
     const q = req.body.text ?? "";
 
     const optionalParams = {
-      start_time: req.body.since ?? "",
-      end_time: req.body.until ?? "",
+      start_time: req.body.since,
+      end_time: req.body.until,
       max_results: req.body.count ?? 15
     }
 
- 
+    
     const author = req.body.author ?? "";
     const remove: string = req.body.remove ?? "";
-
     const attitude: string = req.body.attitude ?? "";
-
+    
+    let queryOptions = Object.fromEntries(Object.entries(optionalParams).filter(([_, v]) => v != null && v !==""));
+    console.log(queryOptions);
     const query = buildQ({base_query: q, author:author, remove:remove.split(" ") ,attitude})
 
-    Twitter.searchTweetsByKeyword(query, optionalParams)
-    .then(data => {
-        res.send(data)
-    }).catch(err => {
+    console.log(query)
+    Twitter.searchTweetsByKeyword(query, queryOptions)
+    .then(paginator => {
+        console.log(paginator.tweets)
+        console.log("count " + paginator.tweets.length) 
+        res.send(paginator.tweets)
+    })
+    .then(tweet => console.log(tweet))
+    .catch(err => {
         res.status(400).send({ error: 'INCORRECT_BODY', description: `Il body non è corretto` });
         //throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
     })

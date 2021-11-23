@@ -3,7 +3,7 @@ import qParams from "./Interfaces/QueryParams"
 /* Builds the q field */
 export function buildQ(q: qParams): string {
   
-    var query: string = "";
+    var query= "";
   
     if (q.base_query) query = q.base_query.concat(" ");
   
@@ -13,8 +13,12 @@ export function buildQ(q: qParams): string {
           q.hashtags[i] = "#".concat(q.hashtags[i]);
         }
       }
+
+    // q.hashtags && q.hashtags.forEach(element => {
+    //   if(element)
+    //     query = query.concat("#").concat(element).concat(" ")
+    // });
   
-      query = query.concat(q.hashtags.join(" ")).concat(" ");
     }
   
     if (q.author) {
@@ -29,15 +33,25 @@ export function buildQ(q: qParams): string {
       query = query.concat(`until:${q.until} `);
     }
   
-    if (q.remove) {
-      for (var i = 0; i < q.remove.length; i++){
-        if (q.remove[i].indexOf('-') == -1) {
-          q.remove[i] = "-".concat(q.remove[i]);
-        }
-      }
+    console.log(q.remove)
+    
+    q.remove && q.remove.forEach(element => {
+      if (element)
+        query = query.concat("-").concat(element).concat(" ")
+    });
+      
+
+
+    // if (q.remove) {
+    //   for (var i = 0; i < q.remove.length; i++){
+    //     if (q.remove[i].indexOf('-') == -1) {
+    //       q.remove[i] = "-".concat(q.remove[i]);
+    //     }
+    //   }
   
-        query = query.concat(q.remove.join(" ")).concat(" ");
-    }
+    //     query = query.concat(q.remove.join(" ")).concat(" ");
+    // }
+
     if (q.attitude) {  
       query = query.concat(q.attitude).concat(" ");
     }
