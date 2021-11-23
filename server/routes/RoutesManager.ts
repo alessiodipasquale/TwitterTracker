@@ -2,13 +2,13 @@ import { BadRequest } from '../config/Error';
 import { IRequest, IResponse } from '../config/Express';
 import Twitter from "./Twitter";
 import { buildQ } from "../Utils/Utils";
+import { Tweetv2SearchParams } from 'twitter-api-v2';
 
 export const searchTweetById: any = async(req: IRequest, res:IResponse) : Promise<void> => {
 
     const id: string = req.params.tweetId;
-    const query = {id:id};
 
-    Twitter.searchTweetById(query)
+    Twitter.searchTweetById(id)
     .then(data => {
         res.send(data)
     }).catch(err => {
@@ -16,33 +16,23 @@ export const searchTweetById: any = async(req: IRequest, res:IResponse) : Promis
     })
 }
 export const searchByKeyword: any = async(req: IRequest, res:IResponse) : Promise<void> => {
-    console.log(req.body)
-
-    const q = req.body.text ?? "";
-
+    const keyword = req.body.text ?? "";
     const optionalParams = {
       start_time: req.body.since,
       end_time: req.body.until,
       max_results: req.body.count ?? 15
     }
-
-    
     const author = req.body.author ?? "";
     const remove: string = req.body.remove ?? "";
     const attitude: string = req.body.attitude ?? "";
     
-    let queryOptions = Object.fromEntries(Object.entries(optionalParams).filter(([_, v]) => v != null && v !==""));
-    console.log(queryOptions);
-    const query = buildQ({base_query: q, author:author, remove:remove.split(" ") ,attitude})
+    let queryOptions : Partial<Tweetv2SearchParams> | undefined = Object.fromEntries(Object.entries(optionalParams).filter(([_, v]) => v != null && v !==""));
+    const queryPath: string = buildQ({base_query: keyword, author:author, remove:remove.split(" ") ,attitude})
 
-    console.log(query)
-    Twitter.searchTweetsByKeyword(query, queryOptions)
+    Twitter.searchTweetsByKeyword({queryPath, queryOptions})
     .then(paginator => {
-        console.log(paginator.tweets)
-        console.log("count " + paginator.tweets.length) 
-        res.send(paginator.tweets)
+        res.send(paginator.data.data)
     })
-    .then(tweet => console.log(tweet))
     .catch(err => {
         res.status(400).send({ error: 'INCORRECT_BODY', description: `Il body non è corretto` });
         //throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)

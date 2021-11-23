@@ -35,15 +35,12 @@ export default abstract class Twitter {
         })
     }
 
-    public static async searchTweetById(query: any) {
-        //return await this.twit.get('statuses/show/:id',query);
-        const data =  await Twitter.roClient.v2.searchAll(query);
-        return {data};
-
+    public static async searchTweetById(queryPath: string) {
+        return await Twitter.roClient.v2.singleTweet(queryPath);
     }
 
-    public static async searchTweetsByKeyword(query: string, options: Partial<Tweetv2SearchParams> | undefined) {  // search all tweets that contain keyword
-        return await Twitter.roClient.v2.searchAll(query, options);
+    public static async searchTweetsByKeyword(query: any) {
+        return await Twitter.roClient.v2.searchAll(query.queryPath, query.queryOptions);
     }
 
     public static async searchTweetsByHashtag(query: any) {
@@ -67,10 +64,10 @@ export default abstract class Twitter {
     }
 
     public static async getSentimentFromTweet(query: any) {     
-        const data: any = await this.searchTweetById(query);
+        const data: any = await this.searchTweetById(query.id);
         var sentiment = new Sentiment();
         const options: any = Config.sentimentAnalysisOptions;
-        var result = sentiment.analyze(data.data.full_text, options);
+        var result = sentiment.analyze(data.data.text, options);
         return result;
     }
 }
