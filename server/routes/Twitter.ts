@@ -47,9 +47,9 @@ export default abstract class Twitter {
       return await this.twit.get('search/tweets', query);
     }
 
-    public static async searchTweetsByAuthor(query: any) {
+    /*public static async searchTweetsByAuthor(query: any) {
         return await this.twit.get('search/tweets', query);
-    }
+    }*/
 
     public static async searchTweetsByLocation(query: any) { 
       return await this.twit.get('search/tweets', query);
