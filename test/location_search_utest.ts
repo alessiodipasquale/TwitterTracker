@@ -15,7 +15,7 @@ describe('Tweet Search By Location utests', () => {
 
     describe('#CorrectLocation', () => {
       it('should be by the correct location', async function() {
-        await delay(500);
+        await delay(1000)
         await Twitter.searchTweetsByKeyword({query: q, options:queryOptions}).then(paginator => {
           const places = [];
           for (var i = 0; i < paginator.data.data.length; i++) {

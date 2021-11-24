@@ -11,6 +11,7 @@ describe('Tweet Search By Keyword utests', () => {
 	describe('#NonEmptySearch', () => {
 		it('should find at least some tweets', async function() {
 			/* expects to find some tweets */
+			
 			await Twitter.searchTweetsByKeyword(query)
 				.then(paginator => {
 					expect(paginator.data).not.to.be.empty;
