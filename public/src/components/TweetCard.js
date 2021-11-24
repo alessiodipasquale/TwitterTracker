@@ -30,7 +30,7 @@ function TweetCard({tweet, showOptions}) {
 
         <Card.Title  style={{display: 'flex', justifyContent:"space-between", marginBottom: "15px"}}>
           <div style={{display: 'flex'}}>
-            <strong>{tweet.user.name}</strong><div className="text-muted" style={{marginLeft: '6px'}}>@{tweet.user.screen_name} · {new Date(tweet.created_at).toLocaleString()}</div>
+            <strong>{tweet.user.name}</strong><div className="text-muted" style={{marginLeft: '6px'}}>@{tweet.user.username} · {new Date(tweet.created_at).toLocaleString()}</div>
           </div>
           <div>
           { showOptions ?
@@ -44,7 +44,7 @@ function TweetCard({tweet, showOptions}) {
           }
           </div>
         </Card.Title>
-        <Card.Subtitle className="mb-2 text-muted">{tweet.place ? (tweet.place.full_name ? tweet.place.full_name : (tweet.place.name ? tweet.place.name : '')) : tweet.user.location}</Card.Subtitle>
+        <Card.Subtitle className="mb-2 text-muted">{tweet.place ? (tweet.place.full_name ? tweet.place.full_name : (tweet.place.name ? tweet.place.name : '')) : null}</Card.Subtitle>
         <Card.Text>{tweet.text}</Card.Text>
       </Card.Body>
     </Card>

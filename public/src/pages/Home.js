@@ -32,7 +32,8 @@ function Home() {
         e.preventDefault();
         searchTweet(data.text, parseInt(data.count),data.author,data.remove, data.since ? new Date(data.since).toISOString() : "" , data.until? new Date(data.until).toISOString() : "")
         .then(res => {
-            setTweets(res.data.data.statuses)
+          console.log(res);
+            setTweets(res.data)
         }).catch(err => console.log(err));
     }
 

@@ -52,10 +52,18 @@ export const searchByKeyword: any = async(req: IRequest, res:IResponse) : Promis
             "source", 
             "text",
             "withheld"
-        ]
+        ],
+        'user.fields': [
+            "name",
+            "username",
+            "profile_image_url",
+            "verified",
+            "description"
+        ],
     }
 
-    const queryParams = {
+    //'[lat lon raggioinkm]'
+    const queryParams = { 
         keywords: req.body.text ?? "",
         point_radius: req.body.geocode,
         from: req.body.author ?? "",
@@ -68,8 +76,20 @@ export const searchByKeyword: any = async(req: IRequest, res:IResponse) : Promis
 
     Twitter.searchTweetsByKeyword({query: queryPath, options: queryOptions})
     .then(paginator => {
-        console.log(paginator.data.data)
-        res.send(paginator.data.data)
+        console.log(paginator.data)
+
+        let dataString = JSON.stringify(paginator.data);
+        let data = JSON.parse(dataString);
+        
+        for(let i=0; i<data.data.length; i++) {
+            if (data.includes.users.length == 1)
+                data.data[i].user = data.includes.users[0]
+            else
+                data.data[i].user = data.includes.users[i];
+        }
+
+       // console.log(data.data)
+        res.send(data.data)
     })
     .catch(err => {
         console.log(err.stack)
