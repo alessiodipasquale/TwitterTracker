@@ -1,5 +1,6 @@
 import Twitter from "../server/routes/Twitter";
 import {expect} from 'chai';
+import { delay } from "../server/Utils/Utils";
 
 Twitter.init();
 
@@ -12,6 +13,7 @@ describe('Retweets Search By Id utests', () => {
 
     describe('#IncludeRetweet', () => {
       it('should contain the user previously prepared', async function() {
+        ;
         await Twitter.getRetweetsByTweetId(query).then(data => {
             let res: any = JSON.parse(JSON.stringify(data));
             expect(res.data[0].user.id).to.equal(retweeterId);

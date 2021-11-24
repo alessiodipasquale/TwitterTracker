@@ -1,5 +1,6 @@
 import Twitter from "../server/routes/Twitter";
 import { expect } from 'chai';
+import { delay } from "../server/Utils/Utils";
 
 Twitter.init();
 
@@ -12,6 +13,7 @@ describe('Get User Informations utests', () => {
 
   describe('#CorrectUserInfo', () => {
     it('should find user by id with expected screen name', async function() {
+      
       await Twitter.getUserInformations(query_1).then(data => {
         let res: any = JSON.parse(JSON.stringify(data));
         expect(res.data.screen_name).to.equal(sname);
@@ -19,6 +21,7 @@ describe('Get User Informations utests', () => {
     });
 
     it('should find user by screen name with expected id', async function() {
+      
       await Twitter.getUserInformations(query_2).then(data => {
         let res: any = JSON.parse(JSON.stringify(data));
         expect(res.data.id_str).to.equal(uid);

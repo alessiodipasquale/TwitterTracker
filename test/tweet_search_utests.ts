@@ -11,6 +11,7 @@ describe('Tweet Search By Keyword utests', () => {
 	describe('#NonEmptySearch', () => {
 		it('should find at least some tweets', async function() {
 			/* expects to find some tweets */
+			
 			await Twitter.searchTweetsByKeyword(query)
 				.then(paginator => {
 					expect(paginator.data).not.to.be.empty;
@@ -21,7 +22,7 @@ describe('Tweet Search By Keyword utests', () => {
 	describe('#SimpleQuery', () => {
 		it('should have a non-empty body', async function() {
 			/* expects to find some text */
-			await delay(500);
+			;
 			await Twitter.searchTweetsByKeyword(query)
 				.then(paginator => {
 					for (var i = 0; i < paginator.data.data.length; i++) {
