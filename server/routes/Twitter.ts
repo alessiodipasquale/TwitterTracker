@@ -2,6 +2,7 @@ import Twit from "twit";
 import TwitterApi, { TwitterApiReadOnly } from 'twitter-api-v2';
 import Sentiment from "sentiment";
 import Config from "../config/Config";
+import Translate from "@vitalets/google-translate-api";
 
 export default abstract class Twitter {
     private static twit: Twit;
@@ -67,10 +68,23 @@ export default abstract class Twitter {
     }
 
     public static async getSentimentFromTweet(query: any) {     
-        const data: any = await this.searchTweetById(query);
+		const data: any = await this.searchTweetById(query);
         var sentiment = new Sentiment();
         const options: any = Config.sentimentAnalysisOptions;
-        var result = sentiment.analyze(data.data.full_text, options);
-        return result;
+
+		var translated : any = await Translate(String(data.data.full_text), {to: 'en'});
+		var full_text : string = translated.text;
+		
+        const result = sentiment.analyze(full_text, options);
+		const originalwords : string[] = [];
+		for(var i = 0; i < result.words.length; ++i){
+			var orig : any = await Translate(String(result.words[i]), {from: 'en', to: translated.from.language.iso});
+			if(data.data.full_text.toLowerCase().includes(orig.text.toLowerCase())
+				|| data.data.full_text.toLowerCase().includes(orig.text.substring(0, orig.text.length - 1).toLowerCase()))
+				originalwords.push(orig.text.toLowerCase());
+		}
+		result.words = originalwords;
+		return result;
+		
     }
 }
