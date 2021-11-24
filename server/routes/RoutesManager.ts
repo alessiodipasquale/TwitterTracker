@@ -20,17 +20,54 @@ export const searchByKeyword: any = async(req: IRequest, res:IResponse) : Promis
     const optionalParams = {
       start_time: req.body.since,
       end_time: req.body.until,
-      max_results: req.body.count ?? 15
+      max_results: req.body.count ?? 15,
+      geocode: req.body.geocode,
+      expansions: [
+        "geo.place_id",
+        "author_id"
+      ],
+      'place.fields':[
+            "contained_within", 
+            "country", 
+            "country_code", 
+            "full_name", 
+            "geo", 
+            "id", 
+            "name", 
+            "place_type"
+        ],
+        'tweet.fields':[
+            "attachments", 
+            "author_id", 
+            "context_annotations", 
+            "conversation_id", 
+            "created_at", 
+            "entities", 
+            "geo", 
+            "id", 
+            "in_reply_to_user_id", 
+            "lang", 
+            "public_metrics",
+            "possibly_sensitive", 
+            "referenced_tweets", 
+            "reply_settings", 
+            "source", 
+            "text",
+            "withheld"
+        ]
     }
     const author = req.body.author ?? "";
     const remove: string = req.body.remove ?? "";
     const attitude: string = req.body.attitude ?? "";
     
     let queryOptions : Partial<Tweetv2SearchParams> | undefined = Object.fromEntries(Object.entries(optionalParams).filter(([_, v]) => v != null && v !==""));
-    const queryPath: string = buildQ({base_query: keyword, author:author, remove:remove.split(" ") ,attitude})
+    let queryPath: string = buildQ({base_query: keyword, author:author, remove:remove.split(" ") ,attitude})
+
+    queryPath+=" "+optionalParams.geocode;
 
     Twitter.searchTweetsByKeyword({queryPath, queryOptions})
     .then(paginator => {
+        console.log(paginator.data.data)
         res.send(paginator.data.data)
     })
     .catch(err => {
