@@ -2,13 +2,13 @@ import { BadRequest } from '../config/Error';
 import { IRequest, IResponse } from '../config/Express';
 import Twitter from "./Twitter";
 import { buildQ } from "../Utils/Utils";
+import { Tweetv2SearchParams } from 'twitter-api-v2';
 
 export const searchTweetById: any = async(req: IRequest, res:IResponse) : Promise<void> => {
 
     const id: string = req.params.tweetId;
-    const query = {id:id};
 
-    Twitter.searchTweetById(query)
+    Twitter.searchTweetById(id)
     .then(data => {
         res.send(data)
     }).catch(err => {
@@ -16,25 +16,68 @@ export const searchTweetById: any = async(req: IRequest, res:IResponse) : Promis
     })
 }
 export const searchByKeyword: any = async(req: IRequest, res:IResponse) : Promise<void> => {
-    const q = req.body.text ?? "";
-    const count = req.body.count ?? 15;
-    const author = req.body.author ?? "";
-    const remove: string = req.body.remove ?? "";
-    const since: string = req.body.since ?? "";
-    const until: string = req.body.until ?? "";
-    const attitude: string = req.body.attitude ?? "";
+    const optionalParams : Partial<Tweetv2SearchParams> = {
+      start_time: req.body.since,
+      end_time: req.body.until,
+      max_results: req.body.count ?? 15,
+      expansions: [
+        "geo.place_id",
+        "author_id"
+      ],
+      'place.fields':[
+            "contained_within", 
+            "country", 
+            "country_code", 
+            "full_name", 
+            "geo", 
+            "id", 
+            "name", 
+            "place_type"
+        ],
+        'tweet.fields':[
+            "attachments", 
+            "author_id", 
+            "context_annotations", 
+            "conversation_id", 
+            "created_at", 
+            "entities", 
+            "geo", 
+            "id", 
+            "in_reply_to_user_id", 
+            "lang", 
+            "public_metrics",
+            "possibly_sensitive", 
+            "referenced_tweets", 
+            "reply_settings", 
+            "source", 
+            "text",
+            "withheld"
+        ]
+    }
 
-    const query = {q: buildQ({base_query: q, author:author, remove:remove.split(" "), since, until,attitude}), count: count};
+    const queryParams = {
+        keywords: req.body.text ?? "",
+        point_radius: req.body.geocode,
+        from: req.body.author ?? "",
+        exclude: req.body.remove ?? "",
+        attitude: req.body.attitude ?? "",
+    }
+    
+    let queryOptions : Partial<Tweetv2SearchParams> | undefined = Object.fromEntries(Object.entries(optionalParams).filter(([_, v]) => v != null && v !==""));
+    let queryPath: string = buildQ(queryParams)
 
-    Twitter.searchTweetsByKeyword(query)
-    .then(data => {
-        res.send(data)
-    }).catch(err => {
+    Twitter.searchTweetsByKeyword({query: queryPath, options: queryOptions})
+    .then(paginator => {
+        console.log(paginator.data.data)
+        res.send(paginator.data.data)
+    })
+    .catch(err => {
+        console.log(err.stack)
         res.status(400).send({ error: 'INCORRECT_BODY', description: `Il body non è corretto` });
         //throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
     })
 }
-export const searchTweetsByAuthor: any = async(req: IRequest, res:IResponse) : Promise<void> => {
+/*export const searchTweetsByAuthor: any = async(req: IRequest, res:IResponse) : Promise<void> => {
     const count: string = req.body.count;
     const q = buildQ({author: req.body.author});
     const query: any = {q:q, count: count};
@@ -45,7 +88,7 @@ export const searchTweetsByAuthor: any = async(req: IRequest, res:IResponse) : P
     }).catch(err => {
         throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
     })
-}
+}*/
 export const searchTweetsByLocation: any = async(req: IRequest, res:IResponse) : Promise<void> => {
     const radius = (req.body.radius/1000)+'km'
     const geocode = req.body.latitude + "," + req.body.longitude + "," + radius;

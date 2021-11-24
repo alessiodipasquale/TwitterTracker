@@ -27,9 +27,10 @@ function Home() {
         setData(newdata);
     }
 
+
     function submit(e) {
         e.preventDefault();
-        searchTweet(data.text, parseInt(data.count),data.author,data.remove, data.since, data.until)
+        searchTweet(data.text, parseInt(data.count),data.author,data.remove, data.since ? new Date(data.since).toISOString() : "" , data.until? new Date(data.until).toISOString() : "")
         .then(res => {
             setTweets(res.data.data.statuses)
         }).catch(err => console.log(err));

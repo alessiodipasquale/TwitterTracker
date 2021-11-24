@@ -4,19 +4,18 @@ import {expect} from 'chai';
 Twitter.init();
 
 describe('Tweet Search By Author utests', () => {
-    var author = "Elon Musk" 
-    var q = "from:"+author;
-    var query = {q: q};
+    const author = "elonmusk" 
+    const q = "from:"+author;
+    const authorId: string = "44196397" 
+    const query = {queryPath:q, queryOptions:{expansions: ["author_id"]}};
 
     describe('#CorrectAuthor', () => {
       it('should be by the correct author', async function() {
-        await Twitter.searchTweetsByAuthor(query).then(data => {
-
-          let res: any = JSON.parse(JSON.stringify(data));
-
-          for (var i = 0; i < res.data.statuses.length; i++) {
-              var tweet = res.data.statuses[i];
-              expect(tweet.user.name).to.equal(author);
+        await Twitter.searchTweetsByKeyword(query)
+        .then(paginator => {
+          for (var i = 0; i < paginator.data.data.length; i++) {
+              var tweet = paginator.data.data[i];
+              expect(tweet.author_id).to.equal(authorId);
           }
         });
       });
