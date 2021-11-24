@@ -65,14 +65,14 @@ export const searchByKeyword: any = async(req: IRequest, res:IResponse) : Promis
     
     let queryOptions : Partial<Tweetv2SearchParams> | undefined = Object.fromEntries(Object.entries(optionalParams).filter(([_, v]) => v != null && v !==""));
     let queryPath: string = buildQ(queryParams)
-    console.log(queryPath)
 
-    Twitter.searchTweetsByKeyword({queryPath, queryOptions})
+    Twitter.searchTweetsByKeyword({query: queryPath, options: queryOptions})
     .then(paginator => {
         console.log(paginator.data.data)
         res.send(paginator.data.data)
     })
     .catch(err => {
+        console.log(err.stack)
         res.status(400).send({ error: 'INCORRECT_BODY', description: `Il body non è corretto` });
         //throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
     })

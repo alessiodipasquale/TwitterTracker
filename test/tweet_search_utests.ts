@@ -5,7 +5,7 @@ import { delay } from "../server/Utils/Utils"
 Twitter.init();
 
 describe('Tweet Search By Keyword utests', () => {
-	const query = { queryPath: 'hi', queryOptions: { max_results: 50 } }
+	const query = { query: 'hi', options: { max_results: 50 } }
 	const id: string = "1454832552271884290";
 
 	describe('#NonEmptySearch', () => {

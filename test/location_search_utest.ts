@@ -12,12 +12,11 @@ describe('Tweet Search By Location utests', () => {
     var geocode = "["+longitude+" "+latitude+" "+radius+"]";
     var q = "point_radius:"+geocode //"place:\"San Siro\""
     let queryOptions ={expansions:['geo.place_id'], 'place.fields':["contained_within", "country", "country_code", "full_name", "geo", "id", "name", "place_type"]}
-    var query = {queryPath: q, queryOptions };
 
     describe('#CorrectLocation', () => {
       it('should be by the correct location', async function() {
         await delay(500);
-        await Twitter.searchTweetsByKeyword(query).then(paginator => {
+        await Twitter.searchTweetsByKeyword({query: q, options:queryOptions}).then(paginator => {
           const places = [];
           for (var i = 0; i < paginator.data.data.length; i++) {
               var tweet = paginator.data.data[i];

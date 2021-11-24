@@ -39,8 +39,8 @@ export default abstract class Twitter {
         return await Twitter.roClient.v2.singleTweet(queryPath);
     }
 
-    public static async searchTweetsByKeyword(query: any) {
-        return await Twitter.roClient.v2.searchAll(query.queryPath, query.queryOptions);
+    public static async searchTweetsByKeyword({query, options}: any) {
+        return await Twitter.roClient.v2.searchAll(query, options);
     }
 
     public static async searchTweetsByHashtag(query: any) {
