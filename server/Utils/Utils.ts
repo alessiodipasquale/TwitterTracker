@@ -32,9 +32,7 @@ export function buildQ(q: qParams): string {
     if (q.until) {
       query = query.concat(`until:${q.until} `);
     }
-  
-    console.log(q.remove)
-    
+        
     q.remove && q.remove.forEach(element => {
       if (element)
         query = query.concat("-").concat(element).concat(" ")
@@ -57,3 +55,7 @@ export function buildQ(q: qParams): string {
     }
     return query;
   };
+
+  export function delay(ms: number) {
+    return new Promise( resolve => setTimeout(resolve, ms) );
+  }
