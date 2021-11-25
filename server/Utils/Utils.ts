@@ -56,6 +56,5 @@ export function buildQ(q: qParams): string {
       }
       toReturn = object.data;
     }
-    console.log(toReturn);
     return toReturn;
   }
