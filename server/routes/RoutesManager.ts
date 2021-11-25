@@ -1,7 +1,7 @@
 import { BadRequest } from '../config/Error';
 import { IRequest, IResponse } from '../config/Express';
 import Twitter from "./Twitter";
-import { buildQ } from "../Utils/Utils";
+import { buildQ, formatData } from "../Utils/Utils";
 import { Tweetv2SearchParams } from 'twitter-api-v2';
 
 export const searchTweetById: any = async(req: IRequest, res:IResponse) : Promise<void> => {
@@ -76,9 +76,8 @@ export const searchByKeyword: any = async(req: IRequest, res:IResponse) : Promis
 
     Twitter.searchTweetsByKeyword({query: queryPath, options: queryOptions})
     .then(paginator => {
-        console.log(paginator.data)
-
-        let dataString = JSON.stringify(paginator.data);
+        const formattedData = formatData(paginator.data);
+        /*let dataString = JSON.stringify(paginator.data);
         let data = JSON.parse(dataString);
         
         for(let i=0; i<data.data.length; i++) {
@@ -86,10 +85,10 @@ export const searchByKeyword: any = async(req: IRequest, res:IResponse) : Promis
                 data.data[i].user = data.includes.users[0]
             else
                 data.data[i].user = data.includes.users[i];
-        }
+        }*/
 
        // console.log(data.data)
-        res.send(data.data)
+        res.send(formattedData)
     })
     .catch(err => {
         console.log(err.stack)

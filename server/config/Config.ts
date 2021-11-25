@@ -26,4 +26,8 @@ export default abstract class Config {
 
     }
 
+    public static get FieldsFromStandardQuery(): any {
+        return Constants.FieldsFromStandardQuery;
+    }
+
 }

@@ -40,7 +40,7 @@ export default abstract class Twitter {
         Twitter.stream = Twitter.roClient.v2.searchStream({ autoConnect: false });
 
         // Per ora stampa i tweet streammati
-        Twitter.stream.on(ETwitterStreamEvent.Data, console.log);
+        //Twitter.stream.on(ETwitterStreamEvent.Data, /*console.log*/);
 
         Twitter.stream.on(ETwitterStreamEvent.Connected, () => console.log('Stream is started.'));
 
