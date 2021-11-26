@@ -69,25 +69,20 @@ export default abstract class Twitter {
         return await Twitter.roClient.v2.searchAll(query, options);
     }
 
-    public static async searchTweetsByHashtag(query: any) {
-      return await this.twit.get('search/tweets', query);
+    public static async getUserInformations({query, options}: any) {
+      if (query.user_id)
+        return await Twitter.roClient.v2.user(query.user_id,options);
+      else
+        return await Twitter.roClient.v2.userByUsername(query.username,options);
     }
 
-    /*public static async searchTweetsByAuthor(query: any) {
-        return await this.twit.get('search/tweets', query);
-    }*/
-
-    public static async searchTweetsByLocation(query: any) {
-      return await this.twit.get('search/tweets', query);
+    public static async getRetweetersByTweetId({query,options}: any) {
+        return await Twitter.roClient.v2.tweetRetweetedBy(query.id,options);
     }
 
-    public static async getUserInformations(query: any) {
-        return await this.twit.get('users/show', query);
-    }
-
-    public static async getRetweetsByTweetId(query: any) {
-        return await this.twit.get('statuses/retweets/:id', query);
-    }
+    public static async getRetweetsByTweetId({query,options}: any) {
+      return await Twitter.roClient.v1.get('statuses/retweets/'.concat(query.id).concat('.json'),{})
+  }
 
     public static async getSentimentFromTweet(query: any) {
 		  const data: any = await this.searchTweetById(query.id);

@@ -8,23 +8,23 @@ describe('Get User Informations utests', () => {
 
   var uid = '1447929992550227969'
   var sname = "swe2021_4"
-  var query_1 = { user_id: uid };
-  var query_2 = { screen_name: sname };
+  var options = {};
+  var query;
 
   describe('#CorrectUserInfo', () => {
     it('should find user by id with expected screen name', async function() {
-      
-      await Twitter.getUserInformations(query_1).then(data => {
+      query = { user_id: uid };
+      await Twitter.getUserInformations({query,options}).then(data => {
         let res: any = JSON.parse(JSON.stringify(data));
-        expect(res.data.screen_name).to.equal(sname);
+        expect(res.data.username).to.equal(sname);
       });
     });
 
     it('should find user by screen name with expected id', async function() {
-      
-      await Twitter.getUserInformations(query_2).then(data => {
+      query = { username: sname };
+      await Twitter.getUserInformations({query,options}).then(data => {
         let res: any = JSON.parse(JSON.stringify(data));
-        expect(res.data.id_str).to.equal(uid);
+        expect(res.data.id).to.equal(uid);
       });
     });
   });

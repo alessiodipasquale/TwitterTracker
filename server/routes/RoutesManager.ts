@@ -5,9 +5,7 @@ import { buildQ, formatData } from "../Utils/Utils";
 import { Tweetv2SearchParams } from 'twitter-api-v2';
 
 export const searchTweetById: any = async(req: IRequest, res:IResponse) : Promise<void> => {
-
     const id: string = req.params.tweetId;
-
     Twitter.searchTweetById(id)
     .then(data => {
         res.send(data)
@@ -15,6 +13,7 @@ export const searchTweetById: any = async(req: IRequest, res:IResponse) : Promis
         throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
     })
 }
+
 export const searchByKeyword: any = async(req: IRequest, res:IResponse) : Promise<void> => {
     const optionalParams : Partial<Tweetv2SearchParams> = {
       start_time: req.body.since,
@@ -77,17 +76,6 @@ export const searchByKeyword: any = async(req: IRequest, res:IResponse) : Promis
     Twitter.searchTweetsByKeyword({query: queryPath, options: queryOptions})
     .then(paginator => {
         const formattedData = formatData(paginator.data);
-        /*let dataString = JSON.stringify(paginator.data);
-        let data = JSON.parse(dataString);
-        
-        for(let i=0; i<data.data.length; i++) {
-            if (data.includes.users.length == 1)
-                data.data[i].user = data.includes.users[0]
-            else
-                data.data[i].user = data.includes.users[i];
-        }*/
-
-       // console.log(data.data)
         res.send(formattedData)
     })
     .catch(err => {
@@ -96,50 +84,16 @@ export const searchByKeyword: any = async(req: IRequest, res:IResponse) : Promis
         //throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
     })
 }
-/*export const searchTweetsByAuthor: any = async(req: IRequest, res:IResponse) : Promise<void> => {
-    const count: string = req.body.count;
-    const q = buildQ({author: req.body.author});
-    const query: any = {q:q, count: count};
 
-    Twitter.getUserInformations(query)
-    .then(data => {
-        res.send(data)
-    }).catch(err => {
-        throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
-    })
-}*/
-export const searchTweetsByLocation: any = async(req: IRequest, res:IResponse) : Promise<void> => {
-    const radius = (req.body.radius/1000)+'km'
-    const geocode = req.body.latitude + "," + req.body.longitude + "," + radius;
-    const q = req.body.text ? req.body.text : "";
-    const count = req.body.count ? req.body.count : 10;
-    const query = {q:q, geocode: geocode, count: count};
-
-    Twitter.searchTweetsByLocation(query)
-    .then(data => {
-        res.send(data)
-    }).catch(err => {
-        throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
-    })
-}
-export const searchTweetsByHashtag: any = async(req: IRequest, res:IResponse) : Promise<void> => {
-    const count: string = req.body.count;
-    const q = buildQ({hashtags: req.body.hashtags});
-    const query: any = {q:q, count: count};
-
-    Twitter.searchTweetsByHashtag(query)
-    .then(data => {
-        res.send(data)
-    }).catch(err => {
-        throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
-    })
-}
 export const getUserInformations: any = async(req: IRequest, res:IResponse) : Promise<void> => {
-    const screen_name: string = req.body.username;
-    const q = "";
-    const query: any = {q:q, screen_name: screen_name};
-
-    Twitter.getUserInformations(query)
+    const options = {}
+    var query;
+    if(req.body.id){
+        query = { id: req.body.id}
+    }else{
+        query = { username: req.body.username }
+    }
+    Twitter.getUserInformations({query,options})
     .then(data => {
         res.send(data)
     }).catch(err => {
@@ -162,13 +116,9 @@ export const getRetweetersByTweetId: any = async(req: IRequest, res:IResponse) :
     const count = 10;
     const query = {id:id, count:count};
 
-    Twitter.getRetweetsByTweetId(query)
-    .then((data:any) => {
-        const users:any[] = [];
-        for(let element of data.data){
-            users.push(element.user)
-        }
-        res.send(users)
+    Twitter.getRetweetersByTweetId(query)
+    .then(data => {
+        res.send(data)
     }).catch(err => {
         throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
     })
@@ -188,7 +138,7 @@ export const getSentimentFromTweet: any = async(req: IRequest, res:IResponse) : 
 export const getSentimentFromGroupOfTweets: any = async(req: IRequest, res:IResponse) : Promise<void> => {
     let ids: string[] = [];
     let analysis: any[] = [];
-    let tweets = req.data.data.statuses;
+    let tweets = req.data.data;
     for(let t of tweets){
         ids.push(t.id_str);
     }

@@ -7,16 +7,26 @@ Twitter.authentication();
 describe('Retweets Search By Id utests', () => {
 
     var id: string = "1454832552271884290";
-    var retweeterId: number = 1457743051141664800;
-    var count: number = 1;
-    var query = {id: id, count:count};
+    var retweeterId: string = "1457743051141664780";
+    var retweeterName: string = "Stefano_colam";
+    var query = {id: id};
+    var options = {};
 
-    describe('#IncludeRetweet', () => {
+    describe('#IncludeRetweeter', () => {
       it('should contain the user previously prepared', async function() {
-        ;
-        await Twitter.getRetweetsByTweetId(query).then(data => {
+        await Twitter.getRetweetersByTweetId({query,options}).then(data => {
             let res: any = JSON.parse(JSON.stringify(data));
-            expect(res.data[0].user.id).to.equal(retweeterId);
+            expect(res.data[0].id).to.equal(retweeterId);
+            expect(res.data[0].username).to.equal(retweeterName);
+        });
+      });
+    });
+    describe('#IncludeRetweet', () => {
+      it('should contain the previously prepared retweet', async function() {
+        await Twitter.getRetweetsByTweetId({query,options}).then(data => {
+            let res: any = JSON.parse(JSON.stringify(data));
+            expect(res[0].user.id_str).to.equal(retweeterId);
+            expect(res[0].user.screen_name).to.equal(retweeterName);
         });
       });
     });
