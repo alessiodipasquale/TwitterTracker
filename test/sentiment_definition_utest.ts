@@ -2,7 +2,7 @@ import Twitter from "../server/routes/Twitter";
 import {expect} from 'chai';
 import { delay } from "../server/Utils/Utils";
 
-Twitter.init();
+Twitter.authentication();
 
 describe('Tweet Sentiment utests', () => {
     const id: string = "1458919280725172226";/*tweet for another experiment: "1447929992550227969"*/

@@ -2,7 +2,7 @@ import Twitter from "../server/routes/Twitter";
 import {expect} from 'chai';
 import { delay } from "../server/Utils/Utils"
 
-Twitter.init();
+Twitter.authentication();
 
 describe('Tweet Search By Location utests', () => {
 

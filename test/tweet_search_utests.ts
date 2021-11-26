@@ -2,7 +2,7 @@ import Twitter from "../server/routes/Twitter";
 import {expect} from 'chai';
 import { delay } from "../server/Utils/Utils"
 
-Twitter.init();
+Twitter.authentication();
 
 describe('Tweet Search By Keyword utests', () => {
 	const query = { query: 'hi', options: { max_results: 50 } }
