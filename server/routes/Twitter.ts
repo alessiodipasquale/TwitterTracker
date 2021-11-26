@@ -3,6 +3,7 @@ import TwitterApi, { Tweetv2SearchParams, TwitterApiReadOnly, ETwitterStreamEven
 import Sentiment from "sentiment";
 import Config from "../config/Config";
 import Translate from "@vitalets/google-translate-api";
+import { tweetEventHandler } from "../Utils/Utils";
 
 export default abstract class Twitter {
     private static twit: Twit;
@@ -24,23 +25,33 @@ export default abstract class Twitter {
 
     public static async init() {
         Twitter.authentication()
-        
+
         Twitter.stream = Twitter.roClient.v2.searchStream({ autoConnect: false });
 
-        // Per ora stampa i tweet streammati
-        //Twitter.stream.on(ETwitterStreamEvent.Data, console.log);
+        Twitter.stream.on(ETwitterStreamEvent.Data, tweetEventHandler);
         Twitter.stream.on(ETwitterStreamEvent.Connected, () => console.log('Stream is started.'));
+        Twitter.stream.on(ETwitterStreamEvent.ConnectionClosed, () => console.log('Connection has been closed.'));
+    }
 
-        const ciao = "#GreenPassrafforzato";
+    public static async startStream() {
 
-        const rules = {
-          "add": [{"value": ciao, "tag": "gp"}],
+      const hashtag_concorsi = ["#concorsodeldiobuonissimopurissimolevissimo"];
+
+      await Twitter.stream.connect({ autoReconnect: true, autoReconnectRetries: Infinity });
+
+      await Twitter.clearStreamRules();
+
+      for (var i in hashtag_concorsi) {
+        let rules = {
+          "add": [
+            {"value": hashtag_concorsi[i] + " voto", "tag": "voto"},
+            {"value": hashtag_concorsi[i] + " (candido OR candidare)", "tag": "candidatura"},
+          ],
         };
 
-        await Twitter.stream.connect({ autoReconnect: true, autoReconnectRetries: Infinity });
-
-        await Twitter.clearStreamRules();
         await Twitter.roClient.v2.updateStreamRules(rules);
+      }
+      //await Twitter.logStreamRules();
     }
 
     private static async logStreamRules() {
@@ -86,7 +97,7 @@ export default abstract class Twitter {
 
     public static async getSentimentFromTweet(query: any) {
 		  const data: any = await this.searchTweetById(query.id);
-      
+
       var sentiment = new Sentiment();
       const options: any = Config.sentimentAnalysisOptions;
 

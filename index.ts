@@ -7,7 +7,8 @@ const TwitterTracker = async () => {
     Config.init();
    // await Database.init();
     await Twitter.init();
-    Server.start();   
+    Server.start();
+    await Twitter.startStream();  
 };
 
 TwitterTracker();
