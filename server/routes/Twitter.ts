@@ -1,5 +1,4 @@
-// import Twit from "twit";
-import TwitterApi, { Tweetv2SearchParams, TwitterApiReadOnly, ETwitterStreamEvent, TweetStream, StreamingV2AddRulesParams } from 'twitter-api-v2';
+import TwitterApi, { TwitterApiReadOnly, ETwitterStreamEvent, TweetStream, StreamingV2AddRulesParams } from 'twitter-api-v2';
 import Sentiment from "sentiment";
 import Config from "../config/Config";
 import Translate from "@vitalets/google-translate-api";

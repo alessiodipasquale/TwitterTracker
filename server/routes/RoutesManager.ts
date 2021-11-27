@@ -3,6 +3,7 @@ import { IRequest, IResponse } from '../config/Express';
 import Twitter from "./Twitter";
 import { buildQ, formatData } from "../Utils/Utils";
 import { Tweetv2SearchParams } from 'twitter-api-v2';
+import Database from '../config/Database';
 
 export const searchTweetById: any = async(req: IRequest, res:IResponse) : Promise<void> => {
     const id: string = req.params.tweetId;
@@ -165,4 +166,13 @@ export const getSentimentFromGroupOfTweets: any = async(req: IRequest, res:IResp
     }
     let toReturn = {value, positive, negative};
     res.send(toReturn);
+}
+
+export const addElementToStreamData = (req: IRequest, res:IResponse) => {
+    try{
+        Database.streamData = req.body.streamElement;
+        res.send();
+    }catch(err){
+        throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
+    }
 }

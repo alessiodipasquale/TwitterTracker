@@ -1,6 +1,6 @@
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import { searchByKeyword, getUserInformations, /*searchTweetsByAuthor,*/ getRetweetsByTweetId, getRetweetersByTweetId, getSentimentFromTweet, getSentimentFromGroupOfTweets } from '../routes/RoutesManager';
+import { searchByKeyword, getUserInformations, /*searchTweetsByAuthor,*/ getRetweetsByTweetId, getRetweetersByTweetId, getSentimentFromTweet, getSentimentFromGroupOfTweets, addElementToStreamData } from '../routes/RoutesManager';
 import express from 'express';
 import Config from '../config/Config';
 import { errorHandler } from '../config/Error';
@@ -27,6 +27,8 @@ export default abstract class Router {
 
         app.get('/getSentimentFromTweet/:tweetId', getSentimentFromTweet );
         app.post('/getSentimentFromGroupOfTweets', getSentimentFromGroupOfTweets );
+
+        app.post('/addElementToStreamData', addElementToStreamData );
 
         app.use(errorHandler());
     }

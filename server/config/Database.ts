@@ -10,4 +10,7 @@ export default abstract class Database {
     public static get streamData(): any[] {
         return Data.streamData;
     }
+    public static set streamData(object: any) {
+        Data.streamData.push(object);
+    }
 };
