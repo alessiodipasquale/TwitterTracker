@@ -1,12 +1,12 @@
-import Twit from "twit";
+// import Twit from "twit";
 import TwitterApi, { Tweetv2SearchParams, TwitterApiReadOnly, ETwitterStreamEvent } from 'twitter-api-v2';
 import Sentiment from "sentiment";
 import Config from "../config/Config";
 import Translate from "@vitalets/google-translate-api";
-import { tweetEventHandler } from "../Utils/Utils";
+import { tweetEventHandler } from "./StreamManager";
 
 export default abstract class Twitter {
-    private static twit: Twit;
+    //private static twit: Twit;
     private static roClient: TwitterApiReadOnly;
 
     public static stream: any;
@@ -15,12 +15,12 @@ export default abstract class Twitter {
       const twitterClient = new TwitterApi("AAAAAAAAAAAAAAAAAAAAAOKvNwEAAAAAoWNV8XrBS7KsdCqAZ6GHEkWZXm8%3D0pUlsutplEvsnmu9NQLbSjjvGq1zTs7YFKSxDtQr3bQHitkpN5")
       Twitter.roClient = twitterClient.readOnly;
 
-      Twitter.twit = new Twit({
+      /*Twitter.twit = new Twit({
           consumer_key: 'xCjANsVSmJ5hwKKJz6oSZiwOC',
           consumer_secret: 'zPzz9otwrXFcMsCDNCubDXG97SNQcCbJEuVeQwa3P5fVlcZV4o',
           access_token: '1447929992550227969-Xbpzos9Tiu6MUZNY4njk9ZPXCpnncE',
           access_token_secret:'M2f7dsdiFslNLqRl0FMUv3OpVummKPg2aQhQ4yGfF6XPM'
-      })
+      })*/
     }
 
     public static async init() {

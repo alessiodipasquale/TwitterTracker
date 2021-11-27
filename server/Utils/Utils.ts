@@ -1,5 +1,5 @@
 import qParams from "./Interfaces/QueryParams";
-import { Tweetv2TimelineResult, TweetV2SingleStreamResult } from 'twitter-api-v2';
+import { Tweetv2TimelineResult } from 'twitter-api-v2';
 import Config from "../config/Config";
 
 /* Builds the q field */
@@ -20,21 +20,21 @@ export function buildQ(q: qParams): string {
       query = query.concat(q.attitude).concat(" ");
     }
 
-    return query;
-  };
+  return query;
+};
 
-  export function delay(ms: number) {
-    return new Promise( resolve => setTimeout(resolve, ms) );
-  }
+export function delay(ms: number) {
+  return new Promise( resolve => setTimeout(resolve, ms) );
+}
 
-  export function formatData(data: Tweetv2TimelineResult): any {
-    let toReturn: any = data;
+export function formatData(data: Tweetv2TimelineResult): any {
+  let toReturn: any = data;
 
-    if(data.includes){
-      const fields = Config.FieldsFromStandardQuery;
-      const stringData = JSON.stringify(data);
-      const object = JSON.parse(stringData);
-      for(let expectedField of fields){
+  if(data.includes){
+    const fields = Config.FieldsFromStandardQuery;
+    const stringData = JSON.stringify(data);
+    const object = JSON.parse(stringData);
+    for(let expectedField of fields){
         if(object.includes[expectedField.dataName]){
           for(let tweet of object.data){
             if(tweet[expectedField.matchingParam]) {
@@ -53,25 +53,8 @@ export function buildQ(q: qParams): string {
             }
           }
         }
-      }
-      toReturn = object.data;
     }
-    return toReturn;
+    toReturn = object.data;
   }
-
-export async function tweetEventHandler(eventData: TweetV2SingleStreamResult) {
-
-    for (var i in eventData.matching_rules) {
-        let matching_rule = eventData.matching_rules[i];
-
-        if (matching_rule.tag == "voto") {
-
-          console.log("ricevuto un voto")
-
-        } else if (matching_rule.tag == "candidatura") {
-
-          console.log("ricevuta candidatura")
-
-        }
-    }
+  return toReturn;
 }
