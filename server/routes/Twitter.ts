@@ -1,15 +1,16 @@
 // import Twit from "twit";
-import TwitterApi, { Tweetv2SearchParams, TwitterApiReadOnly, ETwitterStreamEvent } from 'twitter-api-v2';
+import TwitterApi, { Tweetv2SearchParams, TwitterApiReadOnly, ETwitterStreamEvent, TweetStream, StreamingV2AddRulesParams } from 'twitter-api-v2';
 import Sentiment from "sentiment";
 import Config from "../config/Config";
 import Translate from "@vitalets/google-translate-api";
 import { tweetEventHandler } from "./StreamManager";
+import Database from "../config/Database";
 
 export default abstract class Twitter {
     //private static twit: Twit;
     private static roClient: TwitterApiReadOnly;
 
-    public static stream: any;
+    public static stream: TweetStream;
 
     public static async authentication(){
       const twitterClient = new TwitterApi("AAAAAAAAAAAAAAAAAAAAAOKvNwEAAAAAoWNV8XrBS7KsdCqAZ6GHEkWZXm8%3D0pUlsutplEvsnmu9NQLbSjjvGq1zTs7YFKSxDtQr3bQHitkpN5")
@@ -25,33 +26,33 @@ export default abstract class Twitter {
 
     public static async init() {
         Twitter.authentication()
-
-        Twitter.stream = Twitter.roClient.v2.searchStream({ autoConnect: false });
-
-        Twitter.stream.on(ETwitterStreamEvent.Data, tweetEventHandler);
-        Twitter.stream.on(ETwitterStreamEvent.Connected, () => console.log('Stream is started.'));
-        Twitter.stream.on(ETwitterStreamEvent.ConnectionClosed, () => console.log('Connection has been closed.'));
+        Twitter.startStream()
     }
 
     public static async startStream() {
-
-      const hashtag_concorsi = ["#concorsodeldiobuonissimopurissimolevissimo"];
-
+      Twitter.stream = Twitter.roClient.v2.searchStream({ autoConnect: false });
+      Twitter.stream.on(ETwitterStreamEvent.Data, tweetEventHandler);
+      Twitter.stream.on(ETwitterStreamEvent.Connected, () => console.log('Stream is started.'));
+      Twitter.stream.on(ETwitterStreamEvent.ConnectionClosed, () => console.log('Connection has been closed.'));
       await Twitter.stream.connect({ autoReconnect: true, autoReconnectRetries: Infinity });
-
       await Twitter.clearStreamRules();
-
-      for (var i in hashtag_concorsi) {
-        let rules = {
-          "add": [
-            {"value": hashtag_concorsi[i] + " voto", "tag": "voto"},
-            {"value": hashtag_concorsi[i] + " (candido OR candidare)", "tag": "candidatura"},
-          ],
-        };
-
+  
+      const contests = Database.streamData;
+      for (let elem of contests) {
+        let rules = Twitter.rulesConstruction(elem)
         await Twitter.roClient.v2.updateStreamRules(rules);
       }
-      //await Twitter.logStreamRules();
+      await Twitter.logStreamRules();
+    }
+
+    private static rulesConstruction(elem:any): StreamingV2AddRulesParams{
+      let rules: any = {
+        "add": []
+      };
+      for(let rule of elem.rules){
+        rules.add.push({value: rule.value, tag:rule.tag})
+      }
+      return rules;
     }
 
     private static async logStreamRules() {
