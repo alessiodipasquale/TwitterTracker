@@ -7,21 +7,12 @@ import { tweetEventHandler } from "./StreamManager";
 import Database from "../config/Database";
 
 export default abstract class Twitter {
-    //private static twit: Twit;
     private static roClient: TwitterApiReadOnly;
-
     public static stream: TweetStream;
 
     public static async authentication(){
       const twitterClient = new TwitterApi("AAAAAAAAAAAAAAAAAAAAAOKvNwEAAAAAoWNV8XrBS7KsdCqAZ6GHEkWZXm8%3D0pUlsutplEvsnmu9NQLbSjjvGq1zTs7YFKSxDtQr3bQHitkpN5")
       Twitter.roClient = twitterClient.readOnly;
-
-      /*Twitter.twit = new Twit({
-          consumer_key: 'xCjANsVSmJ5hwKKJz6oSZiwOC',
-          consumer_secret: 'zPzz9otwrXFcMsCDNCubDXG97SNQcCbJEuVeQwa3P5fVlcZV4o',
-          access_token: '1447929992550227969-Xbpzos9Tiu6MUZNY4njk9ZPXCpnncE',
-          access_token_secret:'M2f7dsdiFslNLqRl0FMUv3OpVummKPg2aQhQ4yGfF6XPM'
-      })*/
     }
 
     public static async init() {
@@ -56,16 +47,12 @@ export default abstract class Twitter {
     }
 
     private static async logStreamRules() {
-
       const rules = await Twitter.roClient.v2.streamRules();
-
       console.log(rules);
     }
 
     private static async clearStreamRules() {
-
       const rules = await Twitter.roClient.v2.streamRules();
-
       await Twitter.roClient.v2.updateStreamRules({
         delete: {
           ids: rules.data.map(rule=>rule.id),
