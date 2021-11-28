@@ -25,7 +25,7 @@ export default abstract class Twitter {
       Twitter.stream.on(ETwitterStreamEvent.Connected, () => console.log('Stream is started.'));
       Twitter.stream.on(ETwitterStreamEvent.ConnectionClosed, () => console.log('Connection has been closed.'));
       await Twitter.stream.connect({ autoReconnect: true, autoReconnectRetries: Infinity });
-      await Twitter.clearStreamRules();
+      await Twitter.clearStreamRulesIfPresent();
   
       const contests = Database.streamDefinitions;
       for (let elem of contests) {
@@ -50,13 +50,15 @@ export default abstract class Twitter {
       console.log(rules);
     }
 
-    private static async clearStreamRules() {
+    private static async clearStreamRulesIfPresent() {
       const rules = await Twitter.roClient.v2.streamRules();
-      await Twitter.roClient.v2.updateStreamRules({
-        delete: {
-          ids: rules.data.map(rule=>rule.id),
-        },
-      });
+      if(rules.data){
+        await Twitter.roClient.v2.updateStreamRules({
+          delete: {
+            ids: rules.data.map(rule=>rule.id),
+          },
+        });
+      }
     }
 
     public static async searchTweetById(queryPath: string) {
