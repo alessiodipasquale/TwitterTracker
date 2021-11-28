@@ -5,6 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "start": "npm run tsc && node ./out/index",
+    "dev": "nodemon index.ts",
     "tsc": "tsc",
     "test-backend": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha --timeout 100000 -r ts-node/register 'test/**/*.ts'",
     "test-frontend": "npm --prefix ./public/ run test -- --watchAll=false",
