@@ -2,7 +2,6 @@
 import Config from './Config';
 import Data from './Data.json'
 import fs from 'fs';
-import { json } from 'body-parser';
 import type { StreamDefinition } from '../types/StreamDefinition'
 
 export default abstract class Database {

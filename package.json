@@ -30,6 +30,7 @@
     "package.json": "^2.0.1",
     "path": "^0.12.7",
     "sentiment": "^5.0.2",
+    "socket.io": "^4.4.0",
     "twit": "^2.2.11",
     "twitter-api-v2": "^1.6.5"
   },
