@@ -8,6 +8,12 @@ export default abstract class Socket{
         Socket.io = new SocketServer(server);
         Socket.io.on('connection',(socket:any) => {
             //to define
+            console.log("socket connected")
+            socket.on('disconnect', () => {
+                //to define
+                console.log("socket disconnected")
+            });
+
         });
     }
 }
