@@ -27,7 +27,7 @@ export default abstract class Twitter {
       await Twitter.stream.connect({ autoReconnect: true, autoReconnectRetries: Infinity });
       await Twitter.clearStreamRules();
   
-      const contests = Database.streamData;
+      const contests = Database.streamDefinitions;
       for (let elem of contests) {
         let rules = Twitter.rulesConstruction(elem)
         await Twitter.roClient.v2.updateStreamRules(rules);

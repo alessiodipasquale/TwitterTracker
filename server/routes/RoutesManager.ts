@@ -4,6 +4,7 @@ import Twitter from "./Twitter";
 import { buildQ, formatData } from "../Utils/Utils";
 import { Tweetv2SearchParams } from 'twitter-api-v2';
 import Database from '../config/Database';
+import { StreamDefinition } from '../types/StreamDefinition'
 
 export const searchTweetById: any = async(req: IRequest, res:IResponse) : Promise<void> => {
     const id: string = req.params.tweetId;
@@ -170,7 +171,11 @@ export const getSentimentFromGroupOfTweets: any = async(req: IRequest, res:IResp
 
 export const addElementToStreamData = (req: IRequest, res:IResponse) => {
     try{
-        Database.streamData = req.body.streamElement;
+        let currentStreamDefs = Database.streamDefinitions as StreamDefinition[];
+        console.log(req.body.streamDefinitions)
+        currentStreamDefs = currentStreamDefs.concat(req.body.streamDefinitions);
+        console.log(currentStreamDefs)
+        Database.streamDefinitions = currentStreamDefs;
         res.send();
     }catch(err){
         throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
