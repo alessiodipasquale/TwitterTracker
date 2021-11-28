@@ -171,10 +171,8 @@ export const getSentimentFromGroupOfTweets: any = async(req: IRequest, res:IResp
 
 export const addElementToStreamData = (req: IRequest, res:IResponse) => {
     try{
-        let currentStreamDefs = Database.streamDefinitions as StreamDefinition[];
-        console.log(req.body.streamDefinitions)
+        let currentStreamDefs: StreamDefinition[] = (Database.streamDefinitions) as StreamDefinition[];
         currentStreamDefs = currentStreamDefs.concat(req.body.streamDefinitions);
-        console.log(currentStreamDefs)
         Database.streamDefinitions = currentStreamDefs;
         res.send();
     }catch(err){

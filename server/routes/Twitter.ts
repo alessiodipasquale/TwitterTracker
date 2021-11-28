@@ -15,8 +15,8 @@ export default abstract class Twitter {
     }
 
     public static async init() {
-        Twitter.authentication()
-        Twitter.startStream()
+        Twitter.authentication();
+        Twitter.startStream();
     }
 
     public static async startStream() {
@@ -82,7 +82,7 @@ export default abstract class Twitter {
 
     public static async getRetweetsByTweetId({query,options}: any) {
       return await Twitter.roClient.v1.get('statuses/retweets/'.concat(query.id).concat('.json'),{})
-  }
+    }
 
     public static async getSentimentFromTweet(query: any) {
 		  const data: any = await this.searchTweetById(query.id);

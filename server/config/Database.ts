@@ -14,6 +14,11 @@ export default abstract class Database {
         return Data.streamDefinitions;
     }
     public static set streamDefinitions(definitions: StreamDefinition[]) {
-        fs.writeFile('./Data.json', JSON.stringify({streamDefinitions: definitions}) ,'utf8',  err => {console.log(err?.stack)})
+        const stringedData = JSON.stringify({streamDefinitions: definitions})
+        try {
+            fs.writeFileSync('./server/config/Data.json', stringedData);
+        } catch (error) {
+            console.error(error);
+        }
     }
 };
