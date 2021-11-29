@@ -31,4 +31,14 @@ export default abstract class Database {
             console.error(error);
         }
     }
+
+    public static get literaryContestsData(){
+        let objectArray = JSON.parse(JSON.stringify(Data.DataFromLiteraryContests));
+        return objectArray;
+    }
+
+    public static get triviaGamesData(){
+        let objectArray = JSON.parse(JSON.stringify(Data.DataFromTriviaGames));
+        return objectArray;
+    }
 };

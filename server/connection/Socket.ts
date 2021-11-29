@@ -1,5 +1,5 @@
-import {Server as SocketServer} from 'socket.io'
-import { setListenersForSocket, disconnect } from '../routes/StreamManager'
+import { Server as SocketServer } from 'socket.io'
+import { setListenersForSocket, disconnect, sendPastData } from '../routes/StreamManager'
 
 export default abstract class Socket{
 

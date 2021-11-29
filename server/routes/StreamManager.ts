@@ -1,5 +1,6 @@
 import Twitter from "./Twitter";
 import {TweetV2SingleStreamResult } from 'twitter-api-v2';
+import Database from '../config/Database';
 
 export async function tweetEventHandler(eventData: TweetV2SingleStreamResult) {
     for (var i in eventData.matching_rules) {
@@ -19,7 +20,8 @@ export async function tweetEventHandler(eventData: TweetV2SingleStreamResult) {
 }
 
 export async function setListenersForSocket(socket: any): Promise<void> {
-  await addListener(socket, '/readyToReceiveData', () => {console.log("Front end is ready")});
+  await addListener(socket, '/readyToReceiveData', () => {sendPastData(socket)});
+  await addListener(socket, '/testSocketConnection', () => {socket.emit("ao",{"test":"ao"})/*return a particular value to the test*/});
 }
 
 async function addListener(socket:any, event: string, listener: Function) {
@@ -39,4 +41,15 @@ async function addListener(socket:any, event: string, listener: Function) {
 
 export async function disconnect(socket: any) {
   
+}
+
+export async function sendPastData(socket: any) {
+  const dataFromLiteraryContests = Database.literaryContestsData;
+  const dataFromTriviaGames = Database.triviaGamesData;
+  await sendSocketMessage(socket, "dataFromLiteraryContests",{"dataFromLiteraryContests":dataFromLiteraryContests});
+  await sendSocketMessage(socket, "dataFromTriviaGames",{"dataFromTriviaGames":dataFromTriviaGames});
+}
+
+async function sendSocketMessage(socket: any, event: string, data: any) {
+  socket.emit(event,data);
 }
