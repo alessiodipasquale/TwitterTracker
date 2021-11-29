@@ -10,10 +10,21 @@ export default abstract class Database {
     }
 
     public static get streamDefinitions(): StreamDefinition[] {
-        return Data.streamDefinitions;
+        let objectArray = JSON.parse(JSON.stringify(Data.streamDefinitions));
+        for(let elem of objectArray){
+            elem.startDate = new Date(elem.startDate);
+            elem.startDate = new Date(elem.endDate)
+        }
+        return objectArray as StreamDefinition[];
     }
+
     public static set streamDefinitions(definitions: StreamDefinition[]) {
-        const stringedData = JSON.stringify({streamDefinitions: definitions})
+        const objectData = JSON.parse(JSON.stringify({streamDefinitions: definitions}));
+        for(let elem of objectData){
+            elem.startDate = new Date(elem.startDate).toISOString().substring(0, 10);
+            elem.endDate = new Date(elem.endDate).toISOString().substring(0, 10);
+        }
+        const stringedData = JSON.stringify(objectData)
         try {
             fs.writeFileSync('./server/config/Data.json', stringedData);
         } catch (error) {

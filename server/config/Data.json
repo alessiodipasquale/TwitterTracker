@@ -1,17 +1,18 @@
 {
-    "streamDefinitions":[
+    "streamDefinitions": [
         {
             "name": "#streamTestswe4",
             "rules": [
                 {
                     "value": "#streamTestswe4 voto",
-                    "tag": "voto" 
+                    "tag": "voto"
                 },
                 {
                     "value": "#streamTestswe4 (candido OR candidare)",
-                    "tag": "candidatura" 
+                    "tag": "candidatura"
                 }
-            ]
+            ],
+            "startDate": null
         }
     ]
 }
