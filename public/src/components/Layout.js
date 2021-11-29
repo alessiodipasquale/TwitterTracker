@@ -3,6 +3,7 @@ import Navbar from './Navbar';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import GeographicFilter from '../pages/GeographicFilter';
 import Home from '../pages/Home';
+import ContestHandler from '../pages/ContestHandler';
 
 function Layout({ setLocale }) {
   const [collapsed, setCollapsed] = useState(false);
@@ -27,6 +28,7 @@ function Layout({ setLocale }) {
         <Switch>
           <Route path='/' exact component={Home} />
           <Route path='/geographic-filter' component={GeographicFilter} />
+          <Route path='/contest-handler' component={ContestHandler} />
         </Switch>
       </Router>
     </div>

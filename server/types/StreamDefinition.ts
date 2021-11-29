@@ -6,5 +6,7 @@ type Rule = {
 
 export interface StreamDefinition {
     name: string;
+    startDate: Date;
+    endDate: Date;
     rules: Rule[];
 }
