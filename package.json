@@ -31,6 +31,7 @@
     "path": "^0.12.7",
     "sentiment": "^5.0.2",
     "socket.io": "^4.4.0",
+    "socket.io-client": "^4.4.0",
     "twit": "^2.2.11",
     "twitter-api-v2": "^1.6.5"
   },
