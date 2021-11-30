@@ -23,4 +23,14 @@ export default abstract class Socket{
             setListenersForSocket(socket);
         });
     }
+
+    public static async broadcast(event:string,data:any){
+        for(let socket of Socket.openSockets){
+            socket.emit(event,data);
+        }
+    }
+
+    public static async sendSocketMessage(socket: any, event: string, data: any) {
+        socket.emit(event,data);
+    }
 }

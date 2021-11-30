@@ -30,4 +30,11 @@ export default abstract class Config {
         return Constants.FieldsFromStandardQuery;
     }
 
+    public static get standardSearchOptions(): any{
+        return Constants.standardSearchOptions;
+    }
+
+    public static get maxVotes(): number{
+        return Constants.maxVotes;
+    }
 }

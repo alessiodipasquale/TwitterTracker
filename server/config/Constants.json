@@ -1,6 +1,7 @@
 {
     "port": 8000,
     "distPath":"./webapp/dist",
+    "maxVotes":10,
     "sentimentAnalysisOptions": {
         "extras": {
             "malissimo": -5,
@@ -21,5 +22,47 @@
             "elementName":"placeDetail",
             "newBodyName": "placeDetails"
         }
-    ]
+    ],
+    "standardSearchOptions": {
+        "expansions": [
+            "geo.place_id",
+            "author_id"
+        ],
+        "place.fields":[
+            "contained_within", 
+            "country", 
+            "country_code", 
+            "full_name", 
+            "geo", 
+            "id", 
+            "name", 
+            "place_type"
+        ],
+        "tweet.fields":[
+            "attachments", 
+            "author_id", 
+            "context_annotations", 
+            "conversation_id", 
+            "created_at", 
+            "entities", 
+            "geo", 
+            "id", 
+            "in_reply_to_user_id", 
+            "lang", 
+            "public_metrics",
+            "possibly_sensitive", 
+            "referenced_tweets", 
+            "reply_settings", 
+            "source", 
+            "text",
+            "withheld"
+        ],
+        "user.fields": [
+            "name",
+            "username",
+            "profile_image_url",
+            "verified",
+            "description"
+        ]
+    }
 }

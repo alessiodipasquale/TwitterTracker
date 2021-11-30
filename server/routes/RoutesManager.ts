@@ -5,10 +5,11 @@ import { buildQ, formatData } from "../Utils/Utils";
 import { Tweetv2SearchParams } from 'twitter-api-v2';
 import Database from '../config/Database';
 import { StreamDefinition } from '../types/StreamDefinition'
+import Config from '../config/Config';
 
 export const searchTweetById: any = async(req: IRequest, res:IResponse) : Promise<void> => {
     const id: string = req.params.tweetId;
-    Twitter.searchTweetById(id)
+    Twitter.searchTweetById(id,{})
     .then(data => {
         res.send(data)
     }).catch(err => {
@@ -18,49 +19,13 @@ export const searchTweetById: any = async(req: IRequest, res:IResponse) : Promis
 
 export const searchByKeyword: any = async(req: IRequest, res:IResponse) : Promise<void> => {
     const optionalParams : Partial<Tweetv2SearchParams> = {
-      start_time: req.body.since,
-      end_time: req.body.until,
-      max_results: req.body.count ?? 15,
-      expansions: [
-        "geo.place_id",
-        "author_id"
-      ],
-      'place.fields':[
-            "contained_within", 
-            "country", 
-            "country_code", 
-            "full_name", 
-            "geo", 
-            "id", 
-            "name", 
-            "place_type"
-        ],
-        'tweet.fields':[
-            "attachments", 
-            "author_id", 
-            "context_annotations", 
-            "conversation_id", 
-            "created_at", 
-            "entities", 
-            "geo", 
-            "id", 
-            "in_reply_to_user_id", 
-            "lang", 
-            "public_metrics",
-            "possibly_sensitive", 
-            "referenced_tweets", 
-            "reply_settings", 
-            "source", 
-            "text",
-            "withheld"
-        ],
-        'user.fields': [
-            "name",
-            "username",
-            "profile_image_url",
-            "verified",
-            "description"
-        ],
+        start_time: req.body.since,
+        end_time: req.body.until,
+        max_results: req.body.count ?? 15,
+        expansions: Config.standardSearchOptions.expansions,
+        'place.fields':Config.standardSearchOptions['place.fields'],
+        'tweet.fields':Config.standardSearchOptions['tweet.fields'],
+        'user.fields': Config.standardSearchOptions['user.fields']
     }
 
     //'[lat lon raggioinkm]'

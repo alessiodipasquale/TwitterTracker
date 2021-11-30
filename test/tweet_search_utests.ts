@@ -35,7 +35,7 @@ describe('Tweet Search By Keyword utests', () => {
 
 	describe('#SearchById', () => {
 		it('should find a specific tweet', async function() {
-			await Twitter.searchTweetById(id)
+			await Twitter.searchTweetById(id,{})
 				.then(paginator => {
 					expect(paginator.data.id).to.equal(id);
 				});

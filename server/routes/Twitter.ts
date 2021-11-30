@@ -62,8 +62,8 @@ export default abstract class Twitter {
       }
     }
 
-    public static async searchTweetById(queryPath: string) {
-        return await Twitter.roClient.v2.singleTweet(queryPath);
+    public static async searchTweetById(queryPath: string, options:any) {
+        return await Twitter.roClient.v2.singleTweet(queryPath,options);
     }
 
     public static async searchTweetsByKeyword({query, options}: any) {
@@ -86,7 +86,7 @@ export default abstract class Twitter {
     }
 
     public static async getSentimentFromTweet(query: any) {
-		  const data: any = await this.searchTweetById(query.id);
+		  const data: any = await this.searchTweetById(query.id,{});
 
       var sentiment = new Sentiment();
       const options: any = Config.sentimentAnalysisOptions;
