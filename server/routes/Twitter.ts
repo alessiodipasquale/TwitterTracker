@@ -32,7 +32,7 @@ export default abstract class Twitter {
         let rules = Twitter.rulesConstruction(elem)
         await Twitter.roClient.v2.updateStreamRules(rules);
       }
-      await Twitter.logStreamRules();
+      await Twitter.getStreamRules();
     }
 
     private static rulesConstruction(elem:any): StreamingV2AddRulesParams{
@@ -45,9 +45,10 @@ export default abstract class Twitter {
       return rules;
     }
 
-    private static async logStreamRules() {
+    public static async getStreamRules() {
       const rules = await Twitter.roClient.v2.streamRules();
       console.log(rules);
+      return rules;
     }
 
     private static async clearStreamRulesIfPresent() {

@@ -32,8 +32,8 @@ describe('Stream utests', () => {
     });
 
     it("should work when testing socket connection", (done) => {
-      clientSocket.once("ao", (arg: any) => {
-        assert.equal(arg.test, "ao");
+      clientSocket.once("test", (arg: any) => {
+        assert.equal(arg.test, "test");
         done();
       })
       setListenersForSocket(serverSocket);

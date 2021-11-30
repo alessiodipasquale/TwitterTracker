@@ -41,4 +41,14 @@ export default abstract class Database {
         let objectArray = JSON.parse(JSON.stringify(Data.DataFromTriviaGames));
         return objectArray;
     }
+
+    public static getTypeFromHashtag(hashtag: string){
+        const streamDefinitions = Database.streamDefinitions;
+        for(let element of streamDefinitions){
+            if(element.name == hashtag){
+                return element.type;
+            }
+        }
+        return -1;
+    }
 };

@@ -1,27 +1,39 @@
 import Twitter from "./Twitter";
-import {TweetV2SingleStreamResult } from 'twitter-api-v2';
+import {TweetV2SingleStreamResult, StreamingV2GetRulesResult } from 'twitter-api-v2';
 import Database from '../config/Database';
 
 export async function tweetEventHandler(eventData: TweetV2SingleStreamResult) {
+    const activeRules = await Twitter.getStreamRules();
+    const mappedRules = mapActiveRules(activeRules);
     for (var i in eventData.matching_rules) {
-        console.log(eventData)
         let matching_rule = eventData.matching_rules[i];
 
         if (matching_rule.tag == "voto") {
 
           console.log("ricevuto un voto")
+          console.log(eventData)
 
         } else if (matching_rule.tag == "candidatura") {
 
           console.log("ricevuta candidatura")
+          console.log(eventData)
 
         }
     }
 }
 
+function mapActiveRules(activeRules: StreamingV2GetRulesResult){
+  let mappedRules = [];
+  for(let element of activeRules.data){
+    const hashtag = element.value.split(" ")[0];
+    const type = Database.getTypeFromHashtag(hashtag);
+    
+  }
+}
+
 export async function setListenersForSocket(socket: any): Promise<void> {
   await addListener(socket, '/readyToReceiveData', () => {sendPastData(socket)});
-  await addListener(socket, '/testSocketConnection', () => {socket.emit("ao",{"test":"ao"})/*return a particular value to the test*/});
+  await addListener(socket, '/testSocketConnection', () => {socket.emit("test",{"test":"test"})});
 }
 
 async function addListener(socket:any, event: string, listener: Function) {
