@@ -93,18 +93,20 @@ export default abstract class Database {
             let allData = Data;
             const objectData = allData.DataFromLiteraryContests;
             for(let contest of objectData){
-                //incrementare voto in voters
-                let found = false;
-                for(let voter of contest.voters){
-                    if(voter.author_id == author_id){
-                        found = true;
-                        voter.numVotes = voter.numVotes+1;
+                if(contest.name == hashtag){
+                    //incrementare voto in voters
+                    let found = false;
+                    for(let voter of contest.voters){
+                        if(voter.author_id == author_id){
+                            found = true;
+                            voter.numVotes = voter.numVotes+1;
+                        }
                     }
-                }
-                //aggiungere ai votanti e ai voti del libro
-                for(let book of contest.books){
-                    book.votes = book.votes+1;
-                    book.votedBy.push(author_id)
+                    //aggiungere ai votanti e ai voti del libro
+                    for(let book of contest.books){
+                        book.votes = book.votes+1;
+                        book.votedBy.push(author_id)
+                    }
                 }
             }
             allData.DataFromLiteraryContests = objectData;
@@ -140,6 +142,50 @@ export default abstract class Database {
                     if(book.bookName == name){
                         for(let voter of book.votedBy){
                             if(voter == author_id)
+                                return true;
+                        }
+                    }
+                }
+            } 
+        }
+        return false;
+    }
+
+    public static registerAnswer(hashtag:string,answerNumber:number, answer:string, author_id:string){
+        if(!Database.hasAlreadyAnswered(hashtag,answerNumber, author_id)){
+            let allData = Data;
+            const objectData = allData.DataFromTriviaGames;
+            let correct;
+            for(let game of objectData){
+                if(game.name == hashtag){
+                    for(let question of game.questions){
+                        if(question.number == answerNumber){
+                            correct = question.correctAnswers.includes(answer)
+                            question.participants.push({userId:author_id, answeredTo: answerNumber, answer:answer, isCorrect:correct})
+                        }
+                    }
+                }
+            }
+            allData.DataFromTriviaGames = objectData;
+            const stringedData = JSON.stringify(allData)
+            try {
+                fs.writeFileSync('./server/config/Data.json', stringedData);
+            } catch (error) {
+                console.error(error);
+            }
+            return correct;
+        }
+        return -1;
+    }
+
+    private static hasAlreadyAnswered(hashtag:string, answerNumber:number, author_id: string){
+        const data = Data.DataFromTriviaGames;
+        for(let game of data){
+            if(game.name == hashtag) {
+                for(let question of game.questions){
+                    if(question.number == answerNumber){
+                        for(let participant of question.participants){
+                            if(participant.userId == author_id)
                                 return true;
                         }
                     }

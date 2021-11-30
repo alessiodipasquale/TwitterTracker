@@ -33,39 +33,13 @@ async function manageStreamRequest(type: string, value: string, hashtag: string,
     }
     case 'triviaGame':{
       const answerNumber = matchingRule.tag.split("_")[1];
+      const done = Database.registerAnswer(hashtag, answerNumber, value, tweet.data.author_id);
+      if(done != undefined && done != -1){
+        Socket.broadcast("newAnswerInTriviaGame",{triviaName:hashtag, answerNumber:answerNumber, answer:value, isCorrect:done, userId:tweet.data.author_id,})
+      }
       break;
     }
   }
-}
-
-function mapActiveRules(activeRules: StreamingV2GetRulesResult){
-  let mappedRules = [];
-  for(let element of activeRules.data){
-    const hashtag = element.value.split(" ")[0];
-    const type = Database.getTypeFromHashtag(hashtag);
-    let data;
-    switch(type){
-      case 'literaryContest':{
-        data = formatDataForLiteraryContest(element);
-        break;
-      }
-      case 'triviaGame':{
-        data = formatDataForTriviaGame(element);
-        break;
-      }
-    }
-
-  }
-}
-
-function formatDataForLiteraryContest(elem:any){
-  const data = {
-    id: elem.id
-  }
-  return elem;
-} 
-function formatDataForTriviaGame(elem:any){
-  return elem;
 }
 
 export async function setListenersForSocket(socket: any): Promise<void> {
