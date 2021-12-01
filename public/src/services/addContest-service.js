@@ -1,12 +1,17 @@
 import { httpPost } from "./http-service"
 
-export const addContest = (hashtag, startDate, rules) => {
+export const addContest = (hashtag, endDate, rules) => {
 
-    let endDate = new Date(startDate);
-    endDate.setMonth(endDate.getMonth() + 2);
+    let startDate = new Date();
 
     let bd = {
-      streamDefinitions: {name: hashtag, startDate: startDate, endDate: endDate.toISOString(), rules: rules}
+      streamDefinitions: {
+        name: hashtag,
+        type: "literaryContest",
+        startDate: startDate.toISOString(),
+        endDate: new Date(endDate).toISOString(),
+        rules: rules
+      }
     };
 
     return httpPost("addElementToStreamData", bd);
