@@ -10,4 +10,5 @@ export interface StreamDefinition {
     startDate: Date;
     endDate: Date;
     rules: Rule[];
+    extras: any | undefined;
 }

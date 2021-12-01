@@ -6,6 +6,7 @@ import { Tweetv2SearchParams } from 'twitter-api-v2';
 import Database from '../config/Database';
 import { StreamDefinition } from '../types/StreamDefinition'
 import Config from '../config/Config';
+import Socket from '../connection/Socket';
 
 export const searchTweetById: any = async(req: IRequest, res:IResponse) : Promise<void> => {
     const id: string = req.params.tweetId;
@@ -137,7 +138,25 @@ export const getSentimentFromGroupOfTweets: any = async(req: IRequest, res:IResp
 export const addElementToStreamData = (req: IRequest, res:IResponse) => {
     try{
         let currentStreamDefs: StreamDefinition[] = (Database.streamDefinitions) as StreamDefinition[];
-        currentStreamDefs = currentStreamDefs.concat(req.body.streamDefinitions);
+        const newStream = req.body.streamDefinitions as StreamDefinition;
+        currentStreamDefs = currentStreamDefs.concat(newStream);
+        switch(newStream.type){
+            case 'literaryContest':{
+                const done = Database.newLiteraryContest(newStream);
+                if(done)
+                    Socket.broadcast('newLiteraryContestCreated',newStream)
+                break;
+            }
+            case 'triviaGame':{
+                const done = Database.newTriviaGame(newStream);
+                if(done)
+                    Socket.broadcast('newTriviaGameCreated',newStream)
+                break;
+            }
+            default:{
+                console.log('Unrecognized type of stream');
+            }
+        }
         Database.streamDefinitions = currentStreamDefs;
         res.send();
     }catch(err){

@@ -44,6 +44,57 @@ export default abstract class Database {
         return objectArray;
     }
 
+    public static newLiteraryContest(newStream: StreamDefinition){
+        if(!Database.eventAlreadyPresent(newStream.name,"literaryContest")){
+            let allData = Data;
+            const objectData = allData.DataFromLiteraryContests;
+            objectData.push({name: newStream.name, voters: [], books:[]});
+            allData.DataFromLiteraryContests = objectData;
+            const stringedData = JSON.stringify(allData)
+            try {
+                fs.writeFileSync('./server/config/Data.json', stringedData);
+            } catch (error) {
+                console.error(error);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public static newTriviaGame(newStream: StreamDefinition){
+        if(!Database.eventAlreadyPresent(newStream.name,"triviaGame")){
+            let allData = Data;
+            const objectData = allData.DataFromTriviaGames;
+            const buildedQuestions = [];
+            for(let question of newStream.extras.questions){
+                const obj = {number:question.number, text:question.text, correctAnswers:question.correctAnswers, participants:[]}
+                buildedQuestions.push(obj)
+            }
+            objectData.push({name: newStream.name, questions: buildedQuestions});
+            allData.DataFromTriviaGames = objectData;
+            const stringedData = JSON.stringify(allData)
+            try {
+                fs.writeFileSync('./server/config/Data.json', stringedData);
+            } catch (error) {
+                console.error(error);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private static eventAlreadyPresent(name: string, type:string){
+        let data;
+        if(type=='literaryContest')
+            data = Data.DataFromLiteraryContests;
+        else data = Data.DataFromTriviaGames
+        for(let elem of data){
+            if(elem.name == name)
+                return true;
+        }
+        return false;
+    }
+
     public static getTypeFromHashtag(hashtag: string){
         const streamDefinitions = Database.streamDefinitions;
         for(let element of streamDefinitions){
