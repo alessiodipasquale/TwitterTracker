@@ -16,7 +16,7 @@ export default abstract class Socket{
                 Socket.openSockets.filter(function(elem){ 
                     return elem != socket; 
                 });
-                disconnect(socket)              // see if necessary to save data 
+                //disconnect(socket)               see if necessary to save data 
                 console.log("socket disconnected")
             });
             //retrieve and send all past data related to the contests

@@ -1,9 +1,9 @@
-import qParams from "./Interfaces/QueryParams";
+import queryParams from "./Interfaces/QueryParams";
 import { Tweetv2TimelineResult } from 'twitter-api-v2';
 import Config from "../config/Config";
 
 /* Builds the q field */
-export function buildQ(q: qParams): string {
+export function buildQ(q: queryParams): string {
 
     let query = q.keywords || "";
 
@@ -21,7 +21,7 @@ export function buildQ(q: qParams): string {
     }
 
   return query;
-};
+}
 
 export function delay(ms: number) {
   return new Promise( resolve => setTimeout(resolve, ms) );

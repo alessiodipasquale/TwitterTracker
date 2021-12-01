@@ -51,10 +51,11 @@ async function addListener(socket:any, event: string, listener: Function) {
   socket.on(event, async (args:any, callback:any) => {
       try {
           const result = await listener(args);
-          if (!result)
-              if (callback) callback();
-          else
-              if (callback) callback(result);
+          if(callback){
+            if (!result)
+                callback();
+            else callback(result);
+          }
       } catch (err) {
           console.log(err);
           callback(err);

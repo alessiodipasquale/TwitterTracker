@@ -153,6 +153,9 @@ export default abstract class Database {
                             voter.numVotes = voter.numVotes+1;
                         }
                     }
+                    if(!found){
+                        contest.voters.push({author_id, numVotes:1})
+                    }
                     //aggiungere ai votanti e ai voti del libro
                     for(let book of contest.books){
                         book.votes = book.votes+1;
