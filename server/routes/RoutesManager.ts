@@ -69,10 +69,11 @@ export const getUserInformations: any = async(req: IRequest, res:IResponse) : Pr
     })
 }
 export const getRetweetsByTweetId: any = async(req: IRequest, res:IResponse) : Promise<void> => {
+    const options = {}
     const id: string = req.params.tweetId;
-    const count = 10;
-    const query = {id:id, count:count};
-    Twitter.getRetweetsByTweetId(query)
+    const query = {id:id};
+    console.log(query);
+    Twitter.getRetweetsByTweetId({query, options})
     .then(data => {
         res.send(data)
     }).catch(err => {
@@ -80,11 +81,11 @@ export const getRetweetsByTweetId: any = async(req: IRequest, res:IResponse) : P
     })
 }
 export const getRetweetersByTweetId: any = async(req: IRequest, res:IResponse) : Promise<void> => {
+    const options = {}
     const id: string = req.params.tweetId;
-    const count = 10;
-    const query = {id:id, count:count};
+    const query = {id:id};
 
-    Twitter.getRetweetersByTweetId(query)
+    Twitter.getRetweetersByTweetId({query, options})
     .then(data => {
         res.send(data)
     }).catch(err => {
