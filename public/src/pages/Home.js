@@ -1,24 +1,46 @@
 import React, { Component, useImperativeHandle, useState } from 'react';
 import Axios from 'axios';
 import { Card, Form, Row, Col, Button, Container, Alert } from 'react-bootstrap';
-
+import { MapContainer, TileLayer, Marker, Popup, useMap, LayerGroup, Circle} from 'react-leaflet'
+import L, { LatLng } from "leaflet";
 import TweetCard from '../components/TweetCard';
 import { searchTweet } from '../services/searchTweet-service';
+import { GeoSearchControl, MapBoxProvider } from "leaflet-geosearch";
+
+import { OpenStreetMapProvider } from 'leaflet-geosearch';
+const provider = new OpenStreetMapProvider();
+
 
 function Home() {
+
     const [data, setData] = useState({
         text:"",
-        count:"",
+        count:15,
         author: "",
         remove: "",
         since: null,
-        until: null
+        until: null,
+        city:"",
+        radius: 5,
+        count: 10
     });
 
     const [since, setSince] = useState(null);
     const [until, setUntil] = useState(null);
 
     const [tweets,setTweets] = useState([])
+
+    const [circ,setCirc] = useState({
+      circ: null
+    });
+  
+    const [map, setMap] = useState(null);
+    const [markers, setMarkers] = useState([])
+
+    const [selectedMarker, setSelectedMarker] = useState([])
+
+
+    let center = [41.8933203,12.4829321];
 
 
     function handle(e) {
@@ -28,22 +50,83 @@ function Home() {
     }
 
 
-    function submit(e) {
+    async function submit(e) {
         e.preventDefault();
-        searchTweet(data.text, parseInt(data.count),data.author,data.remove, data.since ? new Date(data.since).toISOString() : "" , data.until? new Date(data.until).toISOString() : "")
+
+        let geocode = null
+
+        const provider = new OpenStreetMapProvider({
+          params: {
+            email: 'john@example.com', // auth for large number of requests
+          },
+        });
+        
+        console.log(data)
+        if(circ.circ != null) {
+          console.log('rimuovo')
+          circ.circ.removeFrom(map);
+        }
+      
+        if (data.city !== ""){
+
+        const results = await provider.search({ query: data.city });
+      
+        const res = results[0];
+        const lat = new LatLng(res.y, res.x);
+      
+        center = [res.y, res.x]
+      
+        markers.forEach(marker => {
+          marker.removeFrom(map);
+        })
+        
+      
+        map.flyTo(lat, map.getZoom());
+        
+      
+        const circle = L.circle(lat, data.radius*1000);
+        console.log(data.radius)
+        setCirc({circ: circle});
+      
+        circle.addTo(map);
+      
+      
+
+        geocode = '['+res.x+' '+res.y+' '+data.radius+'km]';
+      } else {
+        map.flyTo(center, 5)
+      }
+
+      const markersList = [];
+
+        searchTweet(data.text, parseInt(data.count),data.author,data.remove, data.since ? new Date(data.since).toISOString() : "" , data.until? new Date(data.until).toISOString() : "", geocode)
         .then(res => {
-          console.log(res);
+          console.log(res.data);
+            res.data.forEach(tweet => {
+              if (tweet.placeDetails) {
+                const lat = new LatLng(tweet.placeDetails.geo.bbox[3], tweet.placeDetails.geo.bbox[2]);
+                const marker = L.marker(lat).bindTooltip("@"+tweet.userDetails.username).addTo(map).on('click', (e) => {
+                  console.log(e);
+                  /*setSelectedMarker(e._latlng);
+                  tweets.forEach(tweet => {
+
+                  })*/
+                });
+                markersList.push(marker);      
+              }
+            });
             setTweets(res.data)
+            setMarkers(markersList);
         }).catch(err => console.log(err));
     }
 
     return(
         <Container fluid  style={{padding: '2%'}} >
         <Row>
-        <Col lg={6}>
-        <Form>
-          <Row>
-            <Col>
+        <Col lg={6} style={{display: 'flex', flexDirection: 'column'}}>
+        <Form style={{flex: '1 auto'}}>
+          <Row >
+            <Col >
               <Form.Group class="mb-3" controlId="text">
                 <Form.Control onChange={(e)=>handle(e)} type="text" placeholder="Enter Keywords to look for" value={data.text}/>
               </Form.Group>
@@ -100,17 +183,44 @@ function Home() {
 
             </Col>
           </Row>
-
           <Row>
+            <Col>
+            <Form.Group className="mb-3" controlId="city">
+              <Form.Control onChange={(e)=>handle(e, e.target.value)} type="text" placeholder="Insert city" value={data.city}/>
+            </Form.Group>
+            </Col>
+            <Col>
+              <Form.Group className="mb-3" controlId="radius">
+                <Form.Control onChange={(e)=>{handle(e, parseInt(e.target.value))}} type="number" placeholder="Insert Radius" value={data.radius}/>
+              </Form.Group>
+            </Col>
+          </Row>
+
+          {/*<Row>
             <Alert variant="warning">
               Because of how the twitter api works, the since and before date will only a week back.
             </Alert>
-          </Row>
+          </Row>*/}
 
           <Row>
-            <Button disabled={data.text=="" && data.author =="" } onClick={(e) => submit(e)} variant="primary">Search Tweets</Button>
+            <Button disabled={data.text=="" && data.author =="" && data.city == ""} onClick={(e) => submit(e)} variant="primary">Search Tweets</Button>
           </Row>
         </Form>
+
+        <MapContainer
+          center={center}
+          zoom={13}
+          scrollWheelZoom={false}
+          style={{ flex: "60", width: '100%', borderRadius: '4%', marginTop: '5%'}}
+          whenCreated={setMap}
+          >
+
+          <TileLayer
+            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+
+        </MapContainer>
 
 
         </Col>

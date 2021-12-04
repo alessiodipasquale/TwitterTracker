@@ -29,6 +29,8 @@ export const searchByKeyword: any = async(req: IRequest, res:IResponse) : Promis
         'user.fields': Config.standardSearchOptions['user.fields']
     }
 
+    console.log(req.body)
+
     //'[lat lon raggioinkm]'
     const queryParams = { 
         keywords: req.body.text ?? "",

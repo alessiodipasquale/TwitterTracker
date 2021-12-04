@@ -119,7 +119,7 @@ function ContestHandler() {
                       <Button disabled={data.value=="" || data.tag =="" } onClick={(e) => addRule(e)} variant="primary">Add Rule</Button>
                     </Col>
                     <Col>
-                      <Button disabled={rules?.length == 0} onClick={(e) => clearRules(e)} variant="primary">Clear Rules</Button>
+                      <Button disabled={rules?.length == 0} onClick={(e) => clearRules()} variant="primary">Clear Rules</Button>
                     </Col>
 
                   </Row>

@@ -30,21 +30,21 @@ function TweetCard({tweet, showOptions}) {
 
         <Card.Title  style={{display: 'flex', justifyContent:"space-between", marginBottom: "15px"}}>
           <div style={{display: 'flex'}}>
-            <strong>{tweet.userDetails.name}</strong><div className="text-muted" style={{marginLeft: '6px'}}>@{tweet.userDetails.username} · {new Date(tweet.created_at).toLocaleString()}</div>
+            <strong>{tweet.userDetails? tweet.userDetails.name : tweet.user.name}</strong><div className="text-muted" style={{marginLeft: '6px'}}>@{tweet.userDetails? tweet.userDetails.username : tweet.user.screen_name} · {new Date(tweet.created_at).toLocaleString()}</div>
           </div>
           <div>
           { showOptions ?
             <DropdownButton id="dropdown-basic-button" title="Azioni">
-              <Dropdown.Item  onClick={() => showRetweetModal(tweet)}>Show Retweets</Dropdown.Item>
-              <Dropdown.Item  onClick={() => showRetweeterModal(tweet)}>Show Retweeters account</Dropdown.Item>
-              <Dropdown.Item onClick={() => showSearchableTextModal(tweet)}>Search tweet text</Dropdown.Item>
-              <Dropdown.Item onClick={() => showSentimentModal(tweet)}>Show Sentiment Analysis</Dropdown.Item>
+              <Dropdown.Item disabled={tweet.text.startsWith('RT')} onClick={() => showRetweetModal()}>Show Retweets</Dropdown.Item>
+              <Dropdown.Item disabled={tweet.text.startsWith('RT')} onClick={() => showRetweeterModal()}>Show Retweeters account</Dropdown.Item>
+              <Dropdown.Item onClick={() => showSearchableTextModal()}>Search tweet text</Dropdown.Item>
+              <Dropdown.Item onClick={() => showSentimentModal()}>Show Sentiment Analysis</Dropdown.Item>
             </DropdownButton>
             : null
           }
           </div>
         </Card.Title>
-        <Card.Subtitle className="mb-2 text-muted">{tweet.place ? (tweet.place.full_name ? tweet.place.full_name : (tweet.place.name ? tweet.place.name : '')) : null}</Card.Subtitle>
+        <Card.Subtitle className="mb-2 text-muted">{tweet.placeDetails ? tweet.placeDetails.full_name : null} </Card.Subtitle>
         <Card.Text>{tweet.text}</Card.Text>
       </Card.Body>
     </Card>
@@ -57,7 +57,7 @@ function TweetCard({tweet, showOptions}) {
     getRetweetsByTweetId(tweet.id)
     .then((res) => {
       console.log(res);
-      setRetweets(res.data.data);
+      setRetweets(res.data);
       setRetweetModalShow(true)
     });
   }
@@ -76,14 +76,13 @@ function TweetCard({tweet, showOptions}) {
     .then(res => {
       console.log(res);
 
-      setRetweeters(res.data)
+      setRetweeters(res.data.data)
       setRetweeterModalShow(true)
     })
   }
 
   function showSearchableTextModal() {
       setSearchableTextModal(true)
-
   }
 
   function Modals() {
@@ -137,7 +136,7 @@ function TweetCard({tweet, showOptions}) {
                     <Card.Body>
                     <Card.Title>
                       <div style={{display: 'flex', justifyContent: "space-between"}}>
-                        <strong>{retweeter.name}</strong><div className="text-muted" style={{marginLeft: '6px'}}>@{retweeter.screen_name}</div>
+                        <strong>{retweeter.name}</strong><div className="text-muted" style={{marginLeft: '6px'}}>@{retweeter.username}</div>
                       </div>
                   </Card.Title>
                     </Card.Body>
@@ -217,7 +216,7 @@ function TweetCard({tweet, showOptions}) {
               </Col>
               </Row>
 
-              {sentiments ?
+              { /*sentiments ?
                 sentiments.negative.length != 0 || sentiments.positive.length != 0 ?
                   <Row style={{marginTop: '3%'}}>
                   <Col lg={6}>
@@ -258,7 +257,7 @@ function TweetCard({tweet, showOptions}) {
                 :
                 <h3 style={{textAlign: 'center'}}>It wasn't possible to make Sentiment Analysis on this tweet.</h3>
                 : null
-              }
+                    */}
           </Modal.Body>
         </Modal>
       </>

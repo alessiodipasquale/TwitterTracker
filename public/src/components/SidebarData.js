@@ -11,12 +11,6 @@ export const SidebarData = [
     cName: 'nav-text'
   },
   {
-    title: 'Geographic Filter',
-    path: '/geographic-filter',
-    icon: <IoIcons.IoIosPaper />,
-    cName: 'nav-text'
-  },
-  {
     title: 'Contest Handler',
     path: '/contest-handler',
     icon: <IoIcons.IoIosPaper />,
