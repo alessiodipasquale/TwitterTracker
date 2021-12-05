@@ -7,12 +7,15 @@ export function buildQ(q: queryParams): string {
 
     let query = q.keywords || "";
 
-    q.from && (query += " from:" + q.from)
+    q.from && (query += " from:" + q.from +" ")
 
-    q.exclude && q.exclude.forEach(element => {
-      if (element)
-        query = query.concat("-").concat(element).concat(" ")
-    });
+    if(q.exclude){
+      q.exclude.forEach(element => {
+        if (element)
+          query = query.concat("-");
+          query = query.concat(element).concat(" ")
+      });
+    }
 
     q.point_radius && (query += " point_radius:" + q.point_radius)
 

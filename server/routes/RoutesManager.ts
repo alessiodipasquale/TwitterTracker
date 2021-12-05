@@ -29,14 +29,12 @@ export const searchByKeyword: any = async(req: IRequest, res:IResponse) : Promis
         'user.fields': Config.standardSearchOptions['user.fields']
     }
 
-    console.log(req.body)
-
     //'[lat lon raggioinkm]'
     const queryParams = { 
         keywords: req.body.text ?? "",
         point_radius: req.body.geocode,
         from: req.body.author ?? "",
-        exclude: req.body.remove ?? "",
+        exclude: (req.body.remove).split(" ") ?? "",
         attitude: req.body.attitude ?? "",
     }
     
