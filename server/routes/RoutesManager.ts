@@ -164,3 +164,21 @@ export const addElementToStreamData = (req: IRequest, res:IResponse) => {
         throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
     }
 }
+
+
+export const removeStreamElementFromData = (req: IRequest, res:IResponse) => {
+    try{
+        let currentStreamDefs: StreamDefinition[] = (Database.streamDefinitions) as StreamDefinition[];
+        const toDelete :string = req.params.streamName;
+        currentStreamDefs.filter((element)=>{
+            element.name != toDelete
+        })
+        Database.streamDefinitions = currentStreamDefs;
+        if(false){
+            //implement data removing?
+        }
+        res.send();
+    }catch(err){
+        throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
+    }
+}

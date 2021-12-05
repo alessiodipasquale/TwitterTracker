@@ -1,6 +1,6 @@
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import { searchByKeyword, getUserInformations, /*searchTweetsByAuthor,*/ getRetweetsByTweetId, getRetweetersByTweetId, getSentimentFromTweet, getSentimentFromGroupOfTweets, addElementToStreamData } from '../routes/RoutesManager';
+import { searchByKeyword, getUserInformations,removeStreamElementFromData, /*searchTweetsByAuthor,*/ getRetweetsByTweetId, getRetweetersByTweetId, getSentimentFromTweet, getSentimentFromGroupOfTweets, addElementToStreamData } from '../routes/RoutesManager';
 import express from 'express';
 import Config from '../config/Config';
 import { errorHandler } from '../config/Error';
@@ -29,6 +29,7 @@ export default abstract class Router {
         app.post('/getSentimentFromGroupOfTweets', getSentimentFromGroupOfTweets );
 
         app.post('/addElementToStreamData', addElementToStreamData );
+        app.delete('/removeStreamElementFromData', removeStreamElementFromData)
 
         app.use(errorHandler());
     }
