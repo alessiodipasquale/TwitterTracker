@@ -21,8 +21,7 @@ function Home() {
         since: null,
         until: null,
         city:"",
-        radius: 5,
-        count: 10
+        radius: 5
     });
 
     const [since, setSince] = useState(null);
@@ -186,12 +185,12 @@ function Home() {
           <Row>
             <Col>
             <Form.Group className="mb-3" controlId="city">
-              <Form.Control onChange={(e)=>handle(e, e.target.value)} type="text" placeholder="Insert city" value={data.city}/>
+              <Form.Control onChange={(e)=>handle(e/*, e.target.value*/)} type="text" placeholder="Insert city" value={data.city}/>
             </Form.Group>
             </Col>
             <Col>
               <Form.Group className="mb-3" controlId="radius">
-                <Form.Control onChange={(e)=>{handle(e, parseInt(e.target.value))}} type="number" placeholder="Insert Radius" value={data.radius}/>
+                <Form.Control onChange={(e)=>{handle(e/*, parseInt(e.target.value)*/)}} type="number" placeholder="Insert Radius" value={data.radius}/>
               </Form.Group>
             </Col>
           </Row>
