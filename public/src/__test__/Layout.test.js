@@ -22,8 +22,8 @@ describe('Layout tests', () => {
     test('Home', () => {
       expect(wrapper.text().includes('Home')).toBe(true);
     });
-    test('Geographic Filter', () => {
-      expect(wrapper.text().includes('Geographic Filter')).toBe(true);
+    test('Contest Handler', () => {
+      expect(wrapper.text().includes('Contest Handler')).toBe(true);
     });
 
   });
