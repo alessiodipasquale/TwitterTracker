@@ -46,7 +46,8 @@ Twitter.authentication();
 				}
 			}
             /*
-            * quando viene chiamata questa funzione viene mandato in broadcast a tutti i socket collegati 
+            * quando viene chiamata questa funzione "newStreamDef" viene mandato in 
+            * broadcast a tutti i socket collegati 
             * il messaggio newTriviaGameCreated
             * dovrest essere capace di farne catching
             * per il momento basta questo, poi proseguo io
