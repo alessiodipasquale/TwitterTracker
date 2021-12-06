@@ -38,7 +38,6 @@ export default abstract class Database {
     public static newStreamDef(newStream: StreamDefinition){
         let currentStreamDefs: StreamDefinition[] = (Database.streamDefinitions) as StreamDefinition[];
         currentStreamDefs = currentStreamDefs.concat(newStream);
-        console.log("ao")
         switch(newStream.type){
             case 'literaryContest':{
                 const done = Database.newLiteraryContest(newStream);

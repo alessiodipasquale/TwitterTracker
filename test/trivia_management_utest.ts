@@ -1,19 +1,17 @@
 import Twitter from "../server/routes/Twitter";
 import Database from '../server/config/Database';
-import { createServer, Server} from 'http';
+import { createServer} from 'http';
 import { expect, assert } from 'chai';
-import { Server as SocketServer } from "socket.io";
+import { Server} from "socket.io";
 import { io as Client } from "socket.io-client";
 import { delay } from "../server/Utils/Utils"
 import { addListener } from "../server/routes/StreamManager"
-// import {execaNode} from 'execa'; // da i problemi
-//const axios = require('axios').default;
 
 Twitter.authentication();
 
-	describe('#Contest creation Tests', () => {
+	describe('#Game creation Tests', () => {
 		let io: any, serverSocket: any, clientSocket: any;
-		
+
         before((done) => {
             const httpServer: any = createServer();
             io = new Server(httpServer);
@@ -27,38 +25,50 @@ Twitter.authentication();
             });
           });
       
-        after(() => {
+          after(() => {
             io.close();
             clientSocket.close();
-        });
+          });
 		
-
-		it("Should create a new game to test", (done) => {
-            const streamDefinitions = {
-				"name":"#swe_4_test_literaryContest",
-				"type": "literaryContest",
+		it("Should create a new game to test", async (done) => {
+			const streamDefinitions = {
+				"name":"#swe_4_test_triviaGames",
+				"type": "triviaGame",
 				"startDate": new Date("2022-11-28T00:00:00.000Z"),
 				"endDate": new Date("2022-11-28T00:00:00.000Z"),
 				"rules":[
 					{
-						"value": "#swe_4_test_literaryContest (candido OR candidare)",
-						"tag": "candidatura"
+						"value": "#swe_4_test_triviaGames risposta_1:",
+						"tag": "risposta_1"
 					},
 					{
-						"value": "#swe_4_test_literaryContest voto",
-						"tag": "voto"
+						"value": "#swe_4_test_triviaGames risposta_2:",
+						"tag": "risposta_2"
 					}
 				],
-                "extras":[]
+				"extras":{
+					"questions":[
+						{
+							"number":1,
+							"text": "Text question 1",
+							"correctAnswers":["correctAnswer1"],
+						},
+						{
+							"number":2,
+							"text": "Text question 2",
+							"correctAnswers":["correctAnswer2"],
+						}
+					]
+				}
 			}
-            clientSocket.once("newLiteraryContestCreated", (arg: any) => {
+            clientSocket.once("newTriviaGameCreated", (arg: any) => {
                 assert.equal(arg.name, streamDefinitions.name);
                 done();
             })
-            addListener(serverSocket, "newLiteraryContestCreated",() =>{} );
+            await addListener(serverSocket, "newTriviaGameCreated",() =>{} );
 
             Database.newStreamDef(streamDefinitions);            
             Database.deleteStreamDef(streamDefinitions.name, streamDefinitions.type);
-            clientSocket.emit("newLiteraryContestCreated", streamDefinitions);
+            clientSocket.emit("newTriviaGameCreated", streamDefinitions);
 		});
 	});

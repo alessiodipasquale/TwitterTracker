@@ -47,7 +47,8 @@ export async function setListenersForSocket(socket: any): Promise<void> {
   await addListener(socket, '/testSocketConnection', () => {socket.emit("test",{"test":"test"})});
 }
 
-async function addListener(socket:any, event: string, listener: Function) {
+
+export async function addListener(socket:any, event: string, listener: Function) {
   socket.on(event, async (args:any, callback:any) => {
       try {
           const result = await listener(args);
