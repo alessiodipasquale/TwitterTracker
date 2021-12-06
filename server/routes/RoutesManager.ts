@@ -138,45 +138,16 @@ export const getSentimentFromGroupOfTweets: any = async(req: IRequest, res:IResp
 
 export const addElementToStreamData = (req: IRequest, res:IResponse) => {
     try{
-        let currentStreamDefs: StreamDefinition[] = (Database.streamDefinitions) as StreamDefinition[];
-        const newStream = req.body.streamDefinitions as StreamDefinition;
-        currentStreamDefs = currentStreamDefs.concat(newStream);
-        switch(newStream.type){
-            case 'literaryContest':{
-                const done = Database.newLiteraryContest(newStream);
-                if(done)
-                    Socket.broadcast('newLiteraryContestCreated',newStream)
-                break;
-            }
-            case 'triviaGame':{
-                const done = Database.newTriviaGame(newStream);
-                if(done)
-                    Socket.broadcast('newTriviaGameCreated',newStream)
-                break;
-            }
-            default:{
-                console.log('Unrecognized type of stream');
-            }
-        }
-        Database.streamDefinitions = currentStreamDefs;
+        Database.newStreamDef(req.body.streamDefinitions as StreamDefinition);
         res.send();
     }catch(err){
         throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
     }
 }
 
-
 export const removeStreamElementFromData = (req: IRequest, res:IResponse) => {
     try{
-        let currentStreamDefs: StreamDefinition[] = (Database.streamDefinitions) as StreamDefinition[];
-        const toDelete :string = req.params.streamName;
-        currentStreamDefs.filter((element)=>{
-            element.name != toDelete
-        })
-        Database.streamDefinitions = currentStreamDefs;
-        if(false){
-            //implement data removing?
-        }
+        Database.deleteStreamDef(req.params.streamName, req.params.type)
         res.send();
     }catch(err){
         throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)

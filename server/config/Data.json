@@ -1,37 +1,37 @@
 {
     "streamDefinitions": [
-            {
-                "name": "#streamTestswe4",
-                "startDate": "2022-11-28T00:00:00.000Z",
-                "endDate": "2022-11-28T00:00:00.000Z",
-                "type": "literaryContest",
-                "rules": [
-                    {
-                        "value": "#streamTestswe4 voto",
-                        "tag": "voto"
-                    },
-                    {
-                        "value": "#streamTestswe4 (candido OR candidare)",
-                        "tag": "candidatura"
-                    }
-                ]
-            },
-            {
-                "name": "#streamTestswe4_2",
-                "startDate": "2022-11-28T00:00:00.000Z",
-                "endDate": "2022-11-28T00:00:00.000Z",
-                "type": "triviaGame",
-                "rules": [
-                    {
-                        "value": "#streamTestswe4_2 risposta_1:",
-                        "tag": "risposta_1"
-                    },
-                    {
-                        "value": "#streamTestswe4_2 risposta_2:",
-                        "tag": "risposta_2"
-                    }
-                ]
-            }
+        {
+            "name": "#streamTestswe4",
+            "startDate": "2022-11-28T00:00:00.000Z",
+            "endDate": "2022-11-28T00:00:00.000Z",
+            "type": "literaryContest",
+            "rules": [
+                {
+                    "value": "#streamTestswe4 voto",
+                    "tag": "voto"
+                },
+                {
+                    "value": "#streamTestswe4 (candido OR candidare)",
+                    "tag": "candidatura"
+                }
+            ]
+        },
+        {
+            "name": "#streamTestswe4_2",
+            "startDate": "2022-11-28T00:00:00.000Z",
+            "endDate": "2022-11-28T00:00:00.000Z",
+            "type": "triviaGame",
+            "rules": [
+                {
+                    "value": "#streamTestswe4_2 risposta_1:",
+                    "tag": "risposta_1"
+                },
+                {
+                    "value": "#streamTestswe4_2 risposta_2:",
+                    "tag": "risposta_2"
+                }
+            ]
+        }
     ],
     "DataFromLiteraryContests": [
         {

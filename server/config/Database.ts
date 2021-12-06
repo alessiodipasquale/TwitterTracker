@@ -2,6 +2,7 @@
 import Config from './Config';
 import Data from './Data.json'
 import fs from 'fs';
+import Socket from '../connection/Socket'
 import type { StreamDefinition } from '../types/StreamDefinition'
 
 export default abstract class Database {
@@ -34,6 +35,58 @@ export default abstract class Database {
         }
     }
 
+    public static newStreamDef(newStream: StreamDefinition){
+        let currentStreamDefs: StreamDefinition[] = (Database.streamDefinitions) as StreamDefinition[];
+        currentStreamDefs = currentStreamDefs.concat(newStream);
+        console.log("ao")
+        switch(newStream.type){
+            case 'literaryContest':{
+                const done = Database.newLiteraryContest(newStream);
+                if(done)
+                    Socket.broadcast('newLiteraryContestCreated',newStream)
+                break;
+            }
+            case 'triviaGame':{
+                const done = Database.newTriviaGame(newStream);
+                if(done)
+                    Socket.broadcast('newTriviaGameCreated',newStream)
+                break;
+            }
+            default:{
+                console.log('Unrecognized type of stream');
+            }
+        }
+        Database.streamDefinitions = currentStreamDefs;
+    }
+
+    public static deleteStreamDef(toDelete: string, type:string){
+        let currentStreamDefs: StreamDefinition[] = (Database.streamDefinitions) as StreamDefinition[];
+        currentStreamDefs = currentStreamDefs.filter((element)=>{
+            return element.name != toDelete
+        })
+        Database.streamDefinitions = currentStreamDefs;
+        if(true){
+            Database.deleteStreamData(toDelete, type)
+        }
+    }
+
+    public static deleteStreamData(toDelete: string, type:string){
+        let currentStreamData: any[] = []; 
+        if(type == 'triviaGame')
+            currentStreamData = Database.triviaGamesData
+        if(type == 'literaryContest')
+            currentStreamData = Database.literaryContestsData
+        
+        currentStreamData = currentStreamData.filter((element)=>{
+            return element.name != toDelete
+        })
+
+        if(type == 'triviaGame')
+            Database.triviaGamesData = currentStreamData;
+        if(type == 'literaryContest')
+            Database.literaryContestsData = currentStreamData;
+    }
+
     public static get literaryContestsData(){
         let objectArray = JSON.parse(JSON.stringify(Data.DataFromLiteraryContests));
         return objectArray;
@@ -42,6 +95,28 @@ export default abstract class Database {
     public static get triviaGamesData(){
         let objectArray = JSON.parse(JSON.stringify(Data.DataFromTriviaGames));
         return objectArray;
+    }
+
+    public static set literaryContestsData(newData: any[]){
+        let allData = Data;
+        allData.DataFromLiteraryContests = newData;
+        const stringedData = JSON.stringify(allData)
+        try {
+            fs.writeFileSync('./server/config/Data.json', stringedData);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    public static set triviaGamesData(newData: any[]){
+        let allData = Data;
+        allData.DataFromTriviaGames = newData
+        const stringedData = JSON.stringify(allData)
+        try {
+            fs.writeFileSync('./server/config/Data.json', stringedData);
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     public static newLiteraryContest(newStream: StreamDefinition){
