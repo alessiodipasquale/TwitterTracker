@@ -71,6 +71,7 @@ export async function disconnect(socket: any) {
 export async function sendPastData(socket: any) {
   const dataFromLiteraryContests = Database.literaryContestsData;
   const dataFromTriviaGames = Database.triviaGamesData;
-  await Socket.sendSocketMessage(socket, "dataFromLiteraryContests",{"dataFromLiteraryContests":dataFromLiteraryContests});
-  await Socket.sendSocketMessage(socket, "dataFromTriviaGames",{"dataFromTriviaGames":dataFromTriviaGames});
+  return {dataFromLiteraryContests,dataFromTriviaGames}
+  //await Socket.sendSocketMessage(socket, "dataFromLiteraryContests",{"dataFromLiteraryContests":dataFromLiteraryContests});
+  //await Socket.sendSocketMessage(socket, "dataFromTriviaGames",{"dataFromTriviaGames":dataFromTriviaGames});
 }
