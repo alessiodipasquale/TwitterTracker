@@ -4,6 +4,7 @@ import Config from "../config/Config";
 import Translate from "@vitalets/google-translate-api";
 import { tweetEventHandler } from "./StreamManager";
 import Database from "../config/Database";
+import { StreamDefinition, Rule } from '../types/StreamDefinition';
 
 export default abstract class Twitter {
     private static roClient: TwitterApiReadOnly;
@@ -29,20 +30,36 @@ export default abstract class Twitter {
   
       const contests = Database.streamDefinitions;
       for (let elem of contests) {
-        let rules = Twitter.rulesConstruction(elem)
+        let rules = Twitter.rulesConstruction(elem,"add")
         await Twitter.roClient.v2.updateStreamRules(rules);
       }
       await Twitter.getStreamRules();
     }
 
-    private static rulesConstruction(elem:any): StreamingV2AddRulesParams{
-      let rules: any = {
-        "add": []
-      };
+    public static rulesConstruction(elem:any, type:string): StreamingV2AddRulesParams{
+      let rules: any 
+      if(type=="add"){
+        rules = {
+          "add": []
+        };
+      }
+      if(type=="delete"){
+        rules = {
+          "delete": []
+        };
+      }
       for(let rule of elem.rules){
         rules.add.push({value: rule.value, tag:rule.tag})
       }
       return rules;
+    }
+
+    public static async removeFromRules(hashtag: string){
+      for(let element of Database.streamDefinitions){
+        if(element.name == hashtag){
+          this.rulesConstruction(element, "delete")
+        }
+      }
     }
 
     public static async getStreamRules() {

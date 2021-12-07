@@ -1,4 +1,4 @@
-type Rule = {
+export type Rule = {
     value: string;
     tag: string;
 }
