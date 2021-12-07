@@ -85,6 +85,16 @@ class ContestHandler extends React.Component {
       object.name = '#'+object.name;
       object.startDate = new Date (object.startDate);
       object.endDate = new Date (object.endDate);
+      object.rules = [
+        {
+          value: object.name+' (candido OR candidare)',
+          tag: 'candidatura'
+        },
+        {
+          value: object.name+' voto',
+          tag: 'voto'
+        },
+      ]
       createContest(object).then((res) => {
         this.setState({showLiteraryModal:false})
       }).catch(err => console.log(err))
@@ -145,7 +155,16 @@ class ContestHandler extends React.Component {
           </Modal.Header>
           <Modal.Body>
           {
-            this.state.contest.type
+            <Row>
+              <Form.Group className="mb-3" controlId="name">
+                  <Form.Label>Insert Hashtag for the Trivia Game</Form.Label>
+                  <Form.Control value={this.state.contest.name} onChange={this.handleChange} type="text" placeholder="Contest hashtag"/>
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="endDate">
+                  <Form.Label>Insert End Date for the Trivia Game</Form.Label>
+                  <Form.Control value={this.state.contest.endDate} onChange={this.handleChange} type="date"/>
+              </Form.Group>
+            </Row>
           } 
           </Modal.Body>
           </Modal>
