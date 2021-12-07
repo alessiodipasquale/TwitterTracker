@@ -13,7 +13,7 @@ export default abstract class Socket{
             Socket.openSockets.push(socket)
 
             socket.on('disconnect', () => {
-                Socket.openSockets.filter(function(elem){ 
+                Socket.openSockets = Socket.openSockets.filter(function(elem){ 
                     return elem != socket; 
                 });
                 //disconnect(socket)               see if necessary to save data 
