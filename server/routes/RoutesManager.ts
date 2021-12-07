@@ -1,4 +1,5 @@
 import { BadRequest } from '../config/Error';
+import { Stopwatch } from 'ts-stopwatch';
 import { IRequest, IResponse } from '../config/Express';
 import Twitter from "./Twitter";
 import { buildQ, formatData } from "../Utils/Utils";
@@ -41,9 +42,13 @@ export const searchByKeyword: any = async(req: IRequest, res:IResponse) : Promis
     let queryOptions : Partial<Tweetv2SearchParams> | undefined = Object.fromEntries(Object.entries(optionalParams).filter(([_, v]) => v != null && v !==""));
     let queryPath: string = buildQ(queryParams)
 
+    const stopwatch = new Stopwatch()
+    stopwatch.start();
+
     Twitter.searchTweetsByKeyword({query: queryPath, options: queryOptions})
     .then(paginator => {
-        const formattedData = formatData(paginator.data);
+        let formattedData = formatData(paginator.data);
+        formattedData.dataRetrievingTime = {time:stopwatch.getTime(), result_count:paginator.meta.result_count}
         res.send(formattedData)
     })
     .catch(err => {
