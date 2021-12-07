@@ -69,7 +69,15 @@ describe('#Game creation Tests', () => {
 		});
 
 		Database.newStreamDef(streamDefinitions);
-		Database.deleteStreamDef(streamDefinitions.name, streamDefinitions.type);
-		clientSocket.emit("newTriviaGameCreated", streamDefinitions);
+		let found = false;
+		for(let element of Database.triviaGamesData){
+			if(element.name == streamDefinitions.name)
+				found = true;
+		}
+		if(!found) expect(found).to.be.true;
+		else{
+			Database.deleteStreamDef(streamDefinitions.name, streamDefinitions.type);
+			clientSocket.emit("newTriviaGameCreated", streamDefinitions);
+		}
 	});
 });
