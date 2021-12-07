@@ -43,7 +43,7 @@ async function manageStreamRequest(type: string, value: string, hashtag: string,
 }
 
 export async function setListenersForSocket(socket: any): Promise<void> {
-  await addListener(socket, '/readyToReceiveData', () => {sendPastData(socket)});
+  await addListener(socket, '/readyToReceiveData', ()=>{return sendPastData(socket)});
   await addListener(socket, '/testSocketConnection', () => {socket.emit("test",{"test":"test"})});
 }
 
@@ -68,7 +68,7 @@ export async function disconnect(socket: any) {
   
 }
 
-export async function sendPastData(socket: any) {
+export function sendPastData(socket: any) {
   const dataFromLiteraryContests = Database.literaryContestsData;
   const dataFromTriviaGames = Database.triviaGamesData;
   return {dataFromLiteraryContests,dataFromTriviaGames}
