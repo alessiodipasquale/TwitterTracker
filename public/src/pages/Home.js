@@ -65,6 +65,10 @@ function Home() {
           console.log('rimuovo')
           circ.circ.removeFrom(map);
         }
+
+        markers.forEach(marker => {
+          marker.removeFrom(map);
+        })
       
         if (data.city !== ""){
 
@@ -75,12 +79,10 @@ function Home() {
       
         center = [res.y, res.x]
       
-        markers.forEach(marker => {
-          marker.removeFrom(map);
-        })
+       
         
       
-        map.flyTo(lat, map.getZoom());
+        map.flyTo(lat, 12);
         
       
         const circle = L.circle(lat, data.radius*1000);
@@ -99,23 +101,27 @@ function Home() {
       const markersList = [];
 
         searchTweet(data.text, parseInt(data.count),data.author,data.remove, data.since ? new Date(data.since).toISOString() : "" , data.until? new Date(data.until).toISOString() : "", geocode)
-        .then(res => {
-          console.log(res.data);
-            res.data.forEach(tweet => {
-              if (tweet.placeDetails) {
-                const lat = new LatLng(tweet.placeDetails.geo.bbox[3], tweet.placeDetails.geo.bbox[2]);
-                const marker = L.marker(lat).bindTooltip("@"+tweet.userDetails.username).addTo(map).on('click', (e) => {
-                  console.log(e);
-                  /*setSelectedMarker(e._latlng);
-                  tweets.forEach(tweet => {
+        .then(res => { 
 
-                  })*/
-                });
-                markersList.push(marker);      
-              }
-            });
-            setTweets(res.data)
-            setMarkers(markersList);
+          if (!res.data.meta) {
+              res.data.forEach(tweet => {
+                if (tweet.placeDetails) {
+                  const lat = new LatLng(tweet.placeDetails.geo.bbox[3], tweet.placeDetails.geo.bbox[2]);
+                  const marker = L.marker(lat).bindTooltip("@"+tweet.userDetails.username).addTo(map).on('click', (e) => {
+                    console.log(e);
+                    /*setSelectedMarker(e._latlng);
+                    tweets.forEach(tweet => {
+
+                    })*/
+                  });
+                  markersList.push(marker);      
+                }
+              });
+              setTweets(res.data)
+              setMarkers(markersList);
+          } else {
+            setTweets([]);
+          }
         }).catch(err => console.log(err));
     }
 

@@ -1,146 +1,158 @@
+import e from 'cors';
 import React, { Component, useImperativeHandle, useState } from 'react';
-import { Card, Form, Row, Col, Button, Container, Alert, ListGroup, ListGroupItem, Accordion } from 'react-bootstrap';
-import {addContest} from '../services/addContest-service';
+import { Modal, Card, Form, Row, Col, Button, Container, Alert, ListGroup, ListGroupItem, Accordion } from 'react-bootstrap';
+import { createContest } from '../services/contest-service';
+import {socketConnection} from '../services/socket-service'
 
-function ContestHandler() {
 
-    const [data, setData] = useState({
-      hashtag: "",
-      startDate: "",
-      value: "",
-      tag: "",
-    });
+class ContestHandler extends React.Component {
 
-    const [rules, setRules] = useState([]);
 
-    function handle(e) {
-        const newdata = {...data};
-        newdata[e.target.id] = e.target.value;
-        setData(newdata);
+    constructor(props) {
+        super(props);
+
+        this.state=  { 
+          showLiteraryModal: false,
+          showTriviaModal: false,
+          dataFromLiteraryContests: [],
+          dataFromTriviaGames: [],
+          contest: {
+            name: '',
+            startDate: new Date(),
+            endDate: new Date(),
+            type: '',
+            rules: [],
+            extras: []
+          }
+        };
+
+
+        socketConnection.instance.emit("/readyToReceiveData", (data) => {
+          console.log(data);
+        })
+
+        
+        this.handleChange = this.handleChange.bind(this);
     }
 
-    function clearNext() {
-      const newdata = {...data};
-      newdata.value = "";
-      newdata.tag = "";
-      setData(newdata);
+    handleChange(e) {
+      const newContest = {...this.state.contest}
+      newContest[e.target.id] = e.target.value;
+      this.setState({contest: newContest});
     }
-
-
-    function addRule(e) {
-      const newrules = rules.concat({value: data.value, tag: data.tag});
-      setRules(newrules);
-      clearNext();
-    }
-
-    function clearRules() {
-      setRules([]);
-      clearNext();
-    }
-
-    function ruleItem(r) {
-      return (
-        <Accordion.Item eventKey={rules.indexOf(r)}>
-          <Accordion.Header> Rule #{rules.indexOf(r) + 1}</Accordion.Header>
-          <Accordion.Body>
-            <ListGroup variant="flush">
-              <ListGroupItem> Value: {r.value}</ListGroupItem>
-              <ListGroupItem> Tag: {r.tag}</ListGroupItem>
-            </ListGroup>
-          </Accordion.Body>
-
-        </Accordion.Item>
-      );
-    }
-
-
-    function submit(e) {
-        e.preventDefault();
-        addContest(data.hashtag, data.startDate, rules);
-    }
-
-    return(
+  
+    render() {
+      return(
+        <>
         <Container fluid  style={{padding: '2%'}} >
-
-        <Row></Row>
-        <Col></Col>
-
-        <Row>
-          <Col>
-          <Card>
-          <Card.Body>
-          <Card.Title>Contest Specs</Card.Title>
-          <Card.Text>
-            <Form>
-              <Row>
-                <Form.Group class="mb-3" controlId="hashtag">
-                  <Form.Control onChange={(e)=>handle(e)} type="text" placeholder="Contest hashtag" value={data.hashtag}/>
-                </Form.Group>
-              </Row>
-              <Row>
-                <Form.Group class="mb-3" controlId="startDate">
-
-                  <Form.Control
-                  onChange={(e)=>handle(e)}
-                  placeholder="Contest starting date"
-                  type="date"
-                  value={data.startDate}/>
-
-                </Form.Group>
-              </Row>
-              <Row>
-                <Col>
-                  <Button disabled={data.hashtag=="" || data.startDate =="" } onClick={(e) => submit(e)} variant="primary">Create Contest</Button>
-                </Col>
-              </Row>
-            </Form>
-            </Card.Text>
-          </Card.Body>
-          </Card>
-          </Col>
-          <Col>
-          <Card>
-            <Card.Body>
-              <Card.Title>Add Rules</Card.Title>
-              <Card.Text>
-                <Form>
-                  <Row>
-                    <Form.Group class="mb-3" controlId="value">
-                      <Form.Control onChange={(e)=>handle(e)} type="text" placeholder="Rule value" value={data.value}/>
-                    </Form.Group>
-                  </Row>
-                  <Row>
-                    <Form.Group class="mb-3" controlId="tag">
-                      <Form.Control onChange={(e)=>handle(e)} type="text" placeholder="Rule Tag" value={data.tag}/>
-                    </Form.Group>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <Button disabled={data.value=="" || data.tag =="" } onClick={(e) => addRule(e)} variant="primary">Add Rule</Button>
-                    </Col>
-                    <Col>
-                      <Button disabled={rules?.length == 0} onClick={(e) => clearRules()} variant="primary">Clear Rules</Button>
-                    </Col>
-
-                  </Row>
-                </Form>
-              </Card.Text>
-            </Card.Body>
-            <Accordion flush>
-              {
-                rules?.length == 0 ? null : rules.map(ruleItem)
-              }
-            </Accordion>
-
-
-          </Card>
-          </Col>
-        </Row>
-
-
-
+          <Row>
+            <Col>
+              <Button style={{marginRight: '2%'}} onClick={(e) => this.openCreateLiteraryContest(e)} variant="primary">Create Literary Contest</Button>
+              <Button onClick={(e) => this.openCreateTriviaGame(e)} variant="primary">Create Trivia Game</Button>
+            </Col>
+          </Row>
         </Container>
-    );
+        { this.literaryModal() }
+        { this.triviaGameModal() }
+        
+        </>
+      )
+    }
+
+    openCreateTriviaGame(e) {
+      this.setState(prevState => ({
+        showTriviaModal: true,
+        contest: {                   // object that we want to update
+            ...prevState.contest,    // keep all other key-value pairs
+            type: 'triviaGame'       // update the value of specific key
+        }
+      }))
+      
+    } 
+
+    openCreateLiteraryContest(e) {
+      this.setState(prevState => ({
+        showLiteraryModal: true,
+        contest: {                   // object that we want to update
+            ...prevState.contest,    // keep all other key-value pairs
+            type: 'literaryContest'       // update the value of specific key
+        }
+      }))
+    }
+
+    createLiteraryContest() {
+      let object = this.state.contest;
+      object.name = '#'+object.name;
+      object.startDate = new Date (object.startDate);
+      object.endDate = new Date (object.endDate);
+      createContest(object).then((res) => {
+        this.setState({showLiteraryModal:false})
+      }).catch(err => console.log(err))
+    }
+
+    literaryModal() {
+      return (
+        <>
+        <Modal
+          show={this.state.showLiteraryModal}
+          size="md"
+          aria-labelledby="example-modal-sizes-title-md"
+          onHide={() => this.setState({showLiteraryModal:false})}
+
+        >
+          <Modal.Header closeButton>
+            <Modal.Title id="example-modal-sizes-title-md">
+              Create Literary Contest
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+          {
+            <Row>
+              <Form.Group className="mb-3" controlId="name">
+                  <Form.Label>Insert Hashtag for the Literary Contest</Form.Label>
+                  <Form.Control value={this.state.contest.name} onChange={this.handleChange} type="text" placeholder="Contest hashtag"/>
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="endDate">
+                  <Form.Label>Insert End Date for the Literary Contest</Form.Label>
+                  <Form.Control value={this.state.contest.endDate} onChange={this.handleChange} type="date"/>
+              </Form.Group>
+            </Row>
+          } 
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={() => this.setState({showLiteraryModal:false})} variant="secondary">Close</Button>
+            <Button variant="primary" onClick={() => this.createLiteraryContest()}>Create contest</Button>
+          </Modal.Footer>
+          </Modal>
+        </>
+      )
+    }
+
+    triviaGameModal() {
+      return (
+        <>
+        <Modal
+          show={this.state.showTriviaModal}
+          size="md"
+          aria-labelledby="example-modal-sizes-title-md"
+          onHide={() => this.setState({showTriviaModal:false})}
+
+        >
+          <Modal.Header closeButton>
+            <Modal.Title id="example-modal-sizes-title-md">
+              Create Trivia Game
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+          {
+            this.state.contest.type
+          } 
+          </Modal.Body>
+          </Modal>
+        </>
+      )
+    }
+    
 }
 
 export default ContestHandler;

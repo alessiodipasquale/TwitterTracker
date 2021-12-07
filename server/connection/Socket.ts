@@ -6,11 +6,12 @@ export default abstract class Socket{
     private static io: any;
     private static openSockets: any[] = [];
 
-    public static init(server: any) {
+    public static async init(server: any) {
         Socket.io = new SocketServer(server);
         Socket.io.on('connection',async (socket:any) => {
             console.log("socket connected")
             Socket.openSockets.push(socket)
+            await setListenersForSocket(socket);
 
             socket.on('disconnect', () => {
                 Socket.openSockets = Socket.openSockets.filter(function(elem){ 
@@ -20,7 +21,6 @@ export default abstract class Socket{
                 console.log("socket disconnected")
             });
             //retrieve and send all past data related to the contests
-            setListenersForSocket(socket);
         });
     }
 
