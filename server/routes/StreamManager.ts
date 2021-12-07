@@ -43,15 +43,15 @@ async function manageStreamRequest(type: string, value: string, hashtag: string,
 }
 
 export async function setListenersForSocket(socket: any): Promise<void> {
-  await addListener(socket, '/readyToReceiveData', ()=>{return sendPastData(socket)});
+  await addListener(socket, '/readyToReceiveData', ()=>{ return sendPastData(socket) });
   await addListener(socket, '/testSocketConnection', () => {socket.emit("test",{"test":"test"})});
 }
 
 
 export async function addListener(socket:any, event: string, listener: Function) {
-  socket.on(event, async (args:any, callback:any) => {
+  socket.on(event, async (callback:any) => {
       try {
-          const result = await listener(args);
+          const result = await listener();
           if(callback){
             if (!result)
                 callback();
