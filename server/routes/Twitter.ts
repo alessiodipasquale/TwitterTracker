@@ -30,34 +30,36 @@ export default abstract class Twitter {
   
       const contests = Database.streamDefinitions;
       for (let elem of contests) {
-        let rules = Twitter.rulesConstruction(elem,"add")
-        await Twitter.roClient.v2.updateStreamRules(rules);
+        await Twitter.rulesConstruction(elem,"add")
       }
       await Twitter.getStreamRules();
     }
 
-    public static rulesConstruction(elem:any, type:string): StreamingV2AddRulesParams{
+    public static async rulesConstruction(elem:any, type:string): Promise<void>{
       let rules: any 
       if(type=="add"){
         rules = {
           "add": []
         };
+        for(let rule of elem.rules){
+          rules.add.push({value: rule.value, tag:rule.tag})
+        }
       }
       if(type=="delete"){
         rules = {
           "delete": []
         };
+        for(let rule of elem.rules){
+          rules.delete.push({value: rule.value, tag:rule.tag})
+        }
       }
-      for(let rule of elem.rules){
-        rules.add.push({value: rule.value, tag:rule.tag})
-      }
-      return rules;
+      await Twitter.roClient.v2.updateStreamRules(rules);
     }
 
     public static async removeFromRules(hashtag: string){
       for(let element of Database.streamDefinitions){
         if(element.name == hashtag){
-          this.rulesConstruction(element, "delete")
+          await this.rulesConstruction(element, "delete")
         }
       }
     }
