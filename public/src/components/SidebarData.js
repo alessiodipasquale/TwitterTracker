@@ -15,5 +15,11 @@ export const SidebarData = [
     path: '/contest-handler',
     icon: <IoIcons.IoIosPaper />,
     cName: 'nav-text'
+  },
+  {
+    title: 'Contest Viewer',
+    path: '/contest-viewer',
+    icon: <IoIcons.IoIosPaper />,
+    cName: 'nav-text'
   }
 ];
