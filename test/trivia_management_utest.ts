@@ -37,11 +37,11 @@ describe('#Game creation Tests', () => {
 			"endDate": new Date("2022-11-28T00:00:00.000Z"),
 			"rules": [
 				{
-					"value": "#swe_4_test_triviaGames risposta_1:",
+					"value": "#swe_4_test_triviaGames risposta_1",
 					"tag": "risposta_1"
 				},
 				{
-					"value": "#swe_4_test_triviaGames risposta_2:",
+					"value": "#swe_4_test_triviaGames risposta_2",
 					"tag": "risposta_2"
 				}
 			],
