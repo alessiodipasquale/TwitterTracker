@@ -3,6 +3,7 @@ import {TweetV2SingleStreamResult, StreamingV2GetRulesResult } from 'twitter-api
 import Database from '../config/Database';
 import Socket from '../connection/Socket';
 import Config from '../config/Config';
+import { BadRequest } from "../config/Error";
 
 export async function tweetEventHandler(eventData: TweetV2SingleStreamResult) {
     const hashtag = eventData.data.text.split(" ")[0];
@@ -11,8 +12,13 @@ export async function tweetEventHandler(eventData: TweetV2SingleStreamResult) {
     const value = eventData.data.text.split("\"")[1];
     const options = Config.standardSearchOptions
     const tweet = await Twitter.searchTweetById(eventData.data.id,options)
-    if(type != -1)
-      await manageStreamRequest(type,value,hashtag,eventData.matching_rules[0], tweet)
+    if(type != -1){
+      try{
+        await manageStreamRequest(type,value,hashtag,eventData.matching_rules[0], tweet)
+      }catch(err){
+        throw BadRequest
+      }
+    }
 }
 
 async function manageStreamRequest(type: string, value: string, hashtag: string, matchingRule: any, tweet: any){

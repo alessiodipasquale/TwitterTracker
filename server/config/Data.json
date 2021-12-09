@@ -77,13 +77,6 @@
                             "answeredTo": 1,
                             "answer": "Italia",
                             "isCorrect": true
-                        },
-                        {
-                            "username": "swe2021_4",
-                            "userId": "1447929992550227969",
-                            "answeredTo": "1",
-                            "answer": "ITALIA",
-                            "isCorrect": false
                         }
                     ]
                 }
