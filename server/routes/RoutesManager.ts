@@ -29,7 +29,7 @@ export const searchByKeyword: any = async(req: IRequest, res:IResponse) : Promis
         'tweet.fields':Config.standardSearchOptions['tweet.fields'],
         'user.fields': Config.standardSearchOptions['user.fields']
     }
-
+    
     //'[lat lon raggioinkm]'
     const queryParams = { 
         keywords: req.body.text ?? "",
@@ -47,7 +47,8 @@ export const searchByKeyword: any = async(req: IRequest, res:IResponse) : Promis
 
     Twitter.searchTweetsByKeyword({query: queryPath, options: queryOptions})
     .then(paginator => {
-        let formattedData = formatData(paginator.data);
+        let formattedData:any = {}; 
+        formattedData.tweets = formatData(paginator.data);
         formattedData.dataRetrievingTime = {time:stopwatch.getTime(), result_count:paginator.meta.result_count}
         res.send(formattedData)
     })
@@ -100,7 +101,6 @@ export const getRetweetersByTweetId: any = async(req: IRequest, res:IResponse) :
 export const getSentimentFromTweet: any = async(req: IRequest, res:IResponse) : Promise<void> => {
     const id: string = req.params.tweetId;
 
-    //Twitter.getSentimentFromTweet(query)
     Twitter.searchTweetById(id, {})
     .then(async (data) => {
         const result = await translateAndGetSentiments(data.data.text);

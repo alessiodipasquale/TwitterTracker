@@ -8,6 +8,7 @@ import { searchTweet } from '../services/searchTweet-service';
 import { GeoSearchControl, MapBoxProvider } from "leaflet-geosearch";
 
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
+import { text } from 'body-parser';
 const provider = new OpenStreetMapProvider();
 
 
@@ -15,13 +16,13 @@ function Home() {
 
     const [data, setData] = useState({
         text:"",
-        count:15,
+        count: 100,
         author: "",
         remove: "",
         since: null,
         until: null,
         city:"",
-        radius: 5
+        radius: 5,
     });
 
     const [since, setSince] = useState(null);
@@ -38,9 +39,10 @@ function Home() {
 
     const [selectedMarker, setSelectedMarker] = useState([])
 
+    const [dataRetrievingInfo, setDataRetrievingInfo] = useState(" ")
+
 
     let center = [41.8933203,12.4829321];
-
 
     function handle(e) {
         const newdata = {...data};
@@ -102,9 +104,10 @@ function Home() {
 
         searchTweet(data.text, parseInt(data.count),data.author,data.remove, data.since ? new Date(data.since).toISOString() : "" , data.until? new Date(data.until).toISOString() : "", geocode)
         .then(res => { 
-
+          setDataRetrievingInfo(res.data.dataRetrievingTime.result_count + " tweets were found in " + res.data.dataRetrievingTime.time / 1000 + " seconds");
           if (!res.data.meta) {
-              res.data.forEach(tweet => {
+              console.log(res)
+              res.data.tweets.forEach(tweet => {
                 if (tweet.placeDetails) {
                   const lat = new LatLng(tweet.placeDetails.geo.bbox[3], tweet.placeDetails.geo.bbox[2]);
                   const marker = L.marker(lat).bindTooltip("@"+tweet.userDetails.username).addTo(map).on('click', (e) => {
@@ -117,7 +120,7 @@ function Home() {
                   markersList.push(marker);      
                 }
               });
-              setTweets(res.data)
+              setTweets(res.data.tweets)
               setMarkers(markersList);
           } else {
             setTweets([]);
@@ -210,6 +213,11 @@ function Home() {
           <Row>
             <Button disabled={data.text=="" && data.author =="" && data.city == ""} onClick={(e) => submit(e)} variant="primary">Search Tweets</Button>
           </Row>
+
+          <Row>
+            <Form.Text>{dataRetrievingInfo}</Form.Text>
+          </Row>
+
         </Form>
 
         <MapContainer
