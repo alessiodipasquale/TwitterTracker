@@ -238,7 +238,7 @@ function Home() {
         </Col>
         <Col lg={6}>
 
-           <Card style={{ height: '95vh', overflow: 'scroll'}}>
+           <Card style={{ height: '86vh', overflow: 'scroll'}}>
 
           {tweets.length == 0 ?
             <Card.Body  style={{display: "flex", justifyContent: "center", alignItems: "center", textAlign: 'center'}}>
@@ -263,7 +263,15 @@ function Home() {
         </Card>
 
         </Col>
-
+          <Row>
+              <Col xs={6}></Col>
+              <Col xs={3} className="d-grid gap-2">
+                <Button style={{marginTop:10, marginLeft:20}} size="lg" disabled variant="primary">General sentiment analysis</Button>
+              </Col>
+              <Col xs={3} className="d-grid gap-2">
+                <Button style={{marginTop:10}} size="lg" disabled variant="primary">General wordcloud</Button>
+              </Col>
+          </Row>
         </Row>
 
         </Container>
