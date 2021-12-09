@@ -52,9 +52,9 @@ describe('#Contest creation Tests', () => {
 			assert.equal(arg.name, streamDefinitions.name);
 			done();
 		})
-		addListener(serverSocket, "newLiteraryContestCreated", (streamDefinitions: any) => {
-			serverSocket.emit("newLiteraryContestCreated", streamDefinitions)
-		});
+		serverSocket.on("newLiteraryContestCreated", async (streamDefinitions: any) =>{
+			serverSocket.emit("newLiteraryContestCreated", streamDefinitions);
+		})
 		Database.newStreamDef(streamDefinitions);
 		let found = false;
 		for (let element of Database.literaryContestsData) {

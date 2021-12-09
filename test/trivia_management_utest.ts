@@ -64,9 +64,9 @@ describe('#Game creation Tests', () => {
 			assert.equal(arg.name, streamDefinitions.name);
 			done();
 		})
-		addListener(serverSocket, "newTriviaGameCreated", (streamDefinitions: any) => {
+		serverSocket.on("newTriviaGameCreated", async (streamDefinitions: any) =>{
 			serverSocket.emit("newTriviaGameCreated", streamDefinitions);
-		});
+		})
 
 		Database.newStreamDef(streamDefinitions);
 		let found = false;
