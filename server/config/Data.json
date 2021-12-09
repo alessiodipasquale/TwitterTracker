@@ -1,1 +1,85 @@
-{"streamDefinitions":[{"name":"#streamTestswe4","startDate":"2022-11-28T00:00:00.000Z","endDate":"2022-11-28T00:00:00.000Z","type":"literaryContest","rules":[{"value":"#streamTestswe4 voto","tag":"voto"},{"value":"#streamTestswe4 (candido OR candidare)","tag":"candidatura"}]},{"name":"#streamTestswe4_2","startDate":"2022-11-28T00:00:00.000Z","endDate":"2022-11-28T00:00:00.000Z","type":"triviaGame","rules":[{"value":"#streamTestswe4_2 risposta_1:","tag":"risposta_1"},{"value":"#streamTestswe4_2 risposta_2:","tag":"risposta_2"}]}],"DataFromLiteraryContests":[{"name":"#streamTestswe4","voters":[{"author_id":"Luca","numVotes":1},{"author_id":"Frnacesco","numVotes":1}],"books":[{"candidatedBy":"Giorgio","bookName":"Le avventure di giorgio","votes":2,"votedBy":["Luca","Francesco"]}]}],"DataFromTriviaGames":[{"name":"#streamTestswe4_2","questions":[{"number":1,"text":"Chi ha vinto l'europeo?","correctAnswers":["Italia","L'Italia"],"participants":[{"userId":"Luca","answeredTo":1,"answer":"Italia","isCorrect":true}]}]}]}
+{
+  "streamDefinitions": [
+    {
+      "name": "#streamTestswe4",
+      "startDate": "2022-11-28T00:00:00.000Z",
+      "endDate": "2022-11-28T00:00:00.000Z",
+      "type": "literaryContest",
+      "rules": [
+        {
+          "value": "#streamTestswe4 voto",
+          "tag": "voto"
+        },
+        {
+          "value": "#streamTestswe4 (candido OR candidare)",
+          "tag": "candidatura"
+        }
+      ]
+    },
+    {
+      "name": "#streamTestswe4_2",
+      "startDate": "2022-11-28T00:00:00.000Z",
+      "endDate": "2022-11-28T00:00:00.000Z",
+      "type": "triviaGame",
+      "rules": [
+        {
+          "value": "#streamTestswe4_2 risposta_1",
+          "tag": "risposta_1"
+        },
+        {
+          "value": "#streamTestswe4_2 risposta_2",
+          "tag": "risposta_2"
+        }
+      ]
+    }
+  ],
+  "DataFromLiteraryContests": [
+    {
+      "name": "#streamTestswe4",
+      "voters": [
+        {
+          "author_id": "Luca",
+          "numVotes": 1
+        },
+        {
+          "author_id": "Frnacesco",
+          "numVotes": 1
+        }
+      ],
+      "books": [
+        {
+          "candidatedBy": "Giorgio",
+          "bookName": "Le avventure di giorgio",
+          "votes": 2,
+          "votedBy": [
+            "Luca",
+            "Francesco"
+          ]
+        }
+      ]
+    }
+  ],
+  "DataFromTriviaGames": [
+    {
+      "name": "#streamTestswe4_2",
+      "questions": [
+        {
+          "number": 1,
+          "text": "Chi ha vinto l'europeo?",
+          "correctAnswers": [
+            "Italia",
+            "L'Italia"
+          ],
+          "participants": [
+            {
+              "userId": "Luca",
+              "answeredTo": 1,
+              "answer": "Italia",
+              "isCorrect": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

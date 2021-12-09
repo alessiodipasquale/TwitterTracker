@@ -12,6 +12,8 @@ function ContestView() {
 
   function handleCandidatura(data) {
 
+    console.log(`recieved data: ${data}`);
+
     const newLiteraryContestData = JSON.parse(JSON.stringify(literaryContestData));
 
     let contest = newLiteraryContestData.find((contest, i) => {
@@ -48,6 +50,35 @@ function ContestView() {
     setLiteraryContestData(newLiteraryContestData);
   }
 
+  function handleNewAnswer(data) {
+    // {triviaName:hashtag, answerNumber:answerNumber, answer:value, isCorrect:done, userId:tweet.data.author_id,}
+
+    const newTriviaGameData = JSON.parse(JSON.stringify(triviaGamesData));
+
+    for (var i in newTriviaGameData) {
+      if (newTriviaGameData[i].name == data.triviaName) {
+
+        for (var j in newTriviaGameData[i].questions) {
+
+          if (newTriviaGameData[i].questions[j].number == data.answerNumber) {
+
+            newTriviaGameData[i].questions[j].participants.push({
+              userId: data.userId,
+              answeredTo: data.answerNumber,
+              answer: data.answer,
+              isCorrect: data.isCorrect,
+            });
+            break;
+          }
+
+        }
+        break;
+      }
+    }
+
+    setTriviaGamesData(newTriviaGameData);
+  }
+
   useEffect(() => {
     console.log(literaryContestData);  // rebind shit
 
@@ -55,6 +86,13 @@ function ContestView() {
     socket.on("newVoteInLiteraryContest", handleNewVote);
 
   }, [literaryContestData]);
+
+  useEffect(() => {
+    console.log(triviaGamesData);
+
+    socket.on("newAnswerInTriviaGame", handleNewAnswer);
+
+  }, [triviaGamesData]);
 
   useEffect(()=>{
 
@@ -66,6 +104,8 @@ function ContestView() {
     socket.on("newCandidateInLiteraryContest", handleCandidatura);
 
     socket.on("newVoteInLiteraryContest", handleNewVote);
+
+    socket.on("newAnswerInTriviaGame", handleNewAnswer);
 
     //return () => {socket.disconnect()}
   }, []);
