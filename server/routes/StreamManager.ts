@@ -33,9 +33,9 @@ async function manageStreamRequest(type: string, value: string, hashtag: string,
     }
     case 'triviaGame':{
       const answerNumber = matchingRule.tag.split("_")[1];
-      const done = Database.registerAnswer(hashtag, answerNumber, value, tweet.data.author_id);
+      const done = Database.registerAnswer(hashtag, answerNumber, value, tweet.data.author_id, tweet.includes.users[0].username);
       if(done != undefined && done != -1){
-        Socket.broadcast("newAnswerInTriviaGame",{triviaName:hashtag, answerNumber:answerNumber, answer:value, isCorrect:done, userId:tweet.data.author_id,})
+        Socket.broadcast("newAnswerInTriviaGame",{triviaName:hashtag, answerNumber:answerNumber, answer:value, isCorrect:done, userId:tweet.data.author_id, username:tweet.includes.users[0].username,})
       }
       break;
     }

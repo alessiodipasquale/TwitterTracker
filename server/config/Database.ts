@@ -141,7 +141,11 @@ export default abstract class Database {
             const objectData = allData.DataFromTriviaGames;
             const buildedQuestions = [];
             for(let question of newStream.extras.questions){
-                const obj = {number:question.number, text:question.text, correctAnswers:question.correctAnswers, participants:[]}
+                let lowerCase = []
+                for(let cAnswer of question.correctAnswers){
+                    lowerCase.push(cAnswer.toLowerCase())
+                }
+                const obj = {number:question.number, text:question.text, correctAnswers:lowerCase, participants:[]}
                 buildedQuestions.push(obj)
             }
             objectData.push({name: newStream.name, questions: buildedQuestions});
@@ -204,7 +208,7 @@ export default abstract class Database {
         for(let contest of data){
             if(contest.name == hashtag){
                 for(let book of contest.books){
-                    if(book.bookName == name){
+                    if(book.bookName.toLowerCase() == name.toLowerCase()){
                         return true;
                     }
                 }
@@ -214,7 +218,7 @@ export default abstract class Database {
     }
 
     public static voteBook(hashtag:string, name:string, author_id:string){
-        if(!Database.reachedMaxVotes(hashtag,author_id) && !Database.hasVotedBook(hashtag,name,author_id)){
+        if(!Database.reachedMaxVotes(hashtag,author_id) && !Database.hasVotedBook(hashtag,name,author_id) && Database.bookAlreadyPresent(hashtag,name)){
             let allData = Data;
             const objectData = allData.DataFromLiteraryContests;
             for(let contest of objectData){
@@ -232,8 +236,10 @@ export default abstract class Database {
                     }
                     //aggiungere ai votanti e ai voti del libro
                     for(let book of contest.books){
-                        book.votes = book.votes+1;
-                        book.votedBy.push(author_id)
+                        if(book.bookName.toLowerCase() == name.toLowerCase()){
+                            book.votes = book.votes+1;
+                            book.votedBy.push(author_id)
+                        }
                     }
                 }
             }
@@ -267,7 +273,7 @@ export default abstract class Database {
         for(let contest of data){
             if(contest.name == hashtag) {
                 for(let book of contest.books){
-                    if(book.bookName == name){
+                    if(book.bookName.toLowerCase() == name.toLowerCase()){
                         for(let voter of book.votedBy){
                             if(voter == author_id)
                                 return true;
@@ -279,7 +285,7 @@ export default abstract class Database {
         return false;
     }
 
-    public static registerAnswer(hashtag:string,answerNumber:number, answer:string, author_id:string){
+    public static registerAnswer(hashtag:string,answerNumber:number, answer:string, author_id:string, username:string){
         if(!Database.hasAlreadyAnswered(hashtag,answerNumber, author_id)){
             let allData = Data;
             const objectData = allData.DataFromTriviaGames;
@@ -288,8 +294,8 @@ export default abstract class Database {
                 if(game.name == hashtag){
                     for(let question of game.questions){
                         if(question.number == answerNumber){
-                            correct = question.correctAnswers.includes(answer)
-                            question.participants.push({userId:author_id, answeredTo: answerNumber, answer:answer, isCorrect:correct})
+                            correct = question.correctAnswers.includes(answer.toLowerCase())
+                            question.participants.push({username: username, userId:author_id, answeredTo: answerNumber, answer:answer, isCorrect:correct})
                         }
                     }
                 }
