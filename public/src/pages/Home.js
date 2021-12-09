@@ -106,7 +106,6 @@ function Home() {
         .then(res => { 
           setDataRetrievingInfo(res.data.dataRetrievingTime.result_count + " tweets were found in " + res.data.dataRetrievingTime.time / 1000 + " seconds");
           if (!res.data.meta) {
-              console.log(res)
               res.data.tweets.forEach(tweet => {
                 if (tweet.placeDetails) {
                   const lat = new LatLng(tweet.placeDetails.geo.bbox[3], tweet.placeDetails.geo.bbox[2]);

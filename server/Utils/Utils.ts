@@ -7,7 +7,7 @@ import Translate from "@vitalets/google-translate-api";
 /* Builds the q field */
 export function buildQ(q: queryParams): string {
 
-  let query = q.keywords || "";
+  let query = q.keywords+" " || "";
 
   q.from && (query += " from:" + q.from + " ")
 

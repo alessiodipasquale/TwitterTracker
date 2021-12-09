@@ -79,6 +79,7 @@ export const searchByKeyword: any = async (req: IRequest, res: IResponse): Promi
                 res.send(formattedData)
             } else {
                 let formattedData: any = {};
+                formattedData.tweets = [];
                 formattedData.tweets = formatData(paginator.data);
                 formattedData.dataRetrievingTime = { time: stopwatch.getTime(), result_count: paginator.meta.result_count }
                 res.send(formattedData)
