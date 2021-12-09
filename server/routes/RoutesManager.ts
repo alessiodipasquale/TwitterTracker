@@ -2,7 +2,7 @@ import { BadRequest } from '../config/Error';
 import { Stopwatch } from 'ts-stopwatch';
 import { IRequest, IResponse } from '../config/Express';
 import Twitter from "./Twitter";
-import { buildQ, formatData } from "../Utils/Utils";
+import { buildQ, formatData, translateAndGetSentiments } from "../Utils/Utils";
 import { Tweetv2SearchParams } from 'twitter-api-v2';
 import Database from '../config/Database';
 import { StreamDefinition, Rule } from '../types/StreamDefinition'
@@ -99,11 +99,12 @@ export const getRetweetersByTweetId: any = async(req: IRequest, res:IResponse) :
 }
 export const getSentimentFromTweet: any = async(req: IRequest, res:IResponse) : Promise<void> => {
     const id: string = req.params.tweetId;
-    const query = {id:id};
 
-    Twitter.getSentimentFromTweet(query)
-    .then(data => {
-        res.send(data);
+    //Twitter.getSentimentFromTweet(query)
+    Twitter.searchTweetById(id, {})
+    .then(async (data) => {
+        const result = await translateAndGetSentiments(data.data.text);
+        res.send(result);
     }).catch(err => {
         throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
     })
@@ -111,33 +112,23 @@ export const getSentimentFromTweet: any = async(req: IRequest, res:IResponse) : 
 
 export const getSentimentFromGroupOfTweets: any = async(req: IRequest, res:IResponse) : Promise<void> => {
     let ids: string[] = [];
-    let analysis: any[] = [];
+    let toAnalize: string = ""
     let tweets = req.data.data;
     for(let t of tweets){
-        ids.push(t.id_str);
+        ids.push(t.id);
     }
     for(let id of ids){
-        const query = {id:id};
-        Twitter.getSentimentFromTweet(query)
+        Twitter.searchTweetById(id, {})
         .then(data => {
-            analysis.push(data);
+            toAnalize.concat(data.data.text);
         }).catch(err => {
             throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
         })
     }
-    let value = 0;
-    let positive = [];
-    let negative = [];
-    for(let element of analysis){
-        value += element.score;
-        for(let goodElem of element.positive){
-            positive.push(goodElem);
-        }
-        for(let badElem of element.negative){
-            negative.push(badElem);
-        }
-    }
-    let toReturn = {value, positive, negative};
+    let toReturn: any = {};
+    const result = await translateAndGetSentiments(toAnalize);
+    toReturn.result = result;
+    toReturn.numTweets = ids.length;
     res.send(toReturn);
 }
 

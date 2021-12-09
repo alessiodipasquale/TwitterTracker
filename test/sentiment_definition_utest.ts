@@ -1,6 +1,7 @@
 import Twitter from "../server/routes/Twitter";
 import {expect} from 'chai';
 import { delay } from "../server/Utils/Utils";
+import {translateAndGetSentiments} from "../server/Utils/Utils";
 
 Twitter.authentication();
 
@@ -11,7 +12,8 @@ describe('Tweet Sentiment utests', () => {
     describe('#CorrectSentiment', () => {
       it('should be equal to a specific value', async function() {
         ;
-        await Twitter.getSentimentFromTweet(query).then(data => {
+        await Twitter.searchTweetById(id, {}).then(async tweet => {
+          const data = await translateAndGetSentiments(tweet.data.text);
           let res: any = JSON.parse(JSON.stringify(data));
           expect(res.score).to.equal(3);
           expect(res.comparative).to.equal(0.3);

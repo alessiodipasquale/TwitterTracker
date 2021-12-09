@@ -1,7 +1,4 @@
 import TwitterApi, { TwitterApiReadOnly, ETwitterStreamEvent, TweetStream, StreamingV2AddRulesParams } from 'twitter-api-v2';
-import Sentiment from "sentiment";
-import Config from "../config/Config";
-import Translate from "@vitalets/google-translate-api";
 import { tweetEventHandler } from "./StreamManager";
 import Database from "../config/Database";
 import { StreamDefinition, Rule } from '../types/StreamDefinition';
@@ -102,25 +99,5 @@ export default abstract class Twitter {
 
     public static async getRetweetsByTweetId({query,options}: any) {
       return await Twitter.roClient.v1.get('statuses/retweets/'.concat(query.id).concat('.json'),{})
-    }
-
-    public static async getSentimentFromTweet(query: any) {
-		  const data: any = await this.searchTweetById(query.id,{});
-
-      var sentiment = new Sentiment();
-      const options: any = Config.sentimentAnalysisOptions;
-
-		  var translated : any = await Translate(String(data.data.text), {to: 'en'});
-		  var full_text : string = translated.text;
-
-      const result = sentiment.analyze(full_text, options);
-		  const originalwords : string[] = [];
-		  for(var i = 0; i < result.words.length; ++i){
-			var orig : any = await Translate(String(result.words[i]), {from: 'en', to: translated.from.language.iso});
-			if(data.data.text.toLowerCase().includes(orig.text.toLowerCase()) || data.data.text.toLowerCase().includes(orig.text.substring(0, orig.text.length - 1).toLowerCase()))
-				originalwords.push(orig.text.toLowerCase());
-		  }
-		  result.words = originalwords;
-		  return result;
     }
 }
