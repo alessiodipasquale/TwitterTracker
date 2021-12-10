@@ -1,6 +1,6 @@
 import React, { Component, useImperativeHandle, useState } from 'react';
 import Axios from 'axios';
-import { Card, Form, Row, Col, Button, Container, Alert } from 'react-bootstrap';
+import { Card, Form, Row, Col, Button, Container, Alert, Modal } from 'react-bootstrap';
 import { MapContainer, TileLayer, Marker, Popup, useMap, LayerGroup, Circle} from 'react-leaflet'
 import L, { LatLng } from "leaflet";
 import TweetCard from '../components/TweetCard';
@@ -9,7 +9,11 @@ import { GeoSearchControl, MapBoxProvider } from "leaflet-geosearch";
 
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
 import { text } from 'body-parser';
+import GeneralWordCloud from '../components/GeneralWordCloud';
+
 const provider = new OpenStreetMapProvider();
+
+
 
 
 function Home() {
@@ -33,7 +37,7 @@ function Home() {
     const [circ,setCirc] = useState({
       circ: null
     });
-  
+
     const [map, setMap] = useState(null);
     const [markers, setMarkers] = useState([])
 
@@ -41,6 +45,7 @@ function Home() {
 
     const [dataRetrievingInfo, setDataRetrievingInfo] = useState(" ")
 
+    const [showGeneralWordCloud, setShowGeneralWordCloud] = useState(false);
 
     let center = [41.8933203,12.4829321];
 
@@ -61,7 +66,7 @@ function Home() {
             email: 'john@example.com', // auth for large number of requests
           },
         });
-        
+
         console.log(data)
         if(circ.circ != null) {
           console.log('rimuovo')
@@ -71,29 +76,29 @@ function Home() {
         markers.forEach(marker => {
           marker.removeFrom(map);
         })
-      
+
         if (data.city !== ""){
 
         const results = await provider.search({ query: data.city });
-      
+
         const res = results[0];
         const lat = new LatLng(res.y, res.x);
-      
+
         center = [res.y, res.x]
-      
-       
-        
-      
+
+
+
+
         map.flyTo(lat, 12);
-        
-      
+
+
         const circle = L.circle(lat, data.radius*1000);
         console.log(data.radius)
         setCirc({circ: circle});
-      
+
         circle.addTo(map);
-      
-      
+
+
 
         geocode = '['+res.x+' '+res.y+' '+data.radius+'km]';
       } else {
@@ -103,7 +108,7 @@ function Home() {
       const markersList = [];
 
         searchTweet(data.text, parseInt(data.count),data.author,data.remove, data.since ? new Date(data.since).toISOString() : "" , data.until? new Date(data.until).toISOString() : "", geocode)
-        .then(res => { 
+        .then(res => {
           setDataRetrievingInfo(res.data.dataRetrievingTime.result_count + " tweets were found in " + res.data.dataRetrievingTime.time / 1000 + " seconds");
           if (!res.data.meta) {
               res.data.tweets.forEach(tweet => {
@@ -116,7 +121,7 @@ function Home() {
 
                     })*/
                   });
-                  markersList.push(marker);      
+                  markersList.push(marker);
                 }
               });
               setTweets(res.data.tweets)
@@ -269,13 +274,40 @@ function Home() {
                 <Button style={{marginTop:10, marginLeft:20}} size="lg" disabled variant="primary">General sentiment analysis</Button>
               </Col>
               <Col xs={3} className="d-grid gap-2">
-                <Button style={{marginTop:10}} size="lg" disabled variant="primary">General wordcloud</Button>
+                <Button style={{marginTop:10}} size="lg" onClick={() => setShowGeneralWordCloud(true)} variant="primary">General wordcloud</Button>
               </Col>
           </Row>
         </Row>
 
+        <Modals />
+
         </Container>
     );
+
+    function Modals() {
+
+      return (
+        <>
+        <Modal
+          size="md"
+          show={showGeneralWordCloud}
+          onHide={() => setShowGeneralWordCloud(false)}
+          aria-labelledby="example-modal-sizes-title-md"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title id="example-modal-sizes-title-md">
+              General Word Cloud
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <GeneralWordCloud tweets={tweets}></GeneralWordCloud>
+          </Modal.Body>
+        </Modal>
+
+        </>
+      );
+
+    }
 }
 
 export default Home
