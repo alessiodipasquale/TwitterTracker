@@ -154,7 +154,7 @@ export const getSentimentFromGroupOfTweets: any = async (req: IRequest, res: IRe
     for (let id of ids) {
         Twitter.searchTweetById(id, {})
             .then(data => {
-                toAnalize.concat(data.data.text);
+                toAnalize = toAnalize.concat(data.data.text);
             }).catch(err => {
                 throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
             })
