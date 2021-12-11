@@ -2,7 +2,7 @@ import { BadRequest } from '../config/Error';
 import { Stopwatch } from 'ts-stopwatch';
 import { IRequest, IResponse } from '../config/Express';
 import Twitter from "./Twitter";
-import { buildQ, delay, formatData, translateAndGetSentiments } from "../Utils/Utils";
+import { buildQ, delay, formatData, translateAndGetSentiments } from "../utils/Utils";
 import { Tweetv2SearchParams, TweetSearchAllV2Paginator } from 'twitter-api-v2';
 import Database from '../config/Database';
 import { StreamDefinition } from '../types/StreamDefinition'

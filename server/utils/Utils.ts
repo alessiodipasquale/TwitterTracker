@@ -3,7 +3,6 @@ import { Tweetv2TimelineResult } from 'twitter-api-v2';
 import Config from "../config/Config";
 import Sentiment from "sentiment";
 import Translate from "@vitalets/google-translate-api";
-import ResultList from "leaflet-geosearch/dist/resultList";
 
 /* Builds the q field */
 export function buildQ(q: queryParams): string {

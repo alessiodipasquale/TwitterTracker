@@ -3,8 +3,8 @@ import { createServer } from 'http';
 import { expect, assert } from 'chai';
 import { Server } from "socket.io";
 import { io as Client } from "socket.io-client";
-import { delay } from "../server/Utils/Utils"
-import { setListenersForSocket, sendPastData } from "../server/routes/StreamManager"
+import { delay } from "../server/utils/Utils"
+import { sendPastData } from "../server/routes/StreamManager"
 
 Twitter.authentication();
 
@@ -61,7 +61,7 @@ describe('Stream utests', () => {
 			})();
 			await delay(1000);
 			await Twitter.startStream();
-			await Twitter.stream.close();
+			Twitter.stream.close();
 			console.log = oldLog;
 		});
 
@@ -71,7 +71,6 @@ describe('Stream utests', () => {
 				console.log = function(msg: string) {
 					if (typeof msg[0] == 'undefined') {
 						const res = JSON.parse(JSON.stringify(msg));
-						const date: Date = new Date(res.meta.sent);
 						const today: Date = new Date();
 						const yesterday: Date = new Date(today.getTime() - (24 * 60 * 60 * 1000));
 						const tomorrow: Date = new Date(today.getTime() + (24 * 60 * 60 * 1000));
@@ -81,7 +80,7 @@ describe('Stream utests', () => {
 			})();
 			await delay(1000);
 			await Twitter.startStream();
-			await Twitter.stream.close();
+			Twitter.stream.close();
 			console.log = oldLog;
 		});
 	});

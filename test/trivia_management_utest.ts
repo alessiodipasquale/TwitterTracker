@@ -4,7 +4,6 @@ import { createServer } from 'http';
 import { expect, assert } from 'chai';
 import { Server } from "socket.io";
 import { io as Client } from "socket.io-client";
-import { addListener } from "../server/routes/StreamManager"
 
 Twitter.authentication();
 
@@ -64,8 +63,8 @@ describe('#Game creation Tests', () => {
 			assert.equal(arg.name, streamDefinitions.name);
 			done();
 		})
-		serverSocket.on("newTriviaGameCreated", async (streamDefinitions: any) =>{
-			serverSocket.emit("newTriviaGameCreated", streamDefinitions);
+		serverSocket.on("newTriviaGameCreated", async (streamDefs: any) =>{
+			serverSocket.emit("newTriviaGameCreated", streamDefs);
 		})
 
 		Database.newStreamDef(streamDefinitions);

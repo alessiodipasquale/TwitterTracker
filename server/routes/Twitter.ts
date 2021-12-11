@@ -1,7 +1,6 @@
-import TwitterApi, { TwitterApiReadOnly, ETwitterStreamEvent, TweetStream, StreamingV2AddRulesParams } from 'twitter-api-v2';
-import { tweetEventHandler, userEventHandler } from "./StreamManager";
+import TwitterApi, { TwitterApiReadOnly, ETwitterStreamEvent, TweetStream } from 'twitter-api-v2';
+import { tweetEventHandler } from "./StreamManager";
 import Database from "../config/Database";
-import { StreamDefinition, Rule } from '../types/StreamDefinition';
 
 export default abstract class Twitter {
     private static roClient_v1: any;

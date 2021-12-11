@@ -1,6 +1,6 @@
 import Twitter from "../server/routes/Twitter";
 import {expect} from 'chai';
-import { delay } from "../server/Utils/Utils";
+import { delay } from "../server/utils/Utils";
 
 Twitter.authentication();
 
