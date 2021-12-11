@@ -9,6 +9,7 @@ function ContestView() {
 
   const [literaryContestData, setLiteraryContestData] = useState([]);
   const [triviaGamesData, setTriviaGamesData] = useState([]);
+  const [customStreamsData, setCustomStreamsData] = useState([]);
 
   function handleCandidatura(data) {
 
@@ -127,6 +128,11 @@ function ContestView() {
             { triviaGamesData.map(displayTriviaGame) }
           </ListGroup>
         </Tab>
+        <Tab eventKey="customStream" title="Custom streams">
+          <ListGroup className="list-group-flush">
+            { customStreamsData.map(displayCustomStream) }
+          </ListGroup>
+        </Tab>
       </Tabs>
 
     </Container>
@@ -200,6 +206,10 @@ function ContestView() {
 
       </>
     );
+  }
+
+  function displayCustomStream(data) {
+
   }
 
 }

@@ -48,7 +48,8 @@ class ContestHandler extends React.Component {
           <Row>
             <Col>
               <Button style={{marginRight: '2%'}} onClick={(e) => this.openCreateLiteraryContest(e)} variant="primary">Create Literary Contest</Button>
-              <Button onClick={(e) => this.openCreateTriviaGame(e)} variant="primary">Create Trivia Game</Button>
+              <Button style={{marginRight: '2%'}} onClick={(e) => this.openCreateTriviaGame(e)} variant="primary">Create Trivia Game</Button>
+              <Button onClick={(e) => this.openCreateCustomStream(e)} variant="primary">Create custom stream</Button>
             </Col>
           </Row>
         </Container>
@@ -79,6 +80,17 @@ class ContestHandler extends React.Component {
         }
       }))
     }
+
+    openCreateCustomStream(e) {
+      this.setState(prevState => ({
+        showCustomModal: true,
+        contest: {
+          ...prevState.contest,
+            type: 'custom'
+        }
+      }))
+      
+    } 
 
     createLiteraryContest() {
       let object = this.state.contest;
