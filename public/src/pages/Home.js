@@ -271,10 +271,10 @@ function Home() {
           <Row>
               <Col xs={6}></Col>
               <Col xs={3} className="d-grid gap-2">
-                <Button style={{marginTop:10, marginLeft:20}} size="lg" disabled variant="primary">General sentiment analysis</Button>
+                <Button style={{marginTop:10, marginLeft:20}} size="lg" disabled={tweets.length === 0} variant="primary">General sentiment analysis</Button>
               </Col>
               <Col xs={3} className="d-grid gap-2">
-                <Button style={{marginTop:10}} size="lg" onClick={() => setShowGeneralWordCloud(true)} variant="primary">General wordcloud</Button>
+                <Button style={{marginTop:10}} size="lg" disabled={tweets.length === 0} onClick={() => setShowGeneralWordCloud(true)} variant="primary">General wordcloud</Button>
               </Col>
           </Row>
         </Row>
