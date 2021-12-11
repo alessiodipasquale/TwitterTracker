@@ -5,9 +5,8 @@ import Twitter from "./Twitter";
 import { buildQ, delay, formatData, translateAndGetSentiments } from "../Utils/Utils";
 import { Tweetv2SearchParams, TweetSearchAllV2Paginator } from 'twitter-api-v2';
 import Database from '../config/Database';
-import { StreamDefinition, Rule } from '../types/StreamDefinition'
+import { StreamDefinition } from '../types/StreamDefinition'
 import Config from '../config/Config';
-import Socket from '../connection/Socket';
 
 export const searchTweetById: any = async (req: IRequest, res: IResponse): Promise<void> => {
     const id: string = req.params.tweetId;
@@ -89,7 +88,7 @@ export const searchByKeyword: any = async (req: IRequest, res: IResponse): Promi
         .catch(err => {
             console.log(err.stack)
             res.status(400).send({ error: 'INCORRECT_BODY', description: `Il body non è corretto` });
-            //throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
+            // verificare se si può tenere throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
         })
 }
 

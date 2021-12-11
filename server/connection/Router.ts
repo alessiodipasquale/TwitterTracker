@@ -1,4 +1,3 @@
-import bodyParser from 'body-parser';
 import cors from 'cors';
 import { searchByKeyword, getUserInformations,removeStreamElementFromData, getRetweetsByTweetId, getRetweetersByTweetId, getSentimentFromTweet, getSentimentFromGroupOfTweets, addElementToStreamData, startFollowingUser } from '../routes/RoutesManager';
 import express from 'express';
@@ -18,7 +17,6 @@ export default abstract class Router {
         app.use('/', express.static(Config.distPath));
 
         app.post('/searchTweetsByKeyword', searchByKeyword);
-        //app.post('/searchTweetsByAuthor', searchTweetsByAuthor);
         
         app.post('/getUserData', getUserInformations);
 
