@@ -1,4 +1,3 @@
-//import mongoose, { ConnectionOptions } from 'mongoose';
 import Config from './Config';
 import Data from './Data.json'
 import fs from 'fs';
@@ -6,9 +5,6 @@ import Socket from '../connection/Socket'
 import type { StreamDefinition } from '../types/StreamDefinition'
 
 export default abstract class Database {
-    static async init() {
-
-    }
 
     public static get streamDefinitions(): StreamDefinition[] {
         let objectArray = JSON.parse(JSON.stringify(Data.streamDefinitions));
@@ -36,7 +32,7 @@ export default abstract class Database {
     }
 
     public static newStreamDef(newStream: StreamDefinition) {
-        let currentStreamDefs: StreamDefinition[] = (Database.streamDefinitions) as StreamDefinition[];
+        let currentStreamDefs: StreamDefinition[] = Database.streamDefinitions;
         currentStreamDefs = currentStreamDefs.concat(newStream);
         switch (newStream.type) {
             case 'literaryContest': {
@@ -56,14 +52,12 @@ export default abstract class Database {
     }
 
     public static deleteStreamDef(toDelete: string, type: string) {
-        let currentStreamDefs: StreamDefinition[] = (Database.streamDefinitions) as StreamDefinition[];
+        let currentStreamDefs: StreamDefinition[] = Database.streamDefinitions;
         currentStreamDefs = currentStreamDefs.filter((element) => {
             return element.name != toDelete
         })
         Database.streamDefinitions = currentStreamDefs;
-        if (true) {
-            Database.deleteStreamData(toDelete, type)
-        }
+        Database.deleteStreamData(toDelete, type);
     }
 
     public static deleteStreamData(toDelete: string, type: string) {
@@ -84,13 +78,11 @@ export default abstract class Database {
     }
 
     public static get literaryContestsData() {
-        let objectArray = JSON.parse(JSON.stringify(Data.DataFromLiteraryContests));
-        return objectArray;
+        return JSON.parse(JSON.stringify(Data.DataFromLiteraryContests));
     }
 
     public static get triviaGamesData() {
-        let objectArray = JSON.parse(JSON.stringify(Data.DataFromTriviaGames));
-        return objectArray;
+        return JSON.parse(JSON.stringify(Data.DataFromTriviaGames));
     }
 
     public static set literaryContestsData(newData: any[]) {
@@ -322,4 +314,4 @@ export default abstract class Database {
         }
         return false;
     }
-};
+}
