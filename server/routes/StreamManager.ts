@@ -21,6 +21,10 @@ export async function tweetEventHandler(eventData: TweetV2SingleStreamResult) {
     }
 }
 
+export async function userEventHandler(eventData: TweetV2SingleStreamResult) {
+  console.log(eventData)
+}
+
 async function manageStreamRequest(type: string, value: string, hashtag: string, matchingRule: any, tweet: any){
   switch (type){
     case 'literaryContest':{

@@ -180,10 +180,23 @@ export const addElementToStreamData = async (req: IRequest, res: IResponse) => {
 
 export const removeStreamElementFromData = async (req: IRequest, res: IResponse) => {
     try {
-        if(Database.eventAlreadyPresent(req.body.streamDefinitions.name)){
+        if(Database.eventAlreadyPresent(req.params.streamName)){
             await Twitter.removeFromRules(req.params.streamName);
             Database.deleteStreamDef(req.params.streamName, req.params.type)
         }
+        res.send();
+    } catch (err) {
+        throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
+    }
+}
+
+export const startFollowingUser = async (req: IRequest, res: IResponse) => {
+    try {
+        if(Twitter.currentlyActive_v1){
+            await Twitter.stopStream_v1();
+        }
+        const userId:string = await Twitter.findIdByUsername(req.body.follow);
+        await Twitter.startStream_v1([userId])
         res.send();
     } catch (err) {
         throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
