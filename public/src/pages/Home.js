@@ -110,7 +110,8 @@ function Home() {
         searchTweet(data.text, parseInt(data.count),data.author,data.remove, data.since ? new Date(data.since).toISOString() : "" , data.until? new Date(data.until).toISOString() : "", geocode)
         .then(res => {
           setDataRetrievingInfo(res.data.dataRetrievingTime.result_count + " tweets were found in " + res.data.dataRetrievingTime.time / 1000 + " seconds");
-          if (!res.data.meta) {
+          console.log(res.data);
+          if (res.data.dataRetrievingTime.result_count != 0) {
               res.data.tweets.forEach(tweet => {
                 if (tweet.placeDetails) {
                   const lat = new LatLng(tweet.placeDetails.geo.bbox[3], tweet.placeDetails.geo.bbox[2]);

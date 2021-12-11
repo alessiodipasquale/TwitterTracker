@@ -22,7 +22,9 @@ class ContestHandler extends React.Component {
             endDate: new Date(),
             type: '',
             rules: [],
-            extras: []
+            extras: {
+              questions: []
+            }
           }
         };
 
@@ -91,6 +93,24 @@ class ContestHandler extends React.Component {
       }))
       
     } 
+
+    addQuestion(e) {
+      this.setState(prevState => ({
+        contest: {
+          ...prevState.contest,
+          extras: {
+            ...prevState.contest.extras,
+            questions: [
+              ...prevState.contest.extras.questions,
+              {
+                text: '',
+                correctAnswers: []
+              } 
+            ]
+          }
+        }
+      }))
+    }
 
     createLiteraryContest() {
       let object = this.state.contest;
@@ -176,6 +196,35 @@ class ContestHandler extends React.Component {
                   <Form.Label>Insert End Date for the Trivia Game</Form.Label>
                   <Form.Control value={this.state.contest.endDate} onChange={this.handleChange} type="date"/>
               </Form.Group>
+              
+              {
+                this.state.contest.extras.questions.length != 0 ?
+                this.state.contest.extras.questions && this.state.contest.extras.questions.map(question => {
+                  console.log(question)
+                  return (
+                    <Card className='mb-3'>
+                      <Card.Body>
+                        
+                      <Form.Group>
+
+                      <Form.Label>Insert Question</Form.Label>
+                      <Form.Control value={question.text} onChange={this.handleChange} type="text" placeholder="Insert question" className='mb-3'/>
+
+                      <Form.Label>Insert Correct Answer</Form.Label>
+                      <Form.Control value={question.correctAnswers[0]} onChange={this.handleChange} type="text" placeholder="Insert correct answer"/>
+
+                      </Form.Group>
+
+                      </Card.Body>
+                    </Card>
+                      
+                    
+                  )
+                }) : null
+              }
+
+              <Button onClick={() => {this.addQuestion()}}> Add question</Button>
+              
             </Row>
           } 
           </Modal.Body>
