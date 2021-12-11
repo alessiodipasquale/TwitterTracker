@@ -168,8 +168,10 @@ export const getSentimentFromGroupOfTweets: any = async (req: IRequest, res: IRe
 
 export const addElementToStreamData = async (req: IRequest, res: IResponse) => {
     try {
-        Database.newStreamDef(req.body.streamDefinitions as StreamDefinition);
-        Twitter.rulesConstruction(req.body.streamDefinitions, "add");
+        if(!Database.eventAlreadyPresent(req.body.streamDefinitions.name)) {
+            Database.newStreamDef(req.body.streamDefinitions as StreamDefinition);
+            Twitter.rulesConstruction(req.body.streamDefinitions, "add");
+        }
         res.send();
     } catch (err) {
         throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
@@ -178,8 +180,10 @@ export const addElementToStreamData = async (req: IRequest, res: IResponse) => {
 
 export const removeStreamElementFromData = async (req: IRequest, res: IResponse) => {
     try {
-        await Twitter.removeFromRules(req.params.streamName);
-        Database.deleteStreamDef(req.params.streamName, req.params.type)
+        if(Database.eventAlreadyPresent(req.body.streamDefinitions.name)){
+            await Twitter.removeFromRules(req.params.streamName);
+            Database.deleteStreamDef(req.params.streamName, req.params.type)
+        }
         res.send();
     } catch (err) {
         throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
