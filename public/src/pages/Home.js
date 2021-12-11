@@ -289,10 +289,10 @@ function Home() {
       return (
         <>
         <Modal
-          size="md"
+          size="lg"
           show={showGeneralWordCloud}
           onHide={() => setShowGeneralWordCloud(false)}
-          aria-labelledby="example-modal-sizes-title-md"
+          aria-labelledby="example-modal-sizes-title-lg"
         >
           <Modal.Header closeButton>
             <Modal.Title id="example-modal-sizes-title-md">

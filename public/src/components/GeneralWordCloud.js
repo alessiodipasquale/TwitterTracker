@@ -39,7 +39,7 @@ function GeneralWordClout({tweets}) {
     <>
     <WordCloud
       data={wordCloudData}
-      fontSize={(word) => (word.value * 3 + 30) % 150}
+      fontSize={(word) => ((word.value / 40) + 2) * 15}//(word.value * 3 + 30) % 30}
       />
 
     </>
