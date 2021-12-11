@@ -48,7 +48,6 @@ export default abstract class Twitter {
 
     public static async startStream_v1(followArgs: string[]) {
       Twitter._currentlyActive_v1 = true;
-      console.log(followArgs)
       Twitter.stream_v1 = await Twitter.roClient_v1.v1.filterStream({follow:followArgs})
       Twitter.stream_v1.on(ETwitterStreamEvent.Data, (data)=>{console.log(data)});
       Twitter.stream_v1.on(ETwitterStreamEvent.ConnectionError,err => console.log('Connection error!', err));
