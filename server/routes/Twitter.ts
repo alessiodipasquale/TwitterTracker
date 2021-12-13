@@ -1,6 +1,7 @@
 import TwitterApi, { TwitterApiReadOnly, ETwitterStreamEvent, TweetStream } from 'twitter-api-v2';
 import { tweetEventHandler } from "./StreamManager";
 import Database from "../config/Database";
+import Socket from '../connection/Socket';
 
 export default abstract class Twitter {
     private static roClient_v1: any;
@@ -37,7 +38,7 @@ export default abstract class Twitter {
       Twitter.stream.on(ETwitterStreamEvent.ConnectionClosed, () => console.log('Connection has been closed.'));
       await Twitter.stream.connect({ autoReconnect: true, autoReconnectRetries: Infinity });
       await Twitter.clearStreamRulesIfPresent();
-  
+
       const contests = Database.streamDefinitions;
       for (let elem of contests) {
         await Twitter.rulesConstruction(elem,"add")
@@ -48,7 +49,12 @@ export default abstract class Twitter {
     public static async startStream_v1(followArgs: string[]) {
       Twitter._currentlyActive_v1 = true;
       Twitter.stream_v1 = await Twitter.roClient_v1.v1.filterStream({follow:followArgs})
-      Twitter.stream_v1.on(ETwitterStreamEvent.Data, (data)=>{console.log(data)});
+      Twitter.stream_v1.on(ETwitterStreamEvent.Data, (data)=>{
+        console.log(data);
+        Socket.broadcast("followedUserTweeted", {data});
+        console.log(data.data.place);
+        console.log(data.data.coordinates);
+      });
       Twitter.stream_v1.on(ETwitterStreamEvent.ConnectionError,err => console.log('Connection error!', err));
       Twitter.stream_v1.on(ETwitterStreamEvent.Connected, () => console.log('V1 Stream is started.'));
       Twitter.stream_v1.on(ETwitterStreamEvent.ConnectionClosed, () => console.log('V1 Stream Connection has been closed.'));
@@ -65,7 +71,7 @@ export default abstract class Twitter {
     }
 
     public static async rulesConstruction(elem:any, type:string): Promise<void>{
-      let rules: any 
+      let rules: any
       if(type=="add"){
         rules = {
           "add": []
