@@ -40,7 +40,7 @@ function UserTracking() {
         if (map) addMarker(map, tweet.data);
       });
 
-    }, [tweets, markers]);
+    }, [tweets, markers, map]);
 
     function addMarker(m, tweet) {
       const newMarkers = markers;
@@ -79,8 +79,6 @@ function UserTracking() {
             markers.forEach((marker) => {
               marker.removeFrom(map);
             });
-
-            setMarkers([]);
 
           }).catch(err => {console.log(err)});
 
