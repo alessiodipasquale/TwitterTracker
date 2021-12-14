@@ -198,6 +198,7 @@ export const startFollowingUser = async (req: IRequest, res: IResponse) => {
         await Twitter.startStream_v1([userId])
         res.send();
     } catch (err) {
-        throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
+        //throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
+        res.status(400).send();
     }
 }

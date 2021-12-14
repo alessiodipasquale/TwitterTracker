@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect, useRef } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import Axios from 'axios';
 import { Card, Form, Row, Col, Button, Container, Alert, Modal } from 'react-bootstrap';
 import { MapContainer, TileLayer, Marker, Popup, useMap, LayerGroup, Circle} from 'react-leaflet'
@@ -15,6 +15,8 @@ import GeneralWordCloud from '../components/GeneralWordCloud';
 
 import {socketConnection} from '../services/socket-service';
 
+const provider = new OpenStreetMapProvider();
+
 function UserTracking() {
 
       const socket = socketConnection.instance;
@@ -26,7 +28,9 @@ function UserTracking() {
       const [tweets,setTweets] = useState([]);
 
       const [map, setMap] = useState(null);
-      const [markers, setMarkers] = useState([])
+      const [markers, setMarkers] = useState([]);
+
+      const [showUserNotFound, setShowUserNotFound] = useState(false);
 
       let center = [41.8933203,12.4829321];
 
@@ -37,12 +41,17 @@ function UserTracking() {
         newTweets.unshift(tweet.data);
 
         setTweets(newTweets);
-        if (map) addMarker(map, tweet.data);
+        if (map) {
+
+          const waitForAdd = async (m, data) => { await addMarker(map, tweet.data); };
+
+          waitForAdd(map, tweet.data);
+        }
       });
 
     }, [tweets, markers, map]);
 
-    function addMarker(m, tweet) {
+    async function addMarker(m, tweet) {
       const newMarkers = markers;
 
       let latlang = null;
@@ -52,15 +61,20 @@ function UserTracking() {
 
       } else if (tweet.place) {
 
-         latlang = new LatLng(tweet.place.bounding_box.coordinates[0][3][1], tweet.place.bounding_box.coordinates[0][2][0]);
-
+          if (tweet.place.place_type == "city") {
+            latlang = await searchCity(tweet.place.name);
+          } else {
+            latlang = new LatLng(tweet.place.bounding_box.coordinates[0][3][1], tweet.place.bounding_box.coordinates[0][2][0]);
+          }
       }
 
-      const marker = L.marker(latlang).bindTooltip("@"+tweet.user.name).on('click', (e) => console.log(e)).addTo(m);
-      newMarkers.push(marker);
+      if (latlang) {
+        const marker = L.marker(latlang).bindTooltip(tweet.text).on('click', (e) => console.log(e)).addTo(m);
+        newMarkers.push(marker);
 
-      m.flyTo(latlang, 12);
-      setMarkers(newMarkers);
+        m.flyTo(latlang, 12);
+        setMarkers(newMarkers);
+      }
     }
 
       function handle(e) {
@@ -69,19 +83,39 @@ function UserTracking() {
           setData(newdata);
       }
 
+      function clean() {
+
+        setTweets([]);
+        markers.forEach((marker) => {
+          marker.removeFrom(map);
+        });
+
+        setData({name: ""});
+      }
+
       async function submit(e) {
           e.preventDefault();
 
           httpPost('startFollowingUser', { follow: data.name }).then(res => {
             console.log(res);
-            setTweets([]);
+            setShowUserNotFound(false);
 
-            markers.forEach((marker) => {
-              marker.removeFrom(map);
-            });
+            clean();
 
-          }).catch(err => {console.log(err)});
+          }).catch(err => {
+              setShowUserNotFound(true);
+              clean();
+          });
 
+      }
+
+      async function searchCity(name) {
+        const results = await provider.search({ query: name });
+
+        const res = results[0];
+        const lat = new LatLng(res.y, res.x);
+
+        return lat;
       }
 
       return(
@@ -107,7 +141,7 @@ function UserTracking() {
                 center={center}
                 zoom={13}
                 scrollWheelZoom={false}
-                style={{ flex: "60", width: '100%', borderRadius: '4%'}}
+                style={{ flex: "60", width: '100%', borderRadius: '4%', height: '80vh'}}
                 whenCreated={(m) => {setMap(m);}}
                 >
 
@@ -122,10 +156,14 @@ function UserTracking() {
             </Col>
             <Col >
 
-              <Row></Row>
+              <Row>
+              {
+                  showUserNotFound ? <Alert variant="danger">User could not be found.</Alert> : null
+              }
+              </Row>
 
               <Row>
-               <Card style={{ height: '80vh', overflow: 'scroll', marginTop: '14%'}}>
+               <Card style={{ height: '80vh', overflow: 'scroll'}}>
 
                 {tweets.length == 0 ?
                   <Card.Body  style={{display: "flex", justifyContent: "center", alignItems: "center", textAlign: 'center'}}>
@@ -136,12 +174,11 @@ function UserTracking() {
                   </div>
                   </Card.Body> :
 
-
                 <Card.Body>
                   {
                       tweets && tweets.map(tweet=>{
                           return(
-                            <TweetCard tweet={tweet} showOptions={true} />
+                            <TweetCard tweet={tweet} showOptions={false} />
                       )})
                   }
                  </Card.Body>
