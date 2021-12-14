@@ -19,13 +19,18 @@ const provider = new OpenStreetMapProvider();
 
 function UserTracking() {
 
+  
+
       const socket = socketConnection.instance;
 
-      const [data, setData] = useState({
-        name: "",
-      })
+
+      const [data, setData] = useState(localStorage.getItem('data') ? JSON.parse(localStorage.getItem('data')) : {name: ""})
 
       const [tweets,setTweets] = useState([]);
+
+      const [usernameSelected, setUsernameSelected] = useState(data.name == "" ? false : true);
+
+      const [lastLatLng, setLastLatLng] = useState(null);
 
       const [map, setMap] = useState(null);
       const [markers, setMarkers] = useState([]);
@@ -35,21 +40,52 @@ function UserTracking() {
       let center = [41.8933203,12.4829321];
 
     useEffect(() => {
-
+      
       socket.on("followedUserTweeted", (tweet) => {
         const newTweets = [...tweets];
+        
         newTweets.unshift(tweet.data);
 
         setTweets(newTweets);
         if (map) {
 
-          const waitForAdd = async (m, data) => { await addMarker(map, tweet.data); };
+          const waitForAdd = async (m, data) => { 
+            await addMarker(m, data); 
+            await addRoute(m, data)
+          };
+
+           
 
           waitForAdd(map, tweet.data);
         }
       });
 
     }, [tweets, markers, map]);
+
+    async function addRoute(m, tweet) {
+      if (lastLatLng) {
+        console.log(lastLatLng, latlang)
+        let latlang = null;
+
+        if (tweet.coordinates) {
+          latlang = new LatLng(tweet.coordinates.coordinates[1], tweet.coordinates.coordinates[0]);
+
+        } else if (tweet.place) {
+
+            if (tweet.place.place_type == "city") {
+              latlang = await searchCity(tweet.place.name);
+            } else {
+              latlang = new LatLng(tweet.place.bounding_box.coordinates[0][3][1], tweet.place.bounding_box.coordinates[0][2][0]);
+            }
+        }
+
+        if (latlang) {
+          const route = L.Polyline([lastLatLng, latlang]).addTo(m)
+        }
+      } else {
+        console.log('no latlang')
+      }
+    }
 
     async function addMarker(m, tweet) {
       const newMarkers = markers;
@@ -69,9 +105,9 @@ function UserTracking() {
       }
 
       if (latlang) {
+        setLastLatLng(latlang);
         const marker = L.marker(latlang).bindTooltip(tweet.text).on('click', (e) => console.log(e)).addTo(m);
         newMarkers.push(marker);
-
         m.flyTo(latlang, 12);
         setMarkers(newMarkers);
       }
@@ -83,24 +119,30 @@ function UserTracking() {
           setData(newdata);
       }
 
-      function clean() {
+      function clean(clearname) {
 
         setTweets([]);
         markers.forEach((marker) => {
           marker.removeFrom(map);
         });
 
-        setData({name: ""});
+        if(clearname){
+          localStorage.setItem("data","");
+          setData({name: ""});
+          setUsernameSelected(false);
+        }
       }
 
       async function submit(e) {
           e.preventDefault();
+          setUsernameSelected(true);
+          localStorage.setItem('data', JSON.stringify(data))
 
           httpPost('startFollowingUser', { follow: data.name }).then(res => {
             console.log(res);
             setShowUserNotFound(false);
 
-            clean();
+            clean(false);
 
           }).catch(err => {
               setShowUserNotFound(true);
@@ -120,10 +162,10 @@ function UserTracking() {
 
       return(
           <Container fluid  style={{padding: '2%'}} >
-          <Row>
+          <Row style={{height: '100%'}}>
             <Col lg={6} style={{display: 'flex', flexDirection: 'column'}}>
 
-              <Form style={{flex: '1 auto'}}>
+              <Form style={{flex: '1 auto'}} hidden={usernameSelected}>
                 <Row >
                   <Col >
                     <Form.Group class="mb-3" controlId="name">
@@ -137,11 +179,20 @@ function UserTracking() {
 
               </Form>
 
+              <Row hidden={!usernameSelected}>
+                <Col style={{marginBottom: '2%'}}>
+                  You are following: <b>{data.name}</b>
+                </Col>
+                <Col>
+                <a href="#" onClick={() => clean(true)}>Stop following</a>
+                </Col>
+              </Row>
+
               <MapContainer
                 center={center}
                 zoom={13}
                 scrollWheelZoom={false}
-                style={{ flex: "60", width: '100%', borderRadius: '4%', height: '80vh'}}
+                style={{ flex: "70", width: '100%', borderRadius: '4%', height: '80vh'}}
                 whenCreated={(m) => {setMap(m);}}
                 >
 
@@ -162,8 +213,8 @@ function UserTracking() {
               }
               </Row>
 
-              <Row>
-               <Card style={{ height: '80vh', overflow: 'scroll'}}>
+              <Row style={{height: '100%'}}>
+               <Card style={{ height: '100%', overflow: 'scroll'}}>
 
                 {tweets.length == 0 ?
                   <Card.Body  style={{display: "flex", justifyContent: "center", alignItems: "center", textAlign: 'center'}}>

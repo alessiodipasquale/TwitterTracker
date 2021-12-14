@@ -243,8 +243,9 @@ function Home() {
 
         </Col>
         <Col lg={6}>
+          <Row>
 
-           <Card style={{ height: '86vh', overflow: 'scroll'}}>
+           <Card style={{ height: '84vh', overflow: 'scroll'}}>
 
           {tweets.length == 0 ?
             <Card.Body  style={{display: "flex", justifyContent: "center", alignItems: "center", textAlign: 'center'}}>
@@ -267,17 +268,19 @@ function Home() {
           }
 
         </Card>
+          </Row>
 
-        </Col>
-          <Row>
-              <Col xs={6}></Col>
-              <Col xs={3} className="d-grid gap-2">
+        <Row>
+              <Col  className="d-grid gap-2">
                 <Button style={{marginTop:10, marginLeft:20}} size="lg" disabled={tweets.length === 0} variant="primary">General sentiment analysis</Button>
               </Col>
-              <Col xs={3} className="d-grid gap-2">
+              <Col className="d-grid gap-2">
                 <Button style={{marginTop:10}} size="lg" disabled={tweets.length === 0} onClick={() => setShowGeneralWordCloud(true)} variant="primary">General wordcloud</Button>
               </Col>
-          </Row>
+        </Row>
+
+        </Col>
+          
         </Row>
 
         <Modals />
