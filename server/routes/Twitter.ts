@@ -50,10 +50,10 @@ export default abstract class Twitter {
       Twitter._currentlyActive_v1 = true;
       Twitter.stream_v1 = await Twitter.roClient_v1.v1.filterStream({follow:followArgs})
       Twitter.stream_v1.on(ETwitterStreamEvent.Data, (data)=>{
-        console.log(data);
-        Socket.broadcast("followedUserTweeted", {data});
-        console.log(data.data.place);
-        console.log(data.data.coordinates);
+        if(data.user.id_str == followArgs[0]){
+          console.log(data);
+          Socket.broadcast("followedUserTweeted", {data});
+        }
       });
       Twitter.stream_v1.on(ETwitterStreamEvent.ConnectionError,err => console.log('Connection error!', err));
       Twitter.stream_v1.on(ETwitterStreamEvent.Connected, () => console.log('V1 Stream is started.'));
