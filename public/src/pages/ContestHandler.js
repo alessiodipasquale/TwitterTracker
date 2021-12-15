@@ -5,7 +5,7 @@ import { createContest } from '../services/contest-service';
 import {socketConnection} from '../services/socket-service'
 
 
-class ContestHandler extends React.Component {
+class ContestHandler extends Component {
 
 
     constructor(props) {
