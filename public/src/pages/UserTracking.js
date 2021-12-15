@@ -1,219 +1,217 @@
-import React, { Component, useState, useEffect } from 'react';
-import Axios from 'axios';
-import { Card, Form, Row, Col, Button, Container, Alert, Modal } from 'react-bootstrap';
-import { MapContainer, TileLayer, Marker, Popup, useMap, LayerGroup, Circle } from 'react-leaflet'
+import e from 'cors';
 import L, { LatLng } from "leaflet";
 import TweetCard from '../components/TweetCard';
-import { searchTweet } from '../services/searchTweet-service';
-import { GeoSearchControl, MapBoxProvider } from "leaflet-geosearch";
-
-import { httpPost } from "../services/http-service";
-
+import React, { Component, useImperativeHandle, useState } from 'react';
+import { Modal, Card, Form, Row, Col, Button, Container, Alert, ListGroup, ListGroupItem, Accordion } from 'react-bootstrap';
+import { createContest } from '../services/contest-service';
+import {socketConnection} from '../services/socket-service'
+import { MapContainer, TileLayer, Marker, Popup, useMap, LayerGroup, Circle } from 'react-leaflet'
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
-import { text } from 'body-parser';
-import GeneralWordCloud from '../components/GeneralWordCloud';
-
-import { socketConnection } from '../services/socket-service';
+import { httpPost } from "../services/http-service";
 
 const provider = new OpenStreetMapProvider();
 
-function UserTracking() {
-  
-  const [data, setData] = useState(localStorage.getItem('data') ? JSON.parse(localStorage.getItem('data')) : { name: "" })
-  const [tweets, setTweets] = useState([]);
-  const [usernameSelected, setUsernameSelected] = useState(data.name == "" ? false : true);
-  const [lastLatLng, setLastLatLng] = useState({lat: "", lng: ""});
-  const [map, setMap] = useState(null);
-  const [markers, setMarkers] = useState([]);
-  const [showUserNotFound, setShowUserNotFound] = useState(false);
-  const socket = socketConnection.instance;
-  let center = [41.8933203, 12.4829321];
+class UserTracking extends Component {
 
-  useEffect(() => {
+    constructor(props) {
+        super(props);
 
-    socket.on("followedUserTweeted", (tweet) => {
-      const newTweets = [...tweets];
-      newTweets.unshift(tweet.data);
-      setTweets(newTweets);
-      if (map) {
-        const waitForAdd = async (m, data) => {
-          const coordinates = await addMarker(m, data);
-          await addRoute(m, data, {lat:coordinates.lat, lng:coordinates.lng})
+        this.center = [41.8933203, 12.4829321];
+
+        this.state=  { 
+          data: {
+            name: ""
+          },
+          tweets: [],
+          usernameSelected: false,
+          lastLatLng: {
+            lat: "",
+            lng: ""
+          },
+          map: null,
+          markers: [],
+          showUserNotFound: false
         };
-        waitForAdd(map, tweet.data);
+
+        /*socketConnection.instance.emit("/readyToReceiveData", (data) => {
+          console.log(data);
+        })*/
+
+        this.handleChange = this.handleChange.bind(this);
+    }
+
+    componentDidMount(){ 
+      socketConnection.instance.on("followedUserTweeted",async (tweet) => {
+        const newTweets = [...this.state.tweets];
+        newTweets.unshift(tweet.data);
+        this.setState({tweets:newTweets})
+        if(this.state.map != null){
+          const coordinates = await this.addMarker(this.state.map, tweet.data);
+          await this.addRoute(this.state.map, tweet.data, coordinates);
+        }
+      });
+    }
+
+    handleChange(e) {
+      const newContest = {...this.state.contest}
+      newContest[e.target.id] = e.target.value;
+      this.setState({contest: newContest});
+    }
+
+    async addMarker(map, tweet) {
+      const newMarkers = this.state.markers;
+      let latlang = null;
+
+      if (tweet.coordinates) { 
+        latlang = new LatLng(tweet.coordinates.coordinates[1], tweet.coordinates.coordinates[0]);
+      }else{
+        if (tweet.place.place_type == "city") latlang = await this.searchCity(tweet.place.name);
+        else latlang = new LatLng(tweet.place.bounding_box.coordinates[0][3][1], tweet.place.bounding_box.coordinates[0][2][0]);
       }
-    });
-  }, [tweets, markers, map]);
-
-  async function addRoute(m, tweet, coordinates) {
-    console.log("a",lastLatLng)
-    if (lastLatLng.lat !== "") {
-        const convertedOld = new LatLng(lastLatLng.lat, lastLatLng.lng)
-        const convertedNew = new LatLng(coordinates.lat, coordinates.lng)
-        console.log("old",convertedOld)
-        console.log("new",convertedNew)
-        const route = L.Polyline([convertedOld, convertedNew]).addTo(m);
-    } else {
-      console.log('no latlang')
+      if (latlang) {
+        const marker = L.marker(latlang).bindTooltip(tweet.text).on('click', (e) => console.log(e)).addTo(map);
+        newMarkers.push(marker);
+        map.flyTo(latlang, 12);
+        this.setState({markers: newMarkers});
+        return latlang;
+      }
     }
-    //setLastLatLng({lat:coordinates.lat, lng:coordinates.lng});
-  }
 
-  async function addMarker(m, tweet) {
-    const newMarkers = markers;
-    let latlang = null;
+    async addRoute(map, tweet, coordinates) {
+      const last = this.state.lastLatLng;
+      console.log("a",last)
 
-    if (tweet.coordinates) {
-      latlang = new LatLng(tweet.coordinates.coordinates[1], tweet.coordinates.coordinates[0]);
-    } else if (tweet.place) {
-
-      if (tweet.place.place_type == "city") latlang = await searchCity(tweet.place.name);
-      else latlang = new LatLng(tweet.place.bounding_box.coordinates[0][3][1], tweet.place.bounding_box.coordinates[0][2][0]);
-    
+      if (last.lat !== "") {
+          const convertedOld = [last.lat, last.lng]
+          const convertedNew = [coordinates.lat, coordinates.lng]
+          console.log([convertedOld, convertedNew]);
+          const route = new L.Polyline([convertedOld, convertedNew],{color: 'red'})
+          route.addTo(map);
+      } else {
+        console.log('no latlang')
+      }
+      this.setState({lastLatLng: {lat: coordinates.lat,lng: coordinates.lng} });
     }
-    if (latlang) {
-      const marker = L.marker(latlang).bindTooltip(tweet.text).on('click', (e) => console.log(e)).addTo(m);
-      newMarkers.push(marker);
-      m.flyTo(latlang, 12);
-      setMarkers(newMarkers);
-      return latlang;
+
+    async searchCity(name) {
+      const results = await provider.search({ query: name });
+      const res = results[0];
+      const latlng = new LatLng(res.y, res.x);
+      return latlng;
     }
-  }
 
-  function handle(e) {
-    const newdata = { ...data };
-    newdata[e.target.id] = e.target.value;
-    setData(newdata);
-  }
-
-  function clean(clearname) {
-
-    setTweets([]);
-    markers.forEach((marker) => {
-      marker.removeFrom(map);
-    });
-
-    if (clearname) {
-      localStorage.setItem("data", "");
-      setData({ name: "" });
-      setUsernameSelected(false);
+    handle(e) {
+      const newdata = { ...this.state.data };
+      newdata[e.target.id] = e.target.value;
+      this.setState({data: newdata});
     }
-  }
 
-  async function submit(e) {
-    e.preventDefault();
-    setUsernameSelected(true);
-    localStorage.setItem('data', JSON.stringify(data))
+    clean(clearname) {
 
-    httpPost('startFollowingUser', { follow: data.name }).then(res => {
-      console.log(res);
-      setShowUserNotFound(false);
-
-      clean(false);
-
-    }).catch(err => {
-      setShowUserNotFound(true);
-      clean();
-    });
-
-  }
-
-  async function searchCity(name) {
-    const results = await provider.search({ query: name });
-
-    const res = results[0];
-    const lat = new LatLng(res.y, res.x);
-
-    return lat;
-  }
-
-  return (
-    <Container fluid style={{ padding: '2%' }} >
-      <Row style={{ height: '100%' }}>
-        <Col lg={6} style={{ display: 'flex', flexDirection: 'column' }}>
-
-          <Form style={{ flex: '1 auto' }} hidden={usernameSelected}>
-            <Row >
-              <Col >
-                <Form.Group class="mb-3" controlId="name">
-                  <Form.Control onChange={(e) => handle(e)} type="text" placeholder="Enter user name" value={data.name} />
-                </Form.Group>
-              </Col>
-              <Col>
-                <Button disabled={data.name == ""} onClick={(e) => submit(e)} variant="primary">Follow User</Button>
-              </Col>
-            </Row>
-
-          </Form>
-
-          <Row hidden={!usernameSelected}>
-            <Col style={{ marginBottom: '2%' }}>
-              You are following: <b>{data.name}</b>
-            </Col>
-            <Col>
-              <a href="#" onClick={() => clean(true)}>Stop following</a>
-            </Col>
-          </Row>
-
-          <MapContainer
-            center={center}
-            zoom={13}
-            scrollWheelZoom={false}
-            style={{ flex: "70", width: '100%', borderRadius: '4%', height: '80vh' }}
-            whenCreated={(m) => { setMap(m); }}
-          >
-
-            <TileLayer
-              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-
-          </MapContainer>
-
-
-        </Col>
-        <Col >
-
-          <Row>
-            {
-              showUserNotFound ? <Alert variant="danger">User could not be found.</Alert> : null
-            }
-          </Row>
-
+      this.setState({tweets: []});
+      this.state.markers.forEach((marker) => {
+        marker.removeFrom(this.state.map);
+      });
+  
+      if (clearname) {
+        localStorage.setItem("data", "");
+        this.setState({data:{ name: "" }});
+        this.setState({usernameSelected:false});
+      }
+    }
+  
+    async submit(e) {
+      e.preventDefault();
+      this.setState({usernameSelected:true});
+      localStorage.setItem('data', JSON.stringify(this.state.data))
+  
+      httpPost('startFollowingUser', { follow: this.state.data.name }).then(res => {
+        console.log(res);
+        this.setState({showUserNotFound:false});
+  
+        this.clean(false);
+  
+      }).catch(err => {
+        this.setState({showUserNotFound:true});
+        this.clean();
+      });
+  
+    }
+  
+    render() {
+      return (
+        <Container fluid style={{ padding: '2%' }} >
           <Row style={{ height: '100%' }}>
-            <Card style={{ height: '100%', overflow: 'scroll' }}>
-
-              {tweets.length == 0 ?
-                <Card.Body style={{ display: "flex", justifyContent: "center", alignItems: "center", textAlign: 'center' }}>
-                  <div >
-                    <h3 className="text-muted">
-                      Tweets from the user will appear here.
-                    </h3>
-                  </div>
-                </Card.Body> :
-
-                <Card.Body>
-                  {
-                    tweets && tweets.map(tweet => {
-                      return (
-                        <TweetCard tweet={tweet} showOptions={false} />
-                      )
-                    })
+            <Col lg={6} style={{ display: 'flex', flexDirection: 'column' }}>
+              <Form style={{ flex: '1 auto' }} hidden={this.state.usernameSelected}>
+                <Row >
+                  <Col >
+                    <Form.Group class="mb-3" controlId="name">
+                      <Form.Control onChange={(e) => this.handle(e)} type="text" placeholder="Enter user name" value={this.state.data.name} />
+                    </Form.Group>
+                  </Col>
+                  <Col>
+                    <Button disabled={this.state.data.name == ""} onClick={(e) => this.submit(e)} variant="primary">Follow User</Button>
+                  </Col>
+                </Row>
+              </Form>
+              <Row hidden={!this.state.usernameSelected}>
+                <Col style={{ marginBottom: '2%' }}>
+                  You are following: <b>{this.state.data.name}</b>
+                </Col>
+                <Col>
+                  <a href="#" onClick={() => this.clean(true)}>Stop following</a>
+                </Col>
+              </Row>
+              <MapContainer
+                center={this.center}
+                zoom={13}
+                scrollWheelZoom={false}
+                style={{ flex: "70", width: '100%', borderRadius: '4%', height: '80vh' }}
+                whenCreated={(m) => { this.setState({map:m}); }}
+              >
+                <TileLayer
+                  attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+              </MapContainer>
+            </Col>
+            <Col >
+              <Row>
+                {
+                  this.state.showUserNotFound ? <Alert variant="danger">User could not be found.</Alert> : null
+                }
+              </Row>
+              <Row style={{ height: '100%' }}>
+                <Card style={{ height: '100%', overflow: 'scroll' }}>
+                  {this.state.tweets.length == 0 ?
+                    <Card.Body style={{ display: "flex", justifyContent: "center", alignItems: "center", textAlign: 'center' }}>
+                      <div >
+                        <h3 className="text-muted">
+                          Tweets from the user will appear here.
+                        </h3>
+                      </div>
+                    </Card.Body> :
+                    <Card.Body>
+                      {
+                        this.state.tweets && this.state.tweets.map(tweet => {
+                          return (
+                            <TweetCard tweet={tweet} showOptions={false} />
+                          )
+                        })
+                      }
+                    </Card.Body>
                   }
-                </Card.Body>
-              }
-
-            </Card>
+                </Card>
+              </Row>
+            </Col>
           </Row>
+        </Container>
+      );
+    }
 
-        </Col>
-
-      </Row>
-
-    </Container>
-  );
-
-
+    
+    
 }
 
 export default UserTracking;
