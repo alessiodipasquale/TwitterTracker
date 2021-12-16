@@ -1,129 +1,100 @@
-import React, { Component, useImperativeHandle, useState } from 'react';
-import Axios from 'axios';
+import React, { Component } from 'react';
 import { Card, Form, Row, Col, Button, Container, Alert, Modal } from 'react-bootstrap';
 import { MapContainer, TileLayer, Marker, Popup, useMap, LayerGroup, Circle } from 'react-leaflet'
 import L, { LatLng } from "leaflet";
 import TweetCard from '../components/TweetCard';
 import { searchTweet } from '../services/searchTweet-service';
-import { getSentimentFromGroupOfTweets } from '../services/sentiment-analysis'
 import { GeoSearchControl, MapBoxProvider } from "leaflet-geosearch";
 import Sentiment from 'sentiment';
 import Chart from "react-google-charts";
 
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
-import { text } from 'body-parser';
+
 import GeneralWordCloud from '../components/GeneralWordCloud';
 
 import positiveImg from '../images/happy.png';
 import neutralImg from '../images/neutral.png';
 import negativeImg from '../images/sad.png';
 
-const provider = new OpenStreetMapProvider();
+class Home extends Component {
 
-function Home() {
+  constructor(props) {
+    super(props);
 
-  const [data, setData] = useState({
-    text: "",
-    count: 100,
-    author: "",
-    remove: "",
-    since: null,
-    until: null,
-    city: "",
-    radius: 5,
-  });
+    this.center = [41.8933203, 12.4829321];
 
-  const [since, setSince] = useState(null);
-  const [until, setUntil] = useState(null);
-
-  const [tweets, setTweets] = useState([])
-
-  const [circ, setCirc] = useState({
-    circ: null
-  });
-
-  const [map, setMap] = useState(null);
-  const [markers, setMarkers] = useState([])
-
-  const [selectedMarker, setSelectedMarker] = useState([])
-
-  const [dataRetrievingInfo, setDataRetrievingInfo] = useState(" ")
-
-  const [showGeneralWordCloud, setShowGeneralWordCloud] = useState(false);
-  const [showGeneralSentimentAnalysis, setShowGeneralSentimentAnalysis] = useState(false);
-
-  const [generalSentimentData, setGeneralSentimentData] = useState({})
-
-
-  let center = [41.8933203, 12.4829321];
-
-  function handle(e) {
-    const newdata = { ...data };
-    newdata[e.target.id] = e.target.value;
-    setData(newdata);
-  }
-
-
-  async function submit(e) {
-    e.preventDefault();
-
-    let geocode = null
-
-    const provider = new OpenStreetMapProvider({
-      params: {
-        email: 'john@example.com', // auth for large number of requests
-      },
+    this.provider = new OpenStreetMapProvider({
+      params: { email: 'john@example.com' },
     });
 
-    console.log(data)
-    if (circ.circ != null) {
-      console.log('rimuovo')
-      circ.circ.removeFrom(map);
+    this.state = {
+      data: {
+        text: "",
+        count: 100,
+        author: "",
+        remove: "",
+        since: null,
+        until: null,
+        city: "",
+        radius: 5,
+      },
+      tweets: [],
+      circ: { circ: null },
+      map: null,
+      markers: [],
+      selectedMarker: [],
+      dataRetrievingInfo: " ",
+      showGeneralWordCloud: false,
+      showGeneralSentimentAnalysis: false,
+      generalSentimentData: {}
     }
 
-    markers.forEach(marker => {
+    this.handle = this.handle.bind(this);
+  }
+
+  handle(e) {
+    const newdata = { ...this.state.data };
+    newdata[e.target.id] = e.target.value;
+    this.setState({ data: newdata });
+  }
+
+  async submit(e) {
+    e.preventDefault();
+    let geocode = null;
+    const data = this.state.data;
+    const map = this.state.map;
+
+    if (this.state.circ.circ != null) {
+      console.log('rimuovo')
+      this.state.circ.circ.removeFrom(map);
+    }
+
+    this.state.markers.forEach(marker => {
       marker.removeFrom(map);
     })
 
     if (data.city !== "") {
-
-      const results = await provider.search({ query: data.city });
-
+      const results = await this.provider.search({ query: data.city });
       const res = results[0];
       const lat = new LatLng(res.y, res.x);
 
-      center = [res.y, res.x]
-
-
-
-
+      this.center = [res.y, res.x]
       map.flyTo(lat, 12);
-
-
       const circle = L.circle(lat, data.radius * 1000);
-      console.log(data.radius)
-      setCirc({ circ: circle });
-
+      this.setState({ circ: { circ: circle } });
       circle.addTo(map);
-
-
-
       geocode = '[' + res.x + ' ' + res.y + ' ' + data.radius + 'km]';
-    } else {
-      map.flyTo(center, 5)
-    }
+    } else map.flyTo(this.center, 5)
 
     const markersList = [];
-
     searchTweet(data.text, parseInt(data.count), data.author, data.remove, data.since ? new Date(data.since).toISOString() : "", data.until ? new Date(data.until).toISOString() : "", geocode)
       .then(res => {
-        setDataRetrievingInfo(res.data.dataRetrievingTime.result_count + " tweets were found in " + res.data.dataRetrievingTime.time / 1000 + " seconds");
+        this.setState({ dataRetrievingInfo: res.data.dataRetrievingTime.result_count + " tweets were found in " + res.data.dataRetrievingTime.time / 1000 + " seconds" });
         if (res.data.dataRetrievingTime.result_count != 0) {
           res.data.tweets.forEach(tweet => {
             if (tweet.placeDetails) {
               const lat = new LatLng(tweet.placeDetails.geo.bbox[3], tweet.placeDetails.geo.bbox[2]);
               const marker = L.marker(lat).bindTooltip("@" + tweet.userDetails.username).addTo(map).on('click', (e) => {
-                console.log(e);
                 /*setSelectedMarker(e._latlng);
                 tweets.forEach(tweet => {
 
@@ -132,189 +103,32 @@ function Home() {
               markersList.push(marker);
             }
           });
-          setTweets(res.data.tweets)
-          setMarkers(markersList);
+          this.setState({ tweets: res.data.tweets })
+          this.setState({ marksers: markersList });
         } else {
-          setTweets([]);
+          this.setState({ tweets: [] })
         }
       }).catch(err => console.log(err));
   }
 
-  async function doGeneralSentimentAnalysis() {
-    let toAnalize = ""
-    for (let tweet of tweets) {
+  async doGeneralSentimentAnalysis() {
+    let toAnalize = "";
+    for (let tweet of this.state.tweets) {
       toAnalize = toAnalize.concat(" ").concat(tweet.text)
     }
-    console.log("text", toAnalize);
     var sentiment = new Sentiment();
     let result = sentiment.analyze(toAnalize, {});
-    // const result = await getSentimentFromGroupOfTweets(tweets.map(elem => elem.id));
-    setGeneralSentimentData(result)
-    console.log("result", result);
-    setShowGeneralSentimentAnalysis(true)
-
+    this.setState({ generalSentimentData: result })
+    this.setState({ showGeneralSentimentAnalysis: true })
   }
 
-  return (
-    <Container fluid style={{ padding: '2%' }} >
-      <Row>
-        <Col lg={6} style={{ display: 'flex', flexDirection: 'column' }}>
-          <Form style={{ flex: '1 auto' }}>
-            <Row >
-              <Col >
-                <Form.Group class="mb-3" controlId="text">
-                  <Form.Control onChange={(e) => handle(e)} type="text" placeholder="Enter Keywords to look for" value={data.text} />
-                </Form.Group>
-              </Col>
-              <Col>
-                <Form.Group class="mb-3" controlId="count">
-                  <Form.Control onChange={(e) => handle(e)} type="number" placeholder="Max number of tweets" value={data.count} />
-                </Form.Group>
-              </Col>
-            </Row>
-
-            <Row>
-              <Col>
-                <Form.Group class="mb-3" controlId="author">
-                  <Form.Control onChange={(e) => handle(e)} type="text" placeholder="Enter Author" value={data.author} />
-                </Form.Group>
-              </Col>
-              <Col>
-                <Form.Group class="mb-3" controlId="remove">
-                  <Form.Control onChange={(e) => handle(e)} type="text" placeholder="List of words to exclude from search" value={data.remove} />
-                </Form.Group>
-              </Col>
-            </Row>
-
-            <Row>
-              <Col>
-
-
-                <Form.Group class="mb-3" controlId="since">
-
-                  <Form.Control
-                    onChange={(e) => handle(e)}
-                    placeholder="Only get tweets since..."
-                    type="date"
-                    selected={data.since}
-                    value={data.since} />
-
-                </Form.Group>
-
-              </Col>
-              <Col>
-
-                <Form.Group class="mb-3" controlId="until">
-
-                  <Form.Control
-                    onChange={(e) => handle(e)}
-                    type="date"
-                    selected={data.until}
-                    value={data.until}
-                    placeholder="Only get tweets up to..."
-                  />
-
-                </Form.Group>
-
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Form.Group className="mb-3" controlId="city">
-                  <Form.Control onChange={(e) => handle(e/*, e.target.value*/)} type="text" placeholder="Insert city" value={data.city} />
-                </Form.Group>
-              </Col>
-              <Col>
-                <Form.Group className="mb-3" controlId="radius">
-                  <Form.Control onChange={(e) => { handle(e/*, parseInt(e.target.value)*/) }} type="number" placeholder="Insert Radius" value={data.radius} />
-                </Form.Group>
-              </Col>
-            </Row>
-
-            {/*<Row>
-            <Alert variant="warning">
-              Because of how the twitter api works, the since and before date will only a week back.
-            </Alert>
-          </Row>*/}
-
-            <Row>
-              <Button disabled={data.text == "" && data.author == "" && data.city == ""} onClick={(e) => submit(e)} variant="primary">Search Tweets</Button>
-            </Row>
-
-            <Row>
-              <Form.Text>{dataRetrievingInfo}</Form.Text>
-            </Row>
-
-          </Form>
-
-          <MapContainer
-            center={center}
-            zoom={13}
-            scrollWheelZoom={false}
-            style={{ flex: "60", width: '100%', borderRadius: '4%', marginTop: '5%' }}
-            whenCreated={setMap}
-          >
-
-            <TileLayer
-              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-
-          </MapContainer>
-
-
-        </Col>
-        <Col lg={6}>
-          <Row>
-
-            <Card style={{ height: '84vh', overflow: 'scroll' }}>
-
-              {tweets.length == 0 ?
-                <Card.Body style={{ display: "flex", justifyContent: "center", alignItems: "center", textAlign: 'center' }}>
-                  <div >
-                    <h3 className="text-muted">
-                      Your Tweets will appear here.<br /> Do a research.
-                    </h3>
-                  </div>
-                </Card.Body> :
-                <Card.Body>
-                  {
-                    tweets && tweets.slice(0, 150).map(tweet => {
-                      return (<TweetCard tweet={tweet} showOptions={true} />)
-                    })
-                  }
-                </Card.Body>
-              }
-
-            </Card>
-          </Row>
-
-          <Row>
-            <Col className="d-grid gap-2">
-              <Button style={{ marginTop: 10, marginLeft: 20 }} size="lg" disabled={tweets.length === 0} onClick={() => doGeneralSentimentAnalysis()} variant="primary">General sentiment analysis</Button>
-            </Col>
-            <Col className="d-grid gap-2">
-              <Button style={{ marginTop: 10 }} size="lg" disabled={tweets.length === 0} onClick={() => setShowGeneralWordCloud(true)} variant="primary">General wordcloud</Button>
-            </Col>
-          </Row>
-
-        </Col>
-
-      </Row>
-
-      <Modals />
-
-    </Container>
-  );
-
-  function Modals() {
-
+  Modals() {
     return (
       <>
         <Modal
           size="lg"
-          show={showGeneralWordCloud}
-          onHide={() => setShowGeneralWordCloud(false)}
+          show={this.state.showGeneralWordCloud}
+          onHide={() => this.setState({ showGeneralWordCloud: false })}
           aria-labelledby="example-modal-sizes-title-lg"
         >
           <Modal.Header closeButton>
@@ -323,14 +137,14 @@ function Home() {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <GeneralWordCloud tweets={tweets}></GeneralWordCloud>
+            <GeneralWordCloud tweets={this.state.tweets}></GeneralWordCloud>
           </Modal.Body>
         </Modal>
 
         <Modal
           size="lg"
-          show={showGeneralSentimentAnalysis}
-          onHide={() => setShowGeneralSentimentAnalysis(false)}
+          show={this.state.showGeneralSentimentAnalysis}
+          onHide={() => this.setState({ showGeneralSentimentAnalysis: false })}
           aria-labelledby="example-modal-sizes-title-lg"
         >
           <Modal.Header closeButton>
@@ -342,12 +156,11 @@ function Home() {
             <Row>
               <Col lg={12} style={{ display: 'flex', justifyContent: 'center' }}>
                 {
-
-                  generalSentimentData !== {} ?
-                    generalSentimentData.score === 0 ?
+                  this.state.generalSentimentData !== {} ?
+                  this.state.generalSentimentData.score === 0 ?
                       <img src={neutralImg} alt="neutral" />
                       :
-                      generalSentimentData.score > 0 ?
+                      this.state.generalSentimentData.score > 0 ?
                         <img src={positiveImg} alt="postive" />
                         :
                         <img src={negativeImg} alt="negative" />
@@ -356,75 +169,241 @@ function Home() {
               </Col>
             </Row>
             {
-              tweets.length !== 0 && showGeneralSentimentAnalysis ? 
+              this.state.tweets.length !== 0 && this.state.showGeneralSentimentAnalysis ?
                 <Row>
-                  <p style={{ fontSize: 20, marginTop: "6%" }}>Analyzed words: {generalSentimentData.tokens.length}</p>
+                  <p style={{ fontSize: 20, marginTop: "6%" }}>Analyzed words: {this.state.generalSentimentData.tokens.length}</p>
                   <p style={{ fontSize: 20 }}>Resulting pie chart:</p>
                   <Chart
-                    style={{marginLeft:"10%"}}
+                    style={{ marginLeft: "10%" }}
                     width={"90%"}
                     height={'400px'}
                     chartType="PieChart"
                     loader={<div>Loading Chart</div>}
-                    data={[["type", "occurrences"],["negative",generalSentimentData.negative.length],["positive",generalSentimentData.positive.length]]}
+                    data={[["type", "occurrences"], ["negative", this.state.generalSentimentData.negative.length], ["positive", this.state.generalSentimentData.positive.length]]}
                     options={{
                       title: 'Popularity of Types of Pizza',
                       sliceVisibilityThreshold: 0, // 0%
                     }}
                     rootProps={{ 'data-testid': '7' }}
                   />
-                </Row>:{}
+                </Row> : {}
             }
-
-            { /*sentiments ?
-                sentiments.negative.length != 0 || sentiments.positive.length != 0 ?
-                  <Row style={{marginTop: '3%'}}>
-                  <Col lg={6}>
-                    <Card>
-                      <Card.Header>
-                        Negative
-                      </Card.Header>
-                      <Card.Body style= {{display: 'flex', flexFlow: 'wrap'}}>
-                      {
-                        sentiments.negative && sentiments.negative.map(negativeText=>{
-                          return(
-                            <Card name="negativeText" id="negativeText" role="text" style={{margin: '6px'}}>
-                              <Card.Body style= {{padding: '9px'}}> {negativeText}</Card.Body>
-                            </Card>
-                          )})
-                      }
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                  <Col lg={6}>
-                  <Card>
-                      <Card.Header>
-                        Positive
-                      </Card.Header>
-                      <Card.Body style= {{display: 'flex', flexFlow: 'wrap'}}>
-                      {
-                        sentiments.positive && sentiments.positive.map(positiveText=>{
-                          return(
-                            <Card name="positiveText" id="positiveText" role="text" style={{margin: '6px'}}>
-                              <Card.Body style= {{padding: '9px'}}> {positiveText}</Card.Body>
-                            </Card>
-                      )})
-                      }
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                </Row>
-                :
-                <h3 style={{textAlign: 'center'}}>It wasn't possible to make Sentiment Analysis on this tweet.</h3>
-                : null
-                    */}
           </Modal.Body>
-
         </Modal>
       </>
     );
+  }
 
+  render() {
+    return (
+      <Container fluid style={{ padding: '2%' }} >
+        <Row>
+          <Col lg={6} style={{ display: 'flex', flexDirection: 'column' }}>
+            <Form style={{ flex: '1 auto' }}>
+              <Row >
+                <Col >
+                  <Form.Group class="mb-3" controlId="text">
+                    <Form.Control onChange={(e) => this.handle(e)} type="text" placeholder="Enter Keywords to look for" value={this.state.data.text} />
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group class="mb-3" controlId="count">
+                    <Form.Control onChange={(e) => this.handle(e)} type="number" placeholder="Max number of tweets" value={this.state.data.count} />
+                  </Form.Group>
+                </Col>
+              </Row>
+
+              <Row>
+                <Col>
+                  <Form.Group class="mb-3" controlId="author">
+                    <Form.Control onChange={(e) => this.handle(e)} type="text" placeholder="Enter Author" value={this.state.data.author} />
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group class="mb-3" controlId="remove">
+                    <Form.Control onChange={(e) => this.handle(e)} type="text" placeholder="List of words to exclude from search" value={this.state.data.remove} />
+                  </Form.Group>
+                </Col>
+              </Row>
+
+              <Row>
+                <Col>
+
+
+                  <Form.Group class="mb-3" controlId="since">
+
+                    <Form.Control
+                      onChange={(e) => this.handle(e)}
+                      placeholder="Only get tweets since..."
+                      type="date"
+                      selected={this.state.data.since}
+                      value={this.state.data.since} />
+
+                  </Form.Group>
+
+                </Col>
+                <Col>
+
+                  <Form.Group class="mb-3" controlId="until">
+
+                    <Form.Control
+                      onChange={(e) => this.handle(e)}
+                      type="date"
+                      selected={this.state.data.until}
+                      value={this.state.data.until}
+                      placeholder="Only get tweets up to..."
+                    />
+
+                  </Form.Group>
+
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Form.Group className="mb-3" controlId="city">
+                    <Form.Control onChange={(e) => this.handle(e)} type="text" placeholder="Insert city" value={this.state.data.city} />
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group className="mb-3" controlId="radius">
+                    <Form.Control onChange={(e) => { this.handle(e) }} type="number" placeholder="Insert Radius" value={this.state.data.radius} />
+                  </Form.Group>
+                </Col>
+              </Row>
+
+              {/*<Row>
+              <Alert variant="warning">
+                Because of how the twitter api works, the since and before date will only a week back.
+              </Alert>
+            </Row>*/}
+
+              <Row>
+                <Button disabled={this.state.data.text == "" && this.state.data.author == "" && this.state.data.city == ""} onClick={(e) => this.submit(e)} variant="primary">Search Tweets</Button>
+              </Row>
+
+              <Row>
+                <Form.Text>{this.state.dataRetrievingInfo}</Form.Text>
+              </Row>
+
+            </Form>
+
+            <MapContainer
+              center={this.center}
+              zoom={13}
+              scrollWheelZoom={false}
+              style={{ flex: "60", width: '100%', borderRadius: '4%', marginTop: '5%' }}
+              whenCreated={(map)=>this.setState({map})}
+            >
+
+              <TileLayer
+                attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+
+            </MapContainer>
+          </Col>
+          <Col lg={6}>
+            <Row>
+              <Card style={{ height: '84vh', overflow: 'scroll' }}>
+                {this.state.tweets.length == 0 ?
+                  <Card.Body style={{ display: "flex", justifyContent: "center", alignItems: "center", textAlign: 'center' }}>
+                    <div >
+                      <h3 className="text-muted">
+                        Your Tweets will appear here.<br /> Do a research.
+                      </h3>
+                    </div>
+                  </Card.Body> :
+                  <Card.Body>
+                    {
+                      this.state.tweets && this.state.tweets.slice(0, 150).map(tweet => {
+                        return (<TweetCard tweet={tweet} showOptions={true} />)
+                      })
+                    }
+                  </Card.Body>
+                }
+
+              </Card>
+            </Row>
+            <Row>
+              <Col className="d-grid gap-2">
+                <Button style={{ marginTop: 10, marginLeft: 20 }} size="lg" disabled={this.state.tweets.length === 0} onClick={() => this.doGeneralSentimentAnalysis()} variant="primary">General sentiment analysis</Button>
+              </Col>
+              <Col className="d-grid gap-2">
+                <Button style={{ marginTop: 10 }} size="lg" disabled={this.state.tweets.length === 0} onClick={() => this.setState({showGeneralWordCloud:true})} variant="primary">General wordcloud</Button>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+        
+        <>
+        <Modal
+          size="lg"
+          show={this.state.showGeneralWordCloud}
+          onHide={() => this.setState({ showGeneralWordCloud: false })}
+          aria-labelledby="example-modal-sizes-title-lg"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title id="example-modal-sizes-title-md">
+              General Word Cloud
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <GeneralWordCloud tweets={this.state.tweets}></GeneralWordCloud>
+          </Modal.Body>
+        </Modal>
+
+        <Modal
+          size="lg"
+          show={this.state.showGeneralSentimentAnalysis}
+          onHide={() => this.setState({ showGeneralSentimentAnalysis: false })}
+          aria-labelledby="example-modal-sizes-title-lg"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title id="example-modal-sizes-title-md">
+              General Sentiment analysis
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Row>
+              <Col lg={12} style={{ display: 'flex', justifyContent: 'center' }}>
+                {
+                  this.state.generalSentimentData !== {} ?
+                  this.state.generalSentimentData.score === 0 ?
+                      <img src={neutralImg} alt="neutral" />
+                      :
+                      this.state.generalSentimentData.score > 0 ?
+                        <img src={positiveImg} alt="postive" />
+                        :
+                        <img src={negativeImg} alt="negative" />
+                    : ''
+                }
+              </Col>
+            </Row>
+            {
+              this.state.tweets.length !== 0 && this.state.showGeneralSentimentAnalysis ?
+                <Row>
+                  <p style={{ fontSize: 20, marginTop: "6%" }}>Analyzed words: {this.state.generalSentimentData.tokens.length}</p>
+                  <p style={{ fontSize: 20 }}>Resulting pie chart:</p>
+                  <Chart
+                    style={{ marginLeft: "10%" }}
+                    width={"90%"}
+                    height={'400px'}
+                    chartType="PieChart"
+                    loader={<div>Loading Chart</div>}
+                    data={[["type", "occurrences"], ["negative", this.state.generalSentimentData.negative.length], ["positive", this.state.generalSentimentData.positive.length]]}
+                    options={{
+                      title: 'Popularity of Types of Pizza',
+                      sliceVisibilityThreshold: 0, // 0%
+                    }}
+                    rootProps={{ 'data-testid': '7' }}
+                  />
+                </Row> : null
+            }
+          </Modal.Body>
+        </Modal>
+      </>
+      </Container>
+    );
   }
 }
-
-export default Home
+export default Home;
