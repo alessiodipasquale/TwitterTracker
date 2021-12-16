@@ -1,5 +1,5 @@
 import { Server as SocketServer } from 'socket.io'
-import { setListenersForSocket, disconnect, sendPastData } from '../routes/StreamManager'
+import { setListenersForSocket} from '../routes/StreamManager'
 
 export default abstract class Socket{
 
@@ -17,10 +17,8 @@ export default abstract class Socket{
                 Socket.openSockets = Socket.openSockets.filter(function(elem){ 
                     return elem != socket; 
                 });
-                //disconnect(socket)               see if necessary to save data 
                 console.log("socket disconnected")
             });
-            //retrieve and send all past data related to the contests
         });
     }
 

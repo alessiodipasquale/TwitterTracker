@@ -4,7 +4,6 @@ import { createServer } from 'http';
 import { expect, assert } from 'chai';
 import { Server } from "socket.io";
 import { io as Client } from "socket.io-client";
-import { addListener } from "../server/routes/StreamManager"
 
 Twitter.authentication();
 
@@ -52,8 +51,8 @@ describe('#Contest creation Tests', () => {
 			assert.equal(arg.name, streamDefinitions.name);
 			done();
 		})
-		serverSocket.on("newLiteraryContestCreated", async (streamDefinitions: any) =>{
-			serverSocket.emit("newLiteraryContestCreated", streamDefinitions);
+		serverSocket.on("newLiteraryContestCreated", async (streamDefs: any) =>{
+			serverSocket.emit("newLiteraryContestCreated", streamDefs);
 		})
 		Database.newStreamDef(streamDefinitions);
 		let found = false;

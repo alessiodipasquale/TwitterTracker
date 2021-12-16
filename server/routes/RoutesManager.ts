@@ -2,12 +2,11 @@ import { BadRequest } from '../config/Error';
 import { Stopwatch } from 'ts-stopwatch';
 import { IRequest, IResponse } from '../config/Express';
 import Twitter from "./Twitter";
-import { buildQ, delay, formatData, translateAndGetSentiments } from "../Utils/Utils";
+import { buildQ, delay, formatData, translateAndGetSentiments } from "../utils/Utils";
 import { Tweetv2SearchParams, TweetSearchAllV2Paginator } from 'twitter-api-v2';
 import Database from '../config/Database';
-import { StreamDefinition, Rule } from '../types/StreamDefinition'
+import { StreamDefinition } from '../types/StreamDefinition'
 import Config from '../config/Config';
-import Socket from '../connection/Socket';
 
 export const searchTweetById: any = async (req: IRequest, res: IResponse): Promise<void> => {
     const id: string = req.params.tweetId;
@@ -89,7 +88,7 @@ export const searchByKeyword: any = async (req: IRequest, res: IResponse): Promi
         .catch(err => {
             console.log(err.stack)
             res.status(400).send({ error: 'INCORRECT_BODY', description: `Il body non è corretto` });
-            //throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
+            // verificare se si può tenere throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
         })
 }
 
@@ -154,7 +153,7 @@ export const getSentimentFromGroupOfTweets: any = async (req: IRequest, res: IRe
     for (let id of ids) {
         Twitter.searchTweetById(id, {})
             .then(data => {
-                toAnalize.concat(data.data.text);
+                toAnalize = toAnalize.concat(data.data.text);
             }).catch(err => {
                 throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
             })
@@ -168,8 +167,10 @@ export const getSentimentFromGroupOfTweets: any = async (req: IRequest, res: IRe
 
 export const addElementToStreamData = async (req: IRequest, res: IResponse) => {
     try {
-        Database.newStreamDef(req.body.streamDefinitions as StreamDefinition);
-        Twitter.rulesConstruction(req.body.streamDefinitions, "add");
+        if(!Database.eventAlreadyPresent(req.body.streamDefinitions.name)) {
+            Database.newStreamDef(req.body.streamDefinitions as StreamDefinition);
+            Twitter.rulesConstruction(req.body.streamDefinitions, "add");
+        }
         res.send();
     } catch (err) {
         throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
@@ -178,10 +179,26 @@ export const addElementToStreamData = async (req: IRequest, res: IResponse) => {
 
 export const removeStreamElementFromData = async (req: IRequest, res: IResponse) => {
     try {
-        await Twitter.removeFromRules(req.params.streamName);
-        Database.deleteStreamDef(req.params.streamName, req.params.type)
+        if(Database.eventAlreadyPresent(req.params.streamName)){
+            await Twitter.removeFromRules(req.params.streamName);
+            Database.deleteStreamDef(req.params.streamName, req.params.type)
+        }
         res.send();
     } catch (err) {
         throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
+    }
+}
+
+export const startFollowingUser = async (req: IRequest, res: IResponse) => {
+    try {
+        if(Twitter.currentlyActive_v1){
+            await Twitter.stopStream_v1();
+        }
+        const userId:string = await Twitter.findIdByUsername(req.body.follow);
+        await Twitter.startStream_v1([userId])
+        res.send();
+    } catch (err) {
+        //throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
+        res.status(400).send();
     }
 }

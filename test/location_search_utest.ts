@@ -1,6 +1,6 @@
 import Twitter from "../server/routes/Twitter";
 import {expect} from 'chai';
-import { delay } from "../server/Utils/Utils"
+import { delay } from "../server/utils/Utils"
 
 Twitter.authentication();
 
@@ -18,8 +18,7 @@ describe('Tweet Search By Location utests', () => {
         await delay(1000)
         await Twitter.searchTweetsByKeyword({query: q, options:queryOptions}).then(paginator => {
           const places = [];
-          for (var i = 0; i < paginator.data.data.length; i++) {
-              var tweet = paginator.data.data[i];
+          for (let tweet of paginator.data.data) {
               places.push(tweet.geo?.place_id);
           }
           expect(places).to.include("ebdc4aa39ecb7cb1");

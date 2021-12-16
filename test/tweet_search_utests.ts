@@ -1,6 +1,6 @@
 import Twitter from "../server/routes/Twitter";
 import {expect} from 'chai';
-import { delay } from "../server/Utils/Utils"
+import { delay } from "../server/utils/Utils"
 
 Twitter.authentication();
 
@@ -25,8 +25,7 @@ describe('Tweet Search By Keyword utests', () => {
 			await delay(500);
 			await Twitter.searchTweetsByKeyword(query)
 				.then(paginator => {
-					for (var i = 0; i < paginator.data.data.length; i++) {
-						var tweet = paginator.data.data[i];
+					for (let tweet of paginator.data.data) {
 						expect(tweet.text).not.to.be.empty;
 					}
 				});

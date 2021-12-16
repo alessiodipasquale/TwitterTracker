@@ -1,18 +1,32 @@
-import TwitterApi, { TwitterApiReadOnly, ETwitterStreamEvent, TweetStream, StreamingV2AddRulesParams } from 'twitter-api-v2';
+import TwitterApi, { TwitterApiReadOnly, ETwitterStreamEvent, TweetStream } from 'twitter-api-v2';
 import { tweetEventHandler } from "./StreamManager";
 import Database from "../config/Database";
-import { StreamDefinition, Rule } from '../types/StreamDefinition';
+import Socket from '../connection/Socket';
 
 export default abstract class Twitter {
+    private static roClient_v1: any;
     private static roClient: TwitterApiReadOnly;
     public static stream: TweetStream;
+    public static stream_v1: TweetStream;
+
+    private static _currentlyActive_v1 = false;
 
     public static async authentication(){
       const twitterClient = new TwitterApi("AAAAAAAAAAAAAAAAAAAAAOKvNwEAAAAAoWNV8XrBS7KsdCqAZ6GHEkWZXm8%3D0pUlsutplEvsnmu9NQLbSjjvGq1zTs7YFKSxDtQr3bQHitkpN5")
       Twitter.roClient = twitterClient.readOnly;
     }
 
+    public static async authentication_v1(){
+      Twitter.roClient_v1 = new TwitterApi({
+        appKey: 'xCjANsVSmJ5hwKKJz6oSZiwOC',
+        appSecret: 'zPzz9otwrXFcMsCDNCubDXG97SNQcCbJEuVeQwa3P5fVlcZV4o',
+        accessToken: '1447929992550227969-Xbpzos9Tiu6MUZNY4njk9ZPXCpnncE',
+        accessSecret: 'M2f7dsdiFslNLqRl0FMUv3OpVummKPg2aQhQ4yGfF6XPM',
+      });
+    }
+
     public static async init() {
+        Twitter.authentication_v1();
         Twitter.authentication();
         Twitter.startStream();
     }
@@ -24,7 +38,7 @@ export default abstract class Twitter {
       Twitter.stream.on(ETwitterStreamEvent.ConnectionClosed, () => console.log('Connection has been closed.'));
       await Twitter.stream.connect({ autoReconnect: true, autoReconnectRetries: Infinity });
       await Twitter.clearStreamRulesIfPresent();
-  
+
       const contests = Database.streamDefinitions;
       for (let elem of contests) {
         await Twitter.rulesConstruction(elem,"add")
@@ -32,8 +46,32 @@ export default abstract class Twitter {
       await Twitter.getStreamRules();
     }
 
+    public static async startStream_v1(followArgs: string[]) {
+      Twitter._currentlyActive_v1 = true;
+      Twitter.stream_v1 = await Twitter.roClient_v1.v1.filterStream({follow:followArgs})
+      Twitter.stream_v1.on(ETwitterStreamEvent.Data, (data)=>{
+        if(data.user.id_str == followArgs[0]){
+          console.log(data);
+          Socket.broadcast("followedUserTweeted", {data});
+        }
+      });
+      Twitter.stream_v1.on(ETwitterStreamEvent.ConnectionError,err => console.log('Connection error!', err));
+      Twitter.stream_v1.on(ETwitterStreamEvent.Connected, () => console.log('V1 Stream is started.'));
+      Twitter.stream_v1.on(ETwitterStreamEvent.ConnectionClosed, () => console.log('V1 Stream Connection has been closed.'));
+      await Twitter.stream_v1.connect({ autoReconnect: true, autoReconnectRetries: Infinity });
+    }
+
+    public static async stopStream_v1() {
+      Twitter.stream_v1.close();
+      Twitter._currentlyActive_v1 = false;
+    }
+
+    public static get currentlyActive_v1(){
+      return Twitter._currentlyActive_v1;
+    }
+
     public static async rulesConstruction(elem:any, type:string): Promise<void>{
-      let rules: any 
+      let rules: any
       if(type=="add"){
         rules = {
           "add": []
@@ -99,5 +137,9 @@ export default abstract class Twitter {
 
     public static async getRetweetsByTweetId({query,options}: any) {
       return await Twitter.roClient.v1.get('statuses/retweets/'.concat(query.id).concat('.json'),{})
+    }
+
+    public static async findIdByUsername(username:string){
+      return (await Twitter.roClient.v1.user({screen_name:username})).id_str;
     }
 }

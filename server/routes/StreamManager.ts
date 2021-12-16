@@ -1,5 +1,5 @@
 import Twitter from "./Twitter";
-import {TweetV2SingleStreamResult, StreamingV2GetRulesResult } from 'twitter-api-v2';
+import {TweetV2SingleStreamResult } from 'twitter-api-v2';
 import Database from '../config/Database';
 import Socket from '../connection/Socket';
 import Config from '../config/Config';
@@ -19,6 +19,10 @@ export async function tweetEventHandler(eventData: TweetV2SingleStreamResult) {
         throw BadRequest
       }
     }
+}
+
+export async function userEventHandler(eventData: TweetV2SingleStreamResult) {
+  console.log(eventData)
 }
 
 async function manageStreamRequest(type: string, value: string, hashtag: string, matchingRule: any, tweet: any){
@@ -68,10 +72,6 @@ export async function addListener(socket:any, event: string, listener: Function)
           callback(err);
       }
   });
-}
-
-export async function disconnect(socket: any) {
-  
 }
 
 export function sendPastData(socket: any) {

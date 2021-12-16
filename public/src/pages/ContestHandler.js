@@ -5,7 +5,7 @@ import { createContest } from '../services/contest-service';
 import {socketConnection} from '../services/socket-service'
 
 
-class ContestHandler extends React.Component {
+class ContestHandler extends Component {
 
 
     constructor(props) {
@@ -22,7 +22,9 @@ class ContestHandler extends React.Component {
             endDate: new Date(),
             type: '',
             rules: [],
-            extras: []
+            extras: {
+              questions: []
+            }
           }
         };
 
@@ -48,7 +50,8 @@ class ContestHandler extends React.Component {
           <Row>
             <Col>
               <Button style={{marginRight: '2%'}} onClick={(e) => this.openCreateLiteraryContest(e)} variant="primary">Create Literary Contest</Button>
-              <Button onClick={(e) => this.openCreateTriviaGame(e)} variant="primary">Create Trivia Game</Button>
+              <Button style={{marginRight: '2%'}} onClick={(e) => this.openCreateTriviaGame(e)} variant="primary">Create Trivia Game</Button>
+              <Button onClick={(e) => this.openCreateCustomStream(e)} variant="primary">Create custom stream</Button>
             </Col>
           </Row>
         </Container>
@@ -76,6 +79,35 @@ class ContestHandler extends React.Component {
         contest: {                   // object that we want to update
             ...prevState.contest,    // keep all other key-value pairs
             type: 'literaryContest'       // update the value of specific key
+        }
+      }))
+    }
+
+    openCreateCustomStream(e) {
+      this.setState(prevState => ({
+        showCustomModal: true,
+        contest: {
+          ...prevState.contest,
+            type: 'custom'
+        }
+      }))
+      
+    } 
+
+    addQuestion(e) {
+      this.setState(prevState => ({
+        contest: {
+          ...prevState.contest,
+          extras: {
+            ...prevState.contest.extras,
+            questions: [
+              ...prevState.contest.extras.questions,
+              {
+                text: '',
+                correctAnswers: []
+              } 
+            ]
+          }
         }
       }))
     }
@@ -164,6 +196,35 @@ class ContestHandler extends React.Component {
                   <Form.Label>Insert End Date for the Trivia Game</Form.Label>
                   <Form.Control value={this.state.contest.endDate} onChange={this.handleChange} type="date"/>
               </Form.Group>
+              
+              {
+                this.state.contest.extras.questions.length != 0 ?
+                this.state.contest.extras.questions && this.state.contest.extras.questions.map(question => {
+                  console.log(question)
+                  return (
+                    <Card className='mb-3'>
+                      <Card.Body>
+                        
+                      <Form.Group>
+
+                      <Form.Label>Insert Question</Form.Label>
+                      <Form.Control value={question.text} onChange={this.handleChange} type="text" placeholder="Insert question" className='mb-3'/>
+
+                      <Form.Label>Insert Correct Answer</Form.Label>
+                      <Form.Control value={question.correctAnswers[0]} onChange={this.handleChange} type="text" placeholder="Insert correct answer"/>
+
+                      </Form.Group>
+
+                      </Card.Body>
+                    </Card>
+                      
+                    
+                  )
+                }) : null
+              }
+
+              <Button onClick={() => {this.addQuestion()}}> Add question</Button>
+              
             </Row>
           } 
           </Modal.Body>

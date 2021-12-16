@@ -1,4 +1,3 @@
-//import mongoose, { ConnectionOptions } from 'mongoose';
 import Config from './Config';
 import Data from './Data.json'
 import fs from 'fs';
@@ -6,9 +5,6 @@ import Socket from '../connection/Socket'
 import type { StreamDefinition } from '../types/StreamDefinition'
 
 export default abstract class Database {
-    static async init() {
-
-    }
 
     public static get streamDefinitions(): StreamDefinition[] {
         let objectArray = JSON.parse(JSON.stringify(Data.streamDefinitions));
@@ -36,7 +32,7 @@ export default abstract class Database {
     }
 
     public static newStreamDef(newStream: StreamDefinition) {
-        let currentStreamDefs: StreamDefinition[] = (Database.streamDefinitions) as StreamDefinition[];
+        let currentStreamDefs: StreamDefinition[] = Database.streamDefinitions;
         currentStreamDefs = currentStreamDefs.concat(newStream);
         switch (newStream.type) {
             case 'literaryContest': {
@@ -51,22 +47,17 @@ export default abstract class Database {
                     Socket.broadcast('newTriviaGameCreated', newStream)
                 break;
             }
-            default: {
-                console.log('Unrecognized type of stream');
-            }
         }
         Database.streamDefinitions = currentStreamDefs;
     }
 
     public static deleteStreamDef(toDelete: string, type: string) {
-        let currentStreamDefs: StreamDefinition[] = (Database.streamDefinitions) as StreamDefinition[];
+        let currentStreamDefs: StreamDefinition[] = Database.streamDefinitions;
         currentStreamDefs = currentStreamDefs.filter((element) => {
             return element.name != toDelete
         })
         Database.streamDefinitions = currentStreamDefs;
-        if (true) {
-            Database.deleteStreamData(toDelete, type)
-        }
+        Database.deleteStreamData(toDelete, type);
     }
 
     public static deleteStreamData(toDelete: string, type: string) {
@@ -87,13 +78,11 @@ export default abstract class Database {
     }
 
     public static get literaryContestsData() {
-        let objectArray = JSON.parse(JSON.stringify(Data.DataFromLiteraryContests));
-        return objectArray;
+        return JSON.parse(JSON.stringify(Data.DataFromLiteraryContests));
     }
 
     public static get triviaGamesData() {
-        let objectArray = JSON.parse(JSON.stringify(Data.DataFromTriviaGames));
-        return objectArray;
+        return JSON.parse(JSON.stringify(Data.DataFromTriviaGames));
     }
 
     public static set literaryContestsData(newData: any[]) {
@@ -119,53 +108,45 @@ export default abstract class Database {
     }
 
     public static newLiteraryContest(newStream: StreamDefinition) {
-        if (!Database.eventAlreadyPresent(newStream.name, "literaryContest")) {
-            let allData = Data;
-            const objectData = allData.DataFromLiteraryContests;
-            objectData.push({ name: newStream.name, voters: [], books: [] });
-            allData.DataFromLiteraryContests = objectData;
-            const stringedData = JSON.stringify(allData)
-            try {
-                fs.writeFileSync('./server/config/Data.json', stringedData);
-            } catch (error) {
-                console.error(error);
-            }
-            return true;
+        let allData = Data;
+        const objectData = allData.DataFromLiteraryContests;
+        objectData.push({ name: newStream.name, voters: [], books: [] });
+        allData.DataFromLiteraryContests = objectData;
+        const stringedData = JSON.stringify(allData)
+        try {
+            fs.writeFileSync('./server/config/Data.json', stringedData);
+        } catch (error) {
+            console.error(error);
         }
-        return false;
+        return true;
     }
 
     public static newTriviaGame(newStream: StreamDefinition) {
-        if (!Database.eventAlreadyPresent(newStream.name, "triviaGame")) {
-            let allData = Data;
-            const objectData = allData.DataFromTriviaGames;
-            const buildedQuestions = [];
-            for (let question of newStream.extras.questions) {
-                let lowerCase = []
-                for (let cAnswer of question.correctAnswers) {
-                    lowerCase.push(cAnswer.toLowerCase())
-                }
-                const obj = { number: question.number, text: question.text, correctAnswers: lowerCase, participants: [] }
-                buildedQuestions.push(obj)
+
+        let allData = Data;
+        const objectData = allData.DataFromTriviaGames;
+        const buildedQuestions = [];
+        for (let question of newStream.extras.questions) {
+            let lowerCase = []
+            for (let cAnswer of question.correctAnswers) {
+                lowerCase.push(cAnswer.toLowerCase())
             }
-            objectData.push({ name: newStream.name, questions: buildedQuestions });
-            allData.DataFromTriviaGames = objectData;
-            const stringedData = JSON.stringify(allData)
-            try {
-                fs.writeFileSync('./server/config/Data.json', stringedData);
-            } catch (error) {
-                console.error(error);
-            }
-            return true;
+            const obj = { number: question.number, text: question.text, correctAnswers: lowerCase, participants: [] }
+            buildedQuestions.push(obj)
         }
-        return false;
+        objectData.push({ name: newStream.name, questions: buildedQuestions });
+        allData.DataFromTriviaGames = objectData;
+        const stringedData = JSON.stringify(allData)
+        try {
+            fs.writeFileSync('./server/config/Data.json', stringedData);
+        } catch (error) {
+            console.error(error);
+        }
+        return true;
     }
 
-    private static eventAlreadyPresent(name: string, type: string) {
-        let data;
-        if (type == 'literaryContest')
-            data = Data.DataFromLiteraryContests;
-        else data = Data.DataFromTriviaGames
+    public static eventAlreadyPresent(name: string) {
+        let data = Database.streamDefinitions;
         for (let elem of data) {
             if (elem.name == name)
                 return true;
@@ -219,7 +200,7 @@ export default abstract class Database {
 
     public static voteBook(hashtag: string, name: string, author_id: string) {
         if (Database.bookAlreadyPresent(hashtag, name)) {
-            if (!Database.reachedMaxVotes(hashtag, author_id) && !Database.hasVotedBook(hashtag, name, author_id)){
+            if (!Database.reachedMaxVotes(hashtag, author_id) && !Database.hasVotedBook(hashtag, name, author_id)) {
                 let allData = Data;
                 const objectData = allData.DataFromLiteraryContests;
                 for (let contest of objectData) {
@@ -254,8 +235,8 @@ export default abstract class Database {
                 return true;
             }
         } else {
-            Database.candidateNewBook(hashtag,name,author_id)
-            Database.voteBook(hashtag,name,author_id)
+            Database.candidateNewBook(hashtag, name, author_id)
+            Database.voteBook(hashtag, name, author_id)
         }
         return false;
     }
@@ -333,4 +314,4 @@ export default abstract class Database {
         }
         return false;
     }
-};
+}

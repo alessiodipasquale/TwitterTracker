@@ -73,8 +73,8 @@ export async function translateAndGetSentiments(inputText: string) {
 
   const result = sentiment.analyze(full_text, options);
   const originalwords: string[] = [];
-  for (var i = 0; i < result.words.length; ++i) {
-    var orig: any = await Translate(String(result.words[i]), { from: 'en', to: translated.from.language.iso });
+  for (let elem of result.words) {
+    var orig: any = await Translate(String(elem), { from: 'en', to: translated.from.language.iso });
     if (inputText.toLowerCase().includes(orig.text.toLowerCase()) || inputText.toLowerCase().includes(orig.text.substring(0, orig.text.length - 1).toLowerCase()))
       originalwords.push(orig.text.toLowerCase());
   }
