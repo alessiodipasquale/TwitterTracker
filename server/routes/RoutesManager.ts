@@ -7,6 +7,7 @@ import { Tweetv2SearchParams, TweetSearchAllV2Paginator } from 'twitter-api-v2';
 import Database from '../config/Database';
 import { StreamDefinition } from '../types/StreamDefinition'
 import Config from '../config/Config';
+import Sentiment from 'sentiment'
 
 export const searchTweetById: any = async (req: IRequest, res: IResponse): Promise<void> => {
     const id: string = req.params.tweetId;
@@ -146,20 +147,21 @@ export const getSentimentFromTweet: any = async (req: IRequest, res: IResponse):
 export const getSentimentFromGroupOfTweets: any = async (req: IRequest, res: IResponse): Promise<void> => {
     let ids: string[] = [];
     let toAnalize: string = ""
-    let tweets = req.data.data;
-    for (let t of tweets) {
-        ids.push(t.id);
-    }
-    for (let id of ids) {
-        Twitter.searchTweetById(id, {})
-            .then(data => {
-                toAnalize = toAnalize.concat(data.data.text);
+    let tweets = req.body;
+    for (let id of tweets) {
+        await Twitter.searchTweetById(id, {}).then(data => {
+                toAnalize = toAnalize.concat(" ").concat((data.data.text).toString());
             }).catch(err => {
-                throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
+                console.log(err)
+                //throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
             })
     }
     let toReturn: any = {};
-    const result = await translateAndGetSentiments(toAnalize);
+    console.log(toAnalize)
+    //const result = await translateAndGetSentiments(toAnalize);
+        var sentiment = new Sentiment();
+        const options: any = Config.sentimentAnalysisOptions;
+        const result = sentiment.analyze(toAnalize, options);
     toReturn.result = result;
     toReturn.numTweets = ids.length;
     res.send(toReturn);

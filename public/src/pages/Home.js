@@ -5,11 +5,17 @@ import { MapContainer, TileLayer, Marker, Popup, useMap, LayerGroup, Circle} fro
 import L, { LatLng } from "leaflet";
 import TweetCard from '../components/TweetCard';
 import { searchTweet } from '../services/searchTweet-service';
+import { getSentimentFromGroupOfTweets } from '../services/sentiment-analysis'
 import { GeoSearchControl, MapBoxProvider } from "leaflet-geosearch";
+import Sentiment from 'sentiment';
 
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
 import { text } from 'body-parser';
 import GeneralWordCloud from '../components/GeneralWordCloud';
+
+import positiveImg from '../images/happy.png';
+import neutralImg from '../images/neutral.png';
+import negativeImg from '../images/sad.png';
 
 const provider = new OpenStreetMapProvider();
 
@@ -46,6 +52,10 @@ function Home() {
     const [dataRetrievingInfo, setDataRetrievingInfo] = useState(" ")
 
     const [showGeneralWordCloud, setShowGeneralWordCloud] = useState(false);
+    const [showGeneralSentimentAnalysis, setShowGeneralSentimentAnalysis] = useState(false);
+
+    const [generalSentimentData, setGeneralSentimentData] = useState({})
+
 
     let center = [41.8933203,12.4829321];
 
@@ -131,6 +141,21 @@ function Home() {
             setTweets([]);
           }
         }).catch(err => console.log(err));
+    }
+
+    async function doGeneralSentimentAnalysis(){
+      let toAnalize = ""
+      for(let tweet of tweets){
+        toAnalize = toAnalize.concat(" ").concat(tweet.text)
+      }
+      console.log("text",toAnalize);
+      var sentiment = new Sentiment();
+      const result = sentiment.analyze(toAnalize, {});
+     // const result = await getSentimentFromGroupOfTweets(tweets.map(elem => elem.id));
+      setGeneralSentimentData(result)
+      console.log("result",result);
+      setShowGeneralSentimentAnalysis(true)
+      
     }
 
     return(
@@ -259,7 +284,7 @@ function Home() {
 
         <Card.Body>
           {
-              tweets && tweets.map(tweet=>{
+              tweets && tweets.slice(0,200).map(tweet=>{
                   return(
                     <TweetCard tweet={tweet} showOptions={true} />
               )})
@@ -272,7 +297,7 @@ function Home() {
 
         <Row>
               <Col  className="d-grid gap-2">
-                <Button style={{marginTop:10, marginLeft:20}} size="lg" disabled={tweets.length === 0} variant="primary">General sentiment analysis</Button>
+                <Button style={{marginTop:10, marginLeft:20}} size="lg" disabled={tweets.length === 0} onClick={() => doGeneralSentimentAnalysis() } variant="primary">General sentiment analysis</Button>
               </Col>
               <Col className="d-grid gap-2">
                 <Button style={{marginTop:10}} size="lg" disabled={tweets.length === 0} onClick={() => setShowGeneralWordCloud(true)} variant="primary">General wordcloud</Button>
@@ -307,7 +332,81 @@ function Home() {
             <GeneralWordCloud tweets={tweets}></GeneralWordCloud>
           </Modal.Body>
         </Modal>
+        
+        <Modal
+          size="lg"
+          show={showGeneralSentimentAnalysis}
+          onHide={() => setShowGeneralSentimentAnalysis(false)}
+          aria-labelledby="example-modal-sizes-title-lg"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title id="example-modal-sizes-title-md">
+              General Sentiment analysis
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Row>
+              <Col lg={12} style={{display: 'flex', justifyContent: 'center'}}>
+                {
 
+                    generalSentimentData !== {} ?
+                      generalSentimentData.score === 0 ?
+                      <img src={neutralImg} alt="neutral" />
+                      :
+                      generalSentimentData.score > 0 ?
+                        <img src={positiveImg} alt="postive" />
+                        :
+                        <img src={negativeImg} alt="negative" />
+                    : ''
+                }
+              </Col>
+              </Row>
+
+              { /*sentiments ?
+                sentiments.negative.length != 0 || sentiments.positive.length != 0 ?
+                  <Row style={{marginTop: '3%'}}>
+                  <Col lg={6}>
+                    <Card>
+                      <Card.Header>
+                        Negative
+                      </Card.Header>
+                      <Card.Body style= {{display: 'flex', flexFlow: 'wrap'}}>
+                      {
+                        sentiments.negative && sentiments.negative.map(negativeText=>{
+                          return(
+                            <Card name="negativeText" id="negativeText" role="text" style={{margin: '6px'}}>
+                              <Card.Body style= {{padding: '9px'}}> {negativeText}</Card.Body>
+                            </Card>
+                          )})
+                      }
+                      </Card.Body>
+                    </Card>
+                  </Col>
+                  <Col lg={6}>
+                  <Card>
+                      <Card.Header>
+                        Positive
+                      </Card.Header>
+                      <Card.Body style= {{display: 'flex', flexFlow: 'wrap'}}>
+                      {
+                        sentiments.positive && sentiments.positive.map(positiveText=>{
+                          return(
+                            <Card name="positiveText" id="positiveText" role="text" style={{margin: '6px'}}>
+                              <Card.Body style= {{padding: '9px'}}> {positiveText}</Card.Body>
+                            </Card>
+                      )})
+                      }
+                      </Card.Body>
+                    </Card>
+                  </Col>
+                </Row>
+                :
+                <h3 style={{textAlign: 'center'}}>It wasn't possible to make Sentiment Analysis on this tweet.</h3>
+                : null
+                    */}
+          </Modal.Body>
+          
+        </Modal>
         </>
       );
 
