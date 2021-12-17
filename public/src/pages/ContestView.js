@@ -1,24 +1,47 @@
-import React, { useState, useEffect, useCallback, useContext } from 'react';
+import React, { Component } from 'react';
 import { Row, Col, Tabs, Tab, Card, Container, ListGroup, ListGroupItem } from 'react-bootstrap';
 import {socketConnection} from '../services/socket-service';
 
 
-function ContestView() {
+class ContestView extends Component {
 
-  const socket = socketConnection.instance;
+  _isMounted = false;
 
-  const [literaryContestData, setLiteraryContestData] = useState([]);
-  const [triviaGamesData, setTriviaGamesData] = useState([]);
-  const [customStreamsData, setCustomStreamsData] = useState([]);
+  constructor(props){
+    super(props);
 
-  function handleCandidatura(data) {
+    this.state = {
+      literaryContestData: [],
+      triviaGamesData: [],
+      customStreamsData: []
+    }
 
+    socketConnection.instance.emit("/readyToReceiveData", (data) => {
+      this.setState({literaryContestData: JSON.parse(JSON.stringify(data.dataFromLiteraryContests))});
+      this.setState({triviaGamesData:data.dataFromTriviaGames});
+    });
+
+    this.handleCandidatura = this.handleCandidatura.bind(this);
+    this.handleNewVote = this.handleNewVote.bind(this);
+    this.handleNewAnswer = this.handleNewAnswer.bind(this);
+  }
+
+  componentDidMount(){ 
+    this._isMounted = true;
+    socketConnection.instance.on("newCandidateInLiteraryContest", (data)=>{if(this._isMounted) this.handleCandidatura(data)});
+    socketConnection.instance.on("newVoteInLiteraryContest", (data)=>{if(this._isMounted) this.handleNewVote(data)});
+    socketConnection.instance.on("newAnswerInTriviaGame", (data)=>{if(this._isMounted) this.handleNewAnswer(data)});
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
+  handleCandidatura(data) {
     console.log(`recieved data: ${data}`);
-
-    const newLiteraryContestData = JSON.parse(JSON.stringify(literaryContestData));
-
-    let contest = newLiteraryContestData.find((contest, i) => {
-      if (contest.name == data.contestName) {
+    const newLiteraryContestData = JSON.parse(JSON.stringify(this.state.literaryContestData));
+    const contest = newLiteraryContestData.find((contest, i) => {
+      if (contest.name === data.contestName) {
         newLiteraryContestData[i].books.push({
           "candidatedBy": data.candidatedBy,
           "bookName": data.bookName,
@@ -27,19 +50,19 @@ function ContestView() {
         });
         return true;
       }
+      return false;
     });
-    setLiteraryContestData(newLiteraryContestData);
+    if (contest)
+      this.setState({literaryContestData:newLiteraryContestData});
   }
 
-  function handleNewVote(data) {
+  handleNewVote(data) {
     // {contestName:hashtag, bookName:value, votedBy: tweet.data.author_id }
-
-    const newLiteraryContestData = JSON.parse(JSON.stringify(literaryContestData));
-
+    const newLiteraryContestData = JSON.parse(JSON.stringify(this.state.literaryContestData));
     for (var i in newLiteraryContestData) {
-      if (newLiteraryContestData[i].name == data.contestName) {
+      if (newLiteraryContestData[i].name === data.contestName) {
         for (var j in newLiteraryContestData[i].books) {
-          if (newLiteraryContestData[i].books[j].bookName == data.bookName) {
+          if (newLiteraryContestData[i].books[j].bookName === data.bookName) {
             newLiteraryContestData[i].books[j].votes += 1;
             break;
           }
@@ -47,22 +70,16 @@ function ContestView() {
         break;
       }
     }
-
-    setLiteraryContestData(newLiteraryContestData);
+    this.setState({literaryContestData:newLiteraryContestData});
   }
 
-  function handleNewAnswer(data) {
+  handleNewAnswer(data) {
     // {triviaName:hashtag, answerNumber:answerNumber, answer:value, isCorrect:done, userId:tweet.data.author_id,}
-
-    const newTriviaGameData = JSON.parse(JSON.stringify(triviaGamesData));
-
+    const newTriviaGameData = JSON.parse(JSON.stringify(this.state.triviaGamesData));
     for (var i in newTriviaGameData) {
-      if (newTriviaGameData[i].name == data.triviaName) {
-
+      if (newTriviaGameData[i].name === data.triviaName) {
         for (var j in newTriviaGameData[i].questions) {
-
-          if (newTriviaGameData[i].questions[j].number == data.answerNumber) {
-
+          if (newTriviaGameData[i].questions[j].number === data.answerNumber) {
             newTriviaGameData[i].questions[j].participants.push({
               userId: data.userId,
               answeredTo: data.answerNumber,
@@ -71,75 +88,38 @@ function ContestView() {
             });
             break;
           }
-
         }
         break;
       }
     }
-
-    setTriviaGamesData(newTriviaGameData);
+    this.setState({triviaGamesData:newTriviaGameData});
+  }
+  
+  render(){
+    return (
+      <>
+      <Container fluid  style={{padding: '2%'}} >
+        <Tabs>
+          <Tab eventKey="literaryContest" title="Literary Contests">
+              { this.state.literaryContestData.map(this.displayLiteraryContest) }
+          </Tab>
+          <Tab eventKey="triviaGame" title="Trivia Games">
+            <ListGroup className="list-group-flush">
+              { this.state.triviaGamesData.map(this.displayTriviaGame) }
+            </ListGroup>
+          </Tab>
+          <Tab eventKey="customStream" title="Custom streams">
+            <ListGroup className="list-group-flush">
+              { this.state.customStreamsData.map(this.displayCustomStream) }
+            </ListGroup>
+          </Tab>
+        </Tabs>
+      </Container>
+      </>
+    );
   }
 
-  useEffect(() => {
-    console.log(literaryContestData);  // rebind shit
-
-    socket.on("newCandidateInLiteraryContest", handleCandidatura);
-    socket.on("newVoteInLiteraryContest", handleNewVote);
-
-  }, [literaryContestData]);
-
-  useEffect(() => {
-    console.log(triviaGamesData);
-
-    socket.on("newAnswerInTriviaGame", handleNewAnswer);
-
-  }, [triviaGamesData]);
-
-  useEffect(()=>{
-
-    socket.emit("/readyToReceiveData", (data) => {
-          setLiteraryContestData(JSON.parse(JSON.stringify(data.dataFromLiteraryContests)));
-          setTriviaGamesData(data.dataFromTriviaGames);
-    });
-
-    socket.on("newCandidateInLiteraryContest", handleCandidatura);
-
-    socket.on("newVoteInLiteraryContest", handleNewVote);
-
-    socket.on("newAnswerInTriviaGame", handleNewAnswer);
-
-    //return () => {socket.disconnect()}
-  }, []);
-
-  return (
-    <>
-
-    <Container fluid  style={{padding: '2%'}} >
-
-
-      <Tabs>
-        <Tab eventKey="literaryContest" title="Literary Contests">
-
-            { literaryContestData.map(displayLiteraryContest) }
-
-        </Tab>
-        <Tab eventKey="triviaGame" title="Trivia Games">
-          <ListGroup className="list-group-flush">
-            { triviaGamesData.map(displayTriviaGame) }
-          </ListGroup>
-        </Tab>
-        <Tab eventKey="customStream" title="Custom streams">
-          <ListGroup className="list-group-flush">
-            { customStreamsData.map(displayCustomStream) }
-          </ListGroup>
-        </Tab>
-      </Tabs>
-
-    </Container>
-    </>
-  );
-
-  function displayLiteraryContest(contestData) {
+  displayLiteraryContest(contestData) {
     return (
       <>
       <Card>
@@ -151,31 +131,16 @@ function ContestView() {
               <ListGroupItem>
               <strong>{book.bookName}</strong>: { book.votes } votes
               </ListGroupItem>
-
-
               </>);
             }) }
           </ListGroup>
         </Card.Body>
       </Card>
-
       </>
     );
   }
 
-  function displayTriviaGame(gameData) {
-
-    function displayAnswer(answerData) {
-      return (
-        <>
-          <ListGroup.Item>
-            <strong>{answerData.userId}</strong>: {answerData.answer}
-          </ListGroup.Item>
-
-        </>
-      );
-    }
-
+  displayTriviaGame(gameData) {
     return (
       <>
       <Card>
@@ -192,9 +157,17 @@ function ContestView() {
                   <div className="ms-2 me-auto">
                     <div className="fw-bold">{question.text}</div>
                     <ListGroup variant="flush">
-                    { question.participants.map(displayAnswer) }
+                    { question.participants.map((answerData) => {
+                        return (
+                          <>
+                            <ListGroup.Item>
+                              <strong>{answerData.userId}</strong>: {answerData.answer}
+                            </ListGroup.Item>
+                          </>
+                        );
+                      }) 
+                    }
                     </ListGroup>
-
                   </div>
                 </ListGroup.Item>
                 </>
@@ -203,13 +176,15 @@ function ContestView() {
           </ListGroup>
         </Card.Body>
       </Card>
-
       </>
     );
   }
 
-  function displayCustomStream(data) {
-
+  displayCustomStream(data) {
+    return (
+      <>
+      </>
+    );
   }
 
 }

@@ -184,6 +184,7 @@ export default abstract class Database {
         }
         return false;
     }
+
     private static bookAlreadyPresent(hashtag: string, name: string) {
         const data = Data.DataFromLiteraryContests;
         for (let contest of data) {
@@ -198,7 +199,7 @@ export default abstract class Database {
         return false;
     }
 
-    public static voteBook(hashtag: string, name: string, author_id: string) {
+    public static async voteBook(hashtag: string, name: string, author_id: string) {
         if (Database.bookAlreadyPresent(hashtag, name)) {
             if (!Database.reachedMaxVotes(hashtag, author_id) && !Database.hasVotedBook(hashtag, name, author_id)) {
                 let allData = Data;
@@ -236,7 +237,9 @@ export default abstract class Database {
             }
         } else {
             Database.candidateNewBook(hashtag, name, author_id)
+            await Socket.broadcast("newCandidateInLiteraryContest",{contestName:hashtag, bookName:name, candidatedBy: author_id })
             Database.voteBook(hashtag, name, author_id)
+            await Socket.broadcast("newVoteInLiteraryContest",{contestName:hashtag, bookName:name, votedBy: author_id })
         }
         return false;
     }

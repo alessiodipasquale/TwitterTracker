@@ -34,7 +34,7 @@ async function manageStreamRequest(type: string, value: string, hashtag: string,
           await Socket.broadcast("newCandidateInLiteraryContest",{contestName:hashtag, bookName:value, candidatedBy: tweet.data.author_id })
         }
       }else{
-        const done = Database.voteBook(hashtag, value, tweet.data.author_id)
+        const done = await Database.voteBook(hashtag, value, tweet.data.author_id)
         if(done){
           await Socket.broadcast("newVoteInLiteraryContest",{contestName:hashtag, bookName:value, votedBy: tweet.data.author_id })
         }
