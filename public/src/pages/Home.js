@@ -392,7 +392,7 @@ class Home extends Component {
                     loader={<div>Loading Chart</div>}
                     data={[["type", "occurrences"], ["negative", this.state.generalSentimentData.negative.length], ["positive", this.state.generalSentimentData.positive.length]]}
                     options={{
-                      title: 'Popularity of Types of Pizza',
+                      title: 'Sentiment analysis result:',
                       sliceVisibilityThreshold: 0, // 0%
                     }}
                     rootProps={{ 'data-testid': '7' }}

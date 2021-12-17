@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Chart from "react-google-charts";
 import { Row, Col, Tabs, Tab, Card, Container, ListGroup, ListGroupItem } from 'react-bootstrap';
 import {socketConnection} from '../services/socket-service';
 
@@ -13,12 +14,37 @@ class ContestView extends Component {
     this.state = {
       literaryContestData: [],
       triviaGamesData: [],
-      customStreamsData: []
+      customStreamsData: [],
+      formattedTriviaGameData:[]
     }
 
     socketConnection.instance.emit("/readyToReceiveData", (data) => {
       this.setState({literaryContestData: JSON.parse(JSON.stringify(data.dataFromLiteraryContests))});
       this.setState({triviaGamesData:data.dataFromTriviaGames});
+      
+      const formattedTrivia = [];
+      for(let game of data.dataFromTriviaGames){
+        const questions = [];
+        for(let question of game.questions){
+          const answers = [];
+          for(let participant of question.participants){
+            let found = false;
+            for(let answer of answers){
+              if(participant.answer.toLowerCase() === answer[0]){
+                answer[1] = answer[1] + 1;
+                found = true;
+              }
+            }
+            if(!found){
+              answers.push([participant.answer.toLowerCase(),1])
+            }
+          }
+          answers.unshift(['Answer','Occurrences'])
+          questions.push({number:question.number, formattedAnswers:answers})
+        }
+        formattedTrivia.push({name:game.name, questions: questions})
+      }
+      this.setState({formattedTriviaGameData: formattedTrivia});
     });
 
     this.handleCandidatura = this.handleCandidatura.bind(this);
@@ -84,13 +110,48 @@ class ContestView extends Component {
               answer: data.answer,
               isCorrect: data.isCorrect,
             })
-            console.log("ao")
+            break;
           }
         }
       }
     }
+    this.updateFormattedTriviaGameData(data);
     this.setState({triviaGamesData:newTriviaGameData});
   }
+
+  updateFormattedTriviaGameData(data){
+    let newFormattedTriviaGameData = JSON.parse(JSON.stringify(this.state.formattedTriviaGameData));
+    for(let game of newFormattedTriviaGameData){
+      if(game.name === data.triviaName) {
+        for(let question of game.questions){
+          if((question.number).toString() === (data.answerNumber).toString()){
+            let found = false;
+            for(let i = 1; i < question.formattedAnswers.length; i++){
+              if((question.formattedAnswers[i])[0] == data.answer.toLowerCase()){
+                (question.formattedAnswers[i])[1] = (question.formattedAnswers[i])[1] + 1;
+                found = true;
+              }
+            }
+            if(!found) question.formattedAnswers.push([data.answer.toLowerCase(),1])
+          }
+        }
+      }
+    }
+    this.setState({formattedTriviaGameData:newFormattedTriviaGameData});
+  }
+
+  getFormattedDataForGameAndQuestion(game,question){
+    const data = this.state.formattedTriviaGameData;
+    for(let g of data){
+      if(g.name === game.name){
+        for(let q of g.questions){
+          if(q.number === question.number){
+            return q.formattedAnswers;
+          }
+        }
+      }
+    }
+  }  
   
   render(){
     return (
@@ -118,7 +179,7 @@ class ContestView extends Component {
                   </>
                 );
               })
-              }
+            }
           </Tab>
           <Tab eventKey="triviaGame" title="Trivia Games">
             <ListGroup className="list-group-flush">
@@ -126,38 +187,82 @@ class ContestView extends Component {
                 return (
                   <>
                   <Card>
-                  <Card.Body>
-                    <Card.Title>{gameData.name}</Card.Title>
-                      <ListGroup as="ol" numbered>
-                        { gameData.questions.map(question => {
-                          return (
-                            <>
-                            <ListGroup.Item
-                              as="li"
-                              className="d-flex justify-content-between align-items-start"
-                            >
-                              <div className="ms-2 me-auto">
-                                <div className="fw-bold">{question.text}</div>
-                                <ListGroup variant="flush">
-                                { question.participants.map((answerData) => {
-                                    return (
-                                      <>
-                                        <ListGroup.Item>
-                                          <strong>{answerData.username}</strong>: {answerData.answer}
-                                        </ListGroup.Item>
-                                      </>
-                                    );
-                                  }) 
-                                }
-                                </ListGroup>
-                              </div>
-                            </ListGroup.Item>
-                            </>
-                          );
-                        }) }
-                      </ListGroup>
-                    </Card.Body>
-                  </Card>
+                    <Card.Body>
+                      <Card.Title>{gameData.name}</Card.Title>
+                        <ListGroup as="ol" numbered>
+                          { gameData.questions.map(question => {
+                            return (
+                              <>
+                              <ListGroup.Item
+                                as="li"
+                                className="d-flex justify-content-between align-items-start"
+                              >
+                                <div className="ms-2 me-auto">
+                                  <div className="fw-bold">{question.text}</div>
+                                  <ListGroup variant="flush">
+                                  { question.participants.map((answerData) => {
+                                      return (
+                                        <>
+                                          <ListGroup.Item>
+                                            <strong>{answerData.username}</strong>: {answerData.answer}
+                                          </ListGroup.Item>
+                                        </>
+                                      );
+                                    }) 
+                                  }
+                                  </ListGroup>
+                                </div>
+                              </ListGroup.Item>
+                              <Row >
+                                <Col >
+                                  <Chart
+                                    style={{}}
+                                    width={"800px"}
+                                    height={'500px'}
+                                    chartType="PieChart"
+                                    loader={<div>Loading Chart</div>}
+                                    data={[
+                                      ["answer", "percentage"], 
+                                      ["correct", question.participants.filter( (participant) => {
+                                        return participant.isCorrect === true;
+                                      }).length], 
+                                      ["wrong", question.participants.filter( (participant) => {
+                                        return participant.isCorrect === false;
+                                      }).length]
+                                    ]}
+                                    options={{
+                                      title: 'Answers percentages',
+                                      sliceVisibilityThreshold: 0, // 0%
+                                    }}
+                                    rootProps={{ 'data-testid': '7' }}
+                                  />
+                                </Col>
+                                <Col>
+                                <Chart
+                                  style={{marginTop:"5%"}}
+                                  width={'500px'}
+                                  height={'300px'}
+                                  chartType="Bar" // or BarChart
+                                  loader={<div>Loading Chart</div>}
+                                  data={this.getFormattedDataForGameAndQuestion(gameData,question)}
+                                  options={{
+                                    chart: {
+                                      title: 'Given answers:',
+                                    },
+                                    colors: ['green'],
+                                    legend: { position: 'none' },
+                                  }}
+                                  // For tests
+                                  rootProps={{ 'data-testid': '2' }}
+                                />
+                                </Col>
+                            </Row>     
+                            </>                         
+                            );
+                          }) }
+                        </ListGroup>
+                      </Card.Body>
+                    </Card>
                   </>
                 );
               }) 
@@ -177,74 +282,6 @@ class ContestView extends Component {
           </Tab>
         </Tabs>
       </Container>
-      </>
-    );
-  }
-
-  displayLiteraryContest(contestData) {
-    return (
-      <>
-      <Card>
-      <Card.Body>
-        <Card.Title>{contestData.name}</Card.Title>
-          <ListGroup>
-            { contestData.books.map((book) => {
-              return (<>
-              <ListGroupItem>
-              <strong>{book.bookName}</strong>: { book.votes } votes
-              </ListGroupItem>
-              </>);
-            }) }
-          </ListGroup>
-        </Card.Body>
-      </Card>
-      </>
-    );
-  }
-
-  displayTriviaGame(gameData) {
-    return (
-      <>
-      <Card>
-      <Card.Body>
-        <Card.Title>{gameData.name}</Card.Title>
-          <ListGroup as="ol" numbered>
-            { gameData.questions.map(question => {
-              return (
-                <>
-                <ListGroup.Item
-                  as="li"
-                  className="d-flex justify-content-between align-items-start"
-                >
-                  <div className="ms-2 me-auto">
-                    <div className="fw-bold">{question.text}</div>
-                    <ListGroup variant="flush">
-                    { question.participants.map((answerData) => {
-                        return (
-                          <>
-                            <ListGroup.Item>
-                              <strong>{answerData.userId}</strong>: {answerData.answer}
-                            </ListGroup.Item>
-                          </>
-                        );
-                      }) 
-                    }
-                    </ListGroup>
-                  </div>
-                </ListGroup.Item>
-                </>
-              );
-            }) }
-          </ListGroup>
-        </Card.Body>
-      </Card>
-      </>
-    );
-  }
-
-  displayCustomStream(data) {
-    return (
-      <>
       </>
     );
   }
