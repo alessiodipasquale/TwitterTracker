@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Card, Form, Row, Col, Button, Container, Alert, Modal } from 'react-bootstrap';
-import { MapContainer, TileLayer, Marker, Popup, useMap, LayerGroup, Circle } from 'react-leaflet'
+import { Card, Form, Row, Col, Button, Container, Modal } from 'react-bootstrap';
+import { MapContainer, TileLayer  } from 'react-leaflet'
 import L, { LatLng } from "leaflet";
 import TweetCard from '../components/TweetCard';
 import { searchTweet } from '../services/searchTweet-service';
@@ -120,78 +120,6 @@ class Home extends Component {
     let result = sentiment.analyze(toAnalize, {});
     this.setState({ generalSentimentData: result })
     this.setState({ showGeneralSentimentAnalysis: true })
-  }
-
-  Modals() {
-    return (
-      <>
-        <Modal
-          size="lg"
-          show={this.state.showGeneralWordCloud}
-          onHide={() => this.setState({ showGeneralWordCloud: false })}
-          aria-labelledby="example-modal-sizes-title-lg"
-        >
-          <Modal.Header closeButton>
-            <Modal.Title id="example-modal-sizes-title-md">
-              General Word Cloud
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <GeneralWordCloud tweets={this.state.tweets}></GeneralWordCloud>
-          </Modal.Body>
-        </Modal>
-
-        <Modal
-          size="lg"
-          show={this.state.showGeneralSentimentAnalysis}
-          onHide={() => this.setState({ showGeneralSentimentAnalysis: false })}
-          aria-labelledby="example-modal-sizes-title-lg"
-        >
-          <Modal.Header closeButton>
-            <Modal.Title id="example-modal-sizes-title-md">
-              General Sentiment analysis
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Row>
-              <Col lg={12} style={{ display: 'flex', justifyContent: 'center' }}>
-                {
-                  this.state.generalSentimentData !== {} ?
-                  this.state.generalSentimentData.score === 0 ?
-                      <img src={neutralImg} alt="neutral" />
-                      :
-                      this.state.generalSentimentData.score > 0 ?
-                        <img src={positiveImg} alt="postive" />
-                        :
-                        <img src={negativeImg} alt="negative" />
-                    : ''
-                }
-              </Col>
-            </Row>
-            {
-              this.state.tweets.length !== 0 && this.state.showGeneralSentimentAnalysis ?
-                <Row>
-                  <p style={{ fontSize: 20, marginTop: "6%" }}>Analyzed words: {this.state.generalSentimentData.tokens.length}</p>
-                  <p style={{ fontSize: 20 }}>Resulting pie chart:</p>
-                  <Chart
-                    style={{ marginLeft: "10%" }}
-                    width={"90%"}
-                    height={'400px'}
-                    chartType="PieChart"
-                    loader={<div>Loading Chart</div>}
-                    data={[["type", "occurrences"], ["negative", this.state.generalSentimentData.negative.length], ["positive", this.state.generalSentimentData.positive.length]]}
-                    options={{
-                      title: 'Popularity of Types of Pizza',
-                      sliceVisibilityThreshold: 0, // 0%
-                    }}
-                    rootProps={{ 'data-testid': '7' }}
-                  />
-                </Row> : {}
-            }
-          </Modal.Body>
-        </Modal>
-      </>
-    );
   }
 
   render() {
