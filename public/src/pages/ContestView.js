@@ -38,7 +38,6 @@ class ContestView extends Component {
   }
 
   handleCandidatura(data) {
-    console.log(`recieved data: ${data}`);
     const newLiteraryContestData = JSON.parse(JSON.stringify(this.state.literaryContestData));
     const contest = newLiteraryContestData.find((contest, i) => {
       if (contest.name === data.contestName) {
@@ -57,7 +56,6 @@ class ContestView extends Component {
   }
 
   handleNewVote(data) {
-    // {contestName:hashtag, bookName:value, votedBy: tweet.data.author_id }
     const newLiteraryContestData = JSON.parse(JSON.stringify(this.state.literaryContestData));
     for (var i in newLiteraryContestData) {
       if (newLiteraryContestData[i].name === data.contestName) {
@@ -74,22 +72,21 @@ class ContestView extends Component {
   }
 
   handleNewAnswer(data) {
-    // {triviaName:hashtag, answerNumber:answerNumber, answer:value, isCorrect:done, userId:tweet.data.author_id,}
-    const newTriviaGameData = JSON.parse(JSON.stringify(this.state.triviaGamesData));
-    for (var i in newTriviaGameData) {
-      if (newTriviaGameData[i].name === data.triviaName) {
-        for (var j in newTriviaGameData[i].questions) {
-          if (newTriviaGameData[i].questions[j].number === data.answerNumber) {
-            newTriviaGameData[i].questions[j].participants.push({
+    let newTriviaGameData = JSON.parse(JSON.stringify(this.state.triviaGamesData));
+    for(let game of newTriviaGameData){
+      if (game.name === data.triviaName) {
+        for(let question of game.questions){
+          if((question.number).toString() === data.answerNumber){
+            question.participants.push({
               userId: data.userId,
+              username: data.username,
               answeredTo: data.answerNumber,
               answer: data.answer,
               isCorrect: data.isCorrect,
-            });
-            break;
+            })
+            console.log("ao")
           }
         }
-        break;
       }
     }
     this.setState({triviaGamesData:newTriviaGameData});
@@ -101,16 +98,81 @@ class ContestView extends Component {
       <Container fluid  style={{padding: '2%'}} >
         <Tabs>
           <Tab eventKey="literaryContest" title="Literary Contests">
-              { this.state.literaryContestData.map(this.displayLiteraryContest) }
+              { this.state.literaryContestData.map((contestData)=>{
+                return (
+                  <>
+                  <Card>
+                  <Card.Body>
+                    <Card.Title>{contestData.name}</Card.Title>
+                      <ListGroup>
+                        { contestData.books.map((book) => {
+                          return (<>
+                          <ListGroupItem>
+                          <strong>{book.bookName}</strong>: { book.votes } votes
+                          </ListGroupItem>
+                          </>);
+                        }) }
+                      </ListGroup>
+                    </Card.Body>
+                  </Card>
+                  </>
+                );
+              })
+              }
           </Tab>
           <Tab eventKey="triviaGame" title="Trivia Games">
             <ListGroup className="list-group-flush">
-              { this.state.triviaGamesData.map(this.displayTriviaGame) }
+              { this.state.triviaGamesData.map((gameData) => {
+                return (
+                  <>
+                  <Card>
+                  <Card.Body>
+                    <Card.Title>{gameData.name}</Card.Title>
+                      <ListGroup as="ol" numbered>
+                        { gameData.questions.map(question => {
+                          return (
+                            <>
+                            <ListGroup.Item
+                              as="li"
+                              className="d-flex justify-content-between align-items-start"
+                            >
+                              <div className="ms-2 me-auto">
+                                <div className="fw-bold">{question.text}</div>
+                                <ListGroup variant="flush">
+                                { question.participants.map((answerData) => {
+                                    return (
+                                      <>
+                                        <ListGroup.Item>
+                                          <strong>{answerData.username}</strong>: {answerData.answer}
+                                        </ListGroup.Item>
+                                      </>
+                                    );
+                                  }) 
+                                }
+                                </ListGroup>
+                              </div>
+                            </ListGroup.Item>
+                            </>
+                          );
+                        }) }
+                      </ListGroup>
+                    </Card.Body>
+                  </Card>
+                  </>
+                );
+              }) 
+              }
             </ListGroup>
           </Tab>
           <Tab eventKey="customStream" title="Custom streams">
             <ListGroup className="list-group-flush">
-              { this.state.customStreamsData.map(this.displayCustomStream) }
+              { this.state.customStreamsData.map((data) => {
+                return (
+                  <>
+                  </>
+                );
+              })
+              }
             </ListGroup>
           </Tab>
         </Tabs>
