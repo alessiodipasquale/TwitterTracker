@@ -26,9 +26,9 @@ describe('Stream utests', () => {
 			});
 		});
 		
-		after(() => {
-			io.close();
-			clientSocket.close();
+		after(async () => {
+			await io.close();
+			await clientSocket.close();
 		});
 		
 		it("should work when testing socket connection", (done) => {
