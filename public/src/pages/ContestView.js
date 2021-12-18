@@ -387,7 +387,6 @@ class ContestView extends Component {
       </>
     );
   }
-
 }
 
-export default ContestView;
+export default ContestView

@@ -9,7 +9,10 @@ class ContestHandler extends Component {
     constructor(props) {
         super(props);
 
-        this.state=  { 
+        this.state= { 
+          literaryCount: 0,
+          triviaCount: 0,
+          customCount: 0,
           showLiteraryModal: false,
           showTriviaModal: false,
           showCustomModal: false,
@@ -24,13 +27,17 @@ class ContestHandler extends Component {
             extras: {
               questions: [],
               keyword: '',
-              username: ''
+              username: ""
             }
           }
         };
 
         socketConnection.instance.emit("/readyToReceiveData", (data) => {
-          console.log(data);
+          this.setState({
+            literaryCount: data.dataFromLiteraryContests.length,
+            triviaCount: data.dataFromTriviaGames.length,
+            customCount: data.dataFromCustomStreams.length
+          })
         })
         
         this.handleChange = this.handleChange.bind(this);
@@ -49,6 +56,11 @@ class ContestHandler extends Component {
       this.setState({contest: newContest});
     }
 
+    handleChangeCustom(e){
+      const newContest = {...this.state.contest}
+      newContest.extras[e.target.id] = e.target.value;
+      this.setState({contest: newContest});
+    }
   
     render() {
       return(
@@ -57,21 +69,21 @@ class ContestHandler extends Component {
           <Row style={{height:"30vh"}}>
             <Card style={{borderColor:"#58595B", alignItems:"center"}}>
                 <p style={{fontSize:20, marginTop:"5%"}} >Create a contest where it is possible to apply and vote for books. The result can be viewed in real time on the Contest View page.</p>
-                <p style={{fontSize:20}} >Currently active: 123</p>
+                <p style={{fontSize:20}} >Currently active: {this.state.literaryCount}</p>
                 <Button style={{position: "absolute", top: "80%"}} onClick={(e) => this.openCreateLiteraryContest(e)} variant="primary">Create Literary Contest</Button>
             </Card>
           </Row>
           <Row style={{height:"30vh", marginTop:"1%"}}>
             <Card style={{borderColor:"#58595B", alignItems:"center"}}>
                 <p style={{fontSize:20, marginTop:"5%"}} >Create a game where you can get points by correctly answering the proposed questions. The results are available in real time on the Contest View page.</p>
-                <p style={{fontSize:20}} >Currently active: 123</p>
+                <p style={{fontSize:20}} >Currently active: {this.state.triviaCount}</p>
                 <Button style={{position: "absolute", top: "80%"}} onClick={(e) => this.openCreateTriviaGame(e)} variant="primary">Create Trivia Game</Button>
             </Card>
           </Row>
           <Row style={{height:"30vh", marginTop:"1%"}}>
             <Card style={{borderColor:"#58595B", alignItems:"center"}}>
                 <p style={{fontSize:20, marginTop:"5%"}} >Create your own data streams using an identifier and associated keywords. You will receive Tweets that meet the requirements on the Contest View page.</p>
-                <p style={{fontSize:20}} >Currently active: 123</p>
+                <p style={{fontSize:20}} >Currently active: {this.state.customCount}</p>
                 <Button style={{position: "absolute", top: "80%"}} onClick={(e) => this.openCreateCustomStream(e)} variant="primary">Create custom stream</Button>
             </Card>
           </Row>
@@ -223,11 +235,11 @@ class ContestHandler extends Component {
             <Row>
               <Form.Group className="mb-3" controlId="name">
                   <Form.Label>Insert Hashtag for the Literary Contest</Form.Label>
-                  <Form.Control value={this.state.contest.name} onChange={this.handleNewQuestion} type="text" placeholder="Contest hashtag"/>
+                  <Form.Control value={this.state.contest.name} onChange={this.handleChange} type="text" placeholder="Contest hashtag"/>
               </Form.Group>
               <Form.Group className="mb-3" controlId="endDate">
                   <Form.Label>Insert End Date for the Literary Contest</Form.Label>
-                  <Form.Control value={this.state.contest.endDate} onChange={this.handleNewQuestion} type="date"/>
+                  <Form.Control value={this.state.contest.endDate} onChange={this.handleChange} type="date"/>
               </Form.Group>
             </Row>
           } 
@@ -328,14 +340,15 @@ class ContestHandler extends Component {
                   <Form.Label>Insert End Date for the custom stream</Form.Label>
                   <Form.Control value={this.state.contest.endDate} onChange={this.handleChange} type="date"/>
               </Form.Group>
-              <Form.Group className="mb-3" controlId="name">
+              <Form.Group className="mb-3" controlId="keyword">
                   <Form.Label>Insert Keyword for the Custom stream</Form.Label>
                   <p style={{color:"#444444"}}>(It can also be a whole sentence)</p>
-                  <Form.Control value={this.state.contest.extras.keyword} onChange={(e)=>{this.handleChange(e)}} type="text" placeholder="Keyword"/>
+                  <Form.Control value={this.state.contest.extras.keyword} onChange={(e)=>{this.handleChangeCustom(e)}} type="text" placeholder="Keyword"/>
               </Form.Group>
-              <Form.Group className="mb-3" controlId="name">
+              <Form.Group className="mb-3" controlId="username">
                   <Form.Label>Insert username to filter (optional)</Form.Label>
-                  <Form.Control value={this.state.contest.extras.username} onChange={(e)=>{this.handleChange(e)}} type="text" placeholder="Contest hashtag"/>
+                  <p style={{color:"#444444"}}>(Will be considered only Tweets from this username)</p>
+                  <Form.Control value={this.state.contest.extras.username} onChange={(e)=>{this.handleChangeCustom(e)}} type="text" placeholder="Username"/>
               </Form.Group>  
             </Row>
           } 

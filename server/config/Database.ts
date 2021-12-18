@@ -158,7 +158,7 @@ export default abstract class Database {
     public static newCustomStream(newStream: StreamDefinition){
         let allData = Data;
         const objectData = allData.DataFromCustomStreams;
-        objectData.push({name: newStream.name, totalCount: 0, keyword:newStream.extras.keyword, tweets:[]})
+        objectData.push({name: newStream.name, totalCount: 0, username: newStream.extras.username, keyword:newStream.extras.keyword, tweets:[]})
         allData.DataFromCustomStreams = objectData;
         const stringedData = JSON.stringify(allData)
         try {
@@ -346,16 +346,19 @@ export default abstract class Database {
         let allData = Data;
         const objectData = allData.DataFromCustomStreams;
         let shifted = false;
+        let changed = false
         for(let element of objectData){
-            if(element.name == hashtag){
+            if(element.name == hashtag && (element.username === "" || element.username === username)){
                 element.totalCount = element.totalCount + 1;
                 if(element.tweets.length >= Config.maxElementsFromCustomStream){
                     element.tweets.shift()
                     shifted = true;
+                    changed = true;
                 }
                 element.tweets.push({id:tweetId, text, username})
             }
         }
+        if(!changed) return -1;
         allData.DataFromCustomStreams = objectData;
         const stringedData = JSON.stringify(allData)
         try {
