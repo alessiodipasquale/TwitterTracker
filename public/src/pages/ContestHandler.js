@@ -269,7 +269,7 @@ class ContestHandler extends Component {
               </Form.Group>
               
               {
-                this.state.contest.extras.questions.length != 0 ?
+                this.state.contest.extras.questions.length !== 0 ?
                 this.state.contest.extras.questions && this.state.contest.extras.questions.map(question => {
                   let num = this.state.contest.extras.questions.indexOf(question);
                   return (

@@ -22,6 +22,7 @@ class ContestView extends Component {
     socketConnection.instance.emit("/readyToReceiveData", (data) => {
       this.setState({ literaryContestData: JSON.parse(JSON.stringify(data.dataFromLiteraryContests)) });
       this.setState({ triviaGamesData: JSON.parse(JSON.stringify(data.dataFromTriviaGames)) });
+      this.setState({ customStreamsData: JSON.parse(JSON.stringify(data.dataFromCustomStreams)) });
 
       const formattedTrivia = [];
       for (let game of data.dataFromTriviaGames) {
@@ -63,6 +64,7 @@ class ContestView extends Component {
     this.handleCandidatura = this.handleCandidatura.bind(this);
     this.handleNewVote = this.handleNewVote.bind(this);
     this.handleNewAnswer = this.handleNewAnswer.bind(this);
+    this.handleNewCustom = this.handleNewCustom.bind(this);
   }
 
   componentDidMount() {
@@ -70,6 +72,7 @@ class ContestView extends Component {
     socketConnection.instance.on("newCandidateInLiteraryContest", (data) => { if (this._isMounted) this.handleCandidatura(data) });
     socketConnection.instance.on("newVoteInLiteraryContest", (data) => { if (this._isMounted) this.handleNewVote(data) });
     socketConnection.instance.on("newAnswerInTriviaGame", (data) => { if (this._isMounted) this.handleNewAnswer(data) });
+    socketConnection.instance.on("newElementInCustomStream", (data) => { if (this._isMounted) this.handleNewCustom(data) });
   }
 
   componentWillUnmount() {
@@ -133,6 +136,10 @@ class ContestView extends Component {
     }
     this.updateFormattedTriviaGameData(data);
     this.setState({ triviaGamesData: newTriviaGameData });
+  }
+
+  handleNewCustom(data){
+
   }
 
   updateFormattedTriviaGameData(data) {
@@ -335,6 +342,21 @@ class ContestView extends Component {
                 {this.state.customStreamsData.map((data) => {
                   return (
                     <>
+                      <Card>
+                        <Card.Body>
+                          <Card.Title>{data.name}</Card.Title>
+                          <ListGroup>
+                            {data.tweets.map((tweet) => {
+                              return (<>
+                                <ListGroupItem>
+                                  <p><strong>from: {tweet.username}</strong></p>
+                                  <p> Text: {tweet.text}</p>
+                                </ListGroupItem>
+                              </>);
+                            })}
+                          </ListGroup>
+                        </Card.Body>
+                      </Card>
                     </>
                   );
                 })

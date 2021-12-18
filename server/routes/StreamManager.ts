@@ -54,7 +54,7 @@ async function manageStreamRequest(type: string, value: string | null, hashtag: 
     case 'custom':{
       const done = Database.registerTweetInCustomStream(hashtag, tweet.data.id, tweet.data.text, tweet.includes.users[0].username);
       if(done != undefined && done != -1){
-        Socket.broadcast("newAnswerInTriviaGame",{customName:hashtag, username:tweet.includes.users[0].username, text:tweet.data.text, id:tweet.data.id})
+        Socket.broadcast("newElementInCustomStream",{customName:hashtag, username:tweet.includes.users[0].username, text:tweet.data.text, id:tweet.data.id})
       }
       break;
     }
@@ -86,8 +86,8 @@ export async function addListener(socket:any, event: string, listener: Function)
 export function sendPastData(socket: any) {
   const dataFromLiteraryContests = Database.literaryContestsData;
   const dataFromTriviaGames = Database.triviaGamesData;
-  const DataFromCustomStreams = Database.customStreamsData;
-  return {dataFromLiteraryContests,dataFromTriviaGames, DataFromCustomStreams}
+  const dataFromCustomStreams = Database.customStreamsData;
+  return {dataFromLiteraryContests,dataFromTriviaGames, dataFromCustomStreams}
   //await Socket.sendSocketMessage(socket, "dataFromLiteraryContests",{"dataFromLiteraryContests":dataFromLiteraryContests});
   //await Socket.sendSocketMessage(socket, "dataFromTriviaGames",{"dataFromTriviaGames":dataFromTriviaGames});
 }
