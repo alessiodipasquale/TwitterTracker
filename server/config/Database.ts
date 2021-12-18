@@ -353,8 +353,8 @@ export default abstract class Database {
                 if(element.tweets.length >= Config.maxElementsFromCustomStream){
                     element.tweets.shift()
                     shifted = true;
-                    changed = true;
                 }
+                changed = true;
                 element.tweets.push({id:tweetId, text, username})
             }
         }

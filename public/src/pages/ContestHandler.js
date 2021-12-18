@@ -207,9 +207,10 @@ class ContestHandler extends Component {
       object.startDate = new Date (object.startDate);
       object.endDate = new Date (object.endDate);
       object.rules = [{
-        value: object.keyword,
-        tag: object.keyword
+        value: object.extras.keyword,
+        tag: object.extras.keyword
       }]
+      console.log(object)
       createCustom(object).then((res) => {
         this.setState({showCustomModal:false})
       }).catch(err => console.log(err))
