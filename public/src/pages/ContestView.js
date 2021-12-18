@@ -73,6 +73,7 @@ class ContestView extends Component {
     socketConnection.instance.on("newVoteInLiteraryContest", (data) => { if (this._isMounted) this.handleNewVote(data) });
     socketConnection.instance.on("newAnswerInTriviaGame", (data) => { if (this._isMounted) this.handleNewAnswer(data) });
     socketConnection.instance.on("newElementInCustomStream", (data) => { if (this._isMounted) this.handleNewCustom(data) });
+    socketConnection.instance.on("elementShiftedInCustomStream", (data) => { if (this._isMounted) this.handleNewShift(data.hashtag) });
   }
 
   componentWillUnmount() {
@@ -139,7 +140,24 @@ class ContestView extends Component {
   }
 
   handleNewCustom(data){
+    let newCustomData = JSON.parse(JSON.stringify(this.state.customStreamsData));
+    for(let stream of newCustomData){
+      if(stream.name === data.customName){
+        stream.totalCount = stream.totalCount + 1;
+        stream.tweets.push({username:data.username, id:data.id, text:data.text})
+      }
+    }
+    this.setState({ customStreamsData: newCustomData });
+  }
 
+  handleNewShift(hashtag){
+    let newCustomData = JSON.parse(JSON.stringify(this.state.customStreamsData));
+    for(let stream of newCustomData){
+      if(stream.name === hashtag){
+        stream.tweets.shift()
+      }
+    }
+    this.setState({ customStreamsData: newCustomData });
   }
 
   updateFormattedTriviaGameData(data) {
@@ -345,7 +363,8 @@ class ContestView extends Component {
                       <Card>
                         <Card.Body>
                           <Card.Title>{data.name}</Card.Title>
-                          <ListGroup>
+                          <Card.Subtitle style={{marginTop:"1%"}}>Total count: {data.totalCount}</Card.Subtitle>
+                          <ListGroup style={{marginTop:"1%"}}>
                             {data.tweets.map((tweet) => {
                               return (<>
                                 <ListGroupItem>

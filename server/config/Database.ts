@@ -158,7 +158,7 @@ export default abstract class Database {
     public static newCustomStream(newStream: StreamDefinition){
         let allData = Data;
         const objectData = allData.DataFromCustomStreams;
-        objectData.push({name: newStream.name, keyword:newStream.extras.keyword, tweets:[]})
+        objectData.push({name: newStream.name, totalCount: 0, keyword:newStream.extras.keyword, tweets:[]})
         allData.DataFromCustomStreams = objectData;
         const stringedData = JSON.stringify(allData)
         try {
@@ -185,7 +185,7 @@ export default abstract class Database {
                 return element.type;
             }
         }
-        return -1;
+        return "custom";
     }
 
     public static candidateNewBook(hashtag: string, name: string, author_id: string) {
@@ -345,10 +345,13 @@ export default abstract class Database {
     public static registerTweetInCustomStream(hashtag: string, tweetId: string, text: string, username: string){
         let allData = Data;
         const objectData = allData.DataFromCustomStreams;
+        let shifted = false;
         for(let element of objectData){
             if(element.name == hashtag){
-                if(element.tweets.length > Config.maxElementsFromCustomStream){
+                element.totalCount = element.totalCount + 1;
+                if(element.tweets.length >= Config.maxElementsFromCustomStream){
                     element.tweets.shift()
+                    shifted = true;
                 }
                 element.tweets.push({id:tweetId, text, username})
             }
@@ -357,10 +360,18 @@ export default abstract class Database {
         const stringedData = JSON.stringify(allData)
         try {
             fs.writeFileSync('./server/config/Data.json', stringedData);
-            return true;
+            return shifted;
         } catch (error) {
             console.error(error);
             return -1;
+        }
+    }
+
+    public static retrieveHashtagByKeyword(kw: string){
+        const data = Database.customStreamsData;
+        for(let element of data){
+            if(element.keyword == kw)
+                return element.name;
         }
     }
 }

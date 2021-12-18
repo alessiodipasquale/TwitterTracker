@@ -7,20 +7,19 @@ import { BadRequest } from "../config/Error";
 
 export async function tweetEventHandler(eventData: TweetV2SingleStreamResult) {
     const hashtag = eventData.data.text.split(" ")[0];
-    console.log(eventData)
+    //console.log(eventData)
     const type = Database.getTypeFromHashtag(hashtag);
     let value = null;
-    if(type != "custom")
+    if(type != "custom" )
       value = eventData.data.text.split("\"")[1];
     const options = Config.standardSearchOptions
     const tweet = await Twitter.searchTweetById(eventData.data.id,options)
-    if(type != -1){
-      try{
-        await manageStreamRequest(type,value,hashtag,eventData.matching_rules[0], tweet)
-      }catch(err){
-        throw BadRequest
-      }
+    try{
+      await manageStreamRequest(type,value,hashtag,eventData.matching_rules[0], tweet)
+    }catch(err){
+      throw BadRequest
     }
+  
 }
 
 export async function userEventHandler(eventData: TweetV2SingleStreamResult) {
@@ -52,9 +51,11 @@ async function manageStreamRequest(type: string, value: string | null, hashtag: 
       break;
     }
     case 'custom':{
-      const done = Database.registerTweetInCustomStream(hashtag, tweet.data.id, tweet.data.text, tweet.includes.users[0].username);
+      const ht = Database.retrieveHashtagByKeyword(matchingRule.tag)
+      const done = Database.registerTweetInCustomStream(ht, tweet.data.id, tweet.data.text, tweet.includes.users[0].username);
       if(done != undefined && done != -1){
-        Socket.broadcast("newElementInCustomStream",{customName:hashtag, username:tweet.includes.users[0].username, text:tweet.data.text, id:tweet.data.id})
+        if(done) Socket.broadcast("elementShiftedInCustomStream",{hashtag:ht})
+        Socket.broadcast("newElementInCustomStream",{customName:ht, username:tweet.includes.users[0].username, text:tweet.data.text, id:tweet.data.id})
       }
       break;
     }
