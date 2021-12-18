@@ -7,7 +7,6 @@ import {socketConnection} from '../services/socket-service'
 
 class ContestHandler extends Component {
 
-
     constructor(props) {
         super(props);
 
@@ -47,16 +46,31 @@ class ContestHandler extends Component {
       return(
         <>
         <Container fluid  style={{padding: '2%'}} >
-          <Row>
-            <Col>
-              <Button style={{marginRight: '2%'}} onClick={(e) => this.openCreateLiteraryContest(e)} variant="primary">Create Literary Contest</Button>
-              <Button style={{marginRight: '2%'}} onClick={(e) => this.openCreateTriviaGame(e)} variant="primary">Create Trivia Game</Button>
-              <Button onClick={(e) => this.openCreateCustomStream(e)} variant="primary">Create custom stream</Button>
-            </Col>
+          <Row style={{height:"30vh"}}>
+            <Card style={{borderColor:"#58595B", alignItems:"center"}}>
+                <p style={{fontSize:20, marginTop:"5%"}} >Create a contest where it is possible to apply and vote for books. The result can be viewed in real time on the Contest View page.</p>
+                <p style={{fontSize:20}} >Currently active: 123</p>
+                <Button style={{position: "absolute", top: "80%"}} onClick={(e) => this.openCreateLiteraryContest(e)} variant="primary">Create Literary Contest</Button>
+            </Card>
+          </Row>
+          <Row style={{height:"30vh", marginTop:"1%"}}>
+            <Card style={{borderColor:"#58595B", alignItems:"center"}}>
+                <p style={{fontSize:20, marginTop:"5%"}} >Create a game where you can get points by correctly answering the proposed questions. The results are available in real time on the Contest View page.</p>
+                <p style={{fontSize:20}} >Currently active: 123</p>
+                <Button style={{position: "absolute", top: "80%"}} onClick={(e) => this.openCreateTriviaGame(e)} variant="primary">Create Trivia Game</Button>
+            </Card>
+          </Row>
+          <Row style={{height:"30vh", marginTop:"1%"}}>
+            <Card style={{borderColor:"#58595B", alignItems:"center"}}>
+                <p style={{fontSize:20, marginTop:"5%"}} >Create your own data streams using an identifier and associated keywords. You will receive Tweets that meet the requirements on the Contest View page.</p>
+                <p style={{fontSize:20}} >Currently active: 123</p>
+                <Button style={{position: "absolute", top: "80%"}} onClick={(e) => this.openCreateCustomStream(e)} variant="primary">Create custom stream</Button>
+            </Card>
           </Row>
         </Container>
         { this.literaryModal() }
         { this.triviaGameModal() }
+        { this.customStreamModal() }
         
         </>
       )
@@ -130,6 +144,14 @@ class ContestHandler extends Component {
       createContest(object).then((res) => {
         this.setState({showLiteraryModal:false})
       }).catch(err => console.log(err))
+    }
+
+    createTriviaGame() {
+      
+    }
+
+    createCustomStream() {
+      
     }
 
     literaryModal() {
@@ -228,9 +250,20 @@ class ContestHandler extends Component {
             </Row>
           } 
           </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={() => this.setState({showTriviaModal:false})} variant="secondary">Close</Button>
+            <Button variant="primary" onClick={() => this.createTriviaGame()}>Create game</Button>
+          </Modal.Footer>
           </Modal>
         </>
       )
+    }
+
+    customStreamModal(){
+      return  (
+        <>
+        </>
+      );
     }
     
 }
