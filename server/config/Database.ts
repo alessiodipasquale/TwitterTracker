@@ -47,6 +47,12 @@ export default abstract class Database {
                     Socket.broadcast('newTriviaGameCreated', newStream)
                 break;
             }
+            case 'custom': {
+                const done = Database.newCustomStream(newStream);
+                if (done)
+                    Socket.broadcast('newCustomStreamCreated', newStream)
+                break;
+            }
         }
         Database.streamDefinitions = currentStreamDefs;
     }
@@ -136,6 +142,20 @@ export default abstract class Database {
         }
         objectData.push({ name: newStream.name, questions: buildedQuestions });
         allData.DataFromTriviaGames = objectData;
+        const stringedData = JSON.stringify(allData)
+        try {
+            fs.writeFileSync('./server/config/Data.json', stringedData);
+        } catch (error) {
+            console.error(error);
+        }
+        return true;
+    }
+
+    public static newCustomStream(newStream: StreamDefinition){
+        let allData = Data;
+        const objectData = allData.DataFromCustomStreams;
+        objectData.push({name: newStream.name, keyword:newStream.extras.keyword, tweets:[]})
+        allData.DataFromCustomStreams = objectData;
         const stringedData = JSON.stringify(allData)
         try {
             fs.writeFileSync('./server/config/Data.json', stringedData);
@@ -316,5 +336,27 @@ export default abstract class Database {
             }
         }
         return false;
+    }
+
+    public static registerTweetInCustomStream(hashtag: string, tweetId: string, text: string, username: string){
+        let allData = Data;
+        const objectData = allData.DataFromCustomStreams;
+        for(let element of objectData){
+            if(element.name == hashtag){
+                if(element.tweets.length > Config.maxElementsFromCustomStream){
+                    element.tweets.shift()
+                }
+                element.tweets.push({id:tweetId, text, username})
+            }
+        }
+        allData.DataFromCustomStreams = objectData;
+        const stringedData = JSON.stringify(allData)
+        try {
+            fs.writeFileSync('./server/config/Data.json', stringedData);
+            return true;
+        } catch (error) {
+            console.error(error);
+            return -1;
+        }
     }
 }

@@ -2,6 +2,7 @@
     "port": 8000,
     "distPath":"./webapp/dist",
     "maxVotes":10,
+    "maxElementsFromCustomStream": 10,
     "sentimentAnalysisOptions": {
         "extras": {
             "malissimo": -5,

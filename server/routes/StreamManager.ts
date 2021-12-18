@@ -9,7 +9,9 @@ export async function tweetEventHandler(eventData: TweetV2SingleStreamResult) {
     const hashtag = eventData.data.text.split(" ")[0];
     console.log(eventData)
     const type = Database.getTypeFromHashtag(hashtag);
-    const value = eventData.data.text.split("\"")[1];
+    let value = null;
+    if(type != "custom"){
+      value = eventData.data.text.split("\"")[1];
     const options = Config.standardSearchOptions
     const tweet = await Twitter.searchTweetById(eventData.data.id,options)
     if(type != -1){
@@ -46,6 +48,13 @@ async function manageStreamRequest(type: string, value: string, hashtag: string,
       const done = Database.registerAnswer(hashtag, answerNumber, value, tweet.data.author_id, tweet.includes.users[0].username);
       if(done != undefined && done != -1){
         Socket.broadcast("newAnswerInTriviaGame",{triviaName:hashtag, answerNumber:answerNumber, answer:value, isCorrect:done, userId:tweet.data.author_id, username:tweet.includes.users[0].username,})
+      }
+      break;
+    }
+    case 'custom':{
+      const done = Database.registerTweetInCustomStream(hashtag, tweet.data.id, tweet.data.text, tweet.includes.users[0].username);
+      if(done != undefined && done != -1){
+        Socket.broadcast("newAnswerInTriviaGame",{customName:hashtag, username:tweet.includes.users[0].username, text:tweet.data.text, id:tweet.data.id})
       }
       break;
     }

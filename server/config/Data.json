@@ -31,7 +31,20 @@
                     "tag": "risposta_2"
                 }
             ]
+        },
+        {
+            "name": "#testCustomStream",
+            "startDate": "2022-11-28T00:00:00.000Z",
+            "endDate": "2022-11-28T00:00:00.000Z",
+            "type": "custom",
+            "rules": [
+                {
+                    "value": "testKeyword",
+                    "tag": "testKeyword"
+                }
+            ]
         }
+
     ],
     "DataFromLiteraryContests": [
         {
@@ -79,6 +92,19 @@
                             "isCorrect": true
                         }
                     ]
+                }
+            ]
+        }
+    ],
+    "DataFromCustomStreams": [
+        {
+            "name": "#testCustomStream",
+            "keyword": "testKeyword",
+            "tweets": [
+                {
+                    "id": "123",
+                    "username": "Luca",
+                    "text": "prova"
                 }
             ]
         }

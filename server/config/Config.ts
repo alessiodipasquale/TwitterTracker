@@ -32,4 +32,8 @@ export default abstract class Config {
     public static get maxVotes(): number{
         return Constants.maxVotes;
     }
+
+    public static get maxElementsFromCustomStream(): number{
+        return Constants.maxElementsFromCustomStream;
+    }
 }

@@ -1,7 +1,5 @@
-import e from 'cors';
-import React, { Component, useImperativeHandle, useState } from 'react';
-import { Modal, Card, Form, Row, Col, Button, Container, Alert, ListGroup, ListGroupItem, Accordion } from 'react-bootstrap';
-import { ObjectFlags } from 'typescript';
+import React, { Component } from 'react';
+import { Modal, Card, Form, Row, Button, Container } from 'react-bootstrap';
 import { createContest, createTrivia, createCustom } from '../services/contest-service';
 import {socketConnection} from '../services/socket-service'
 
@@ -14,6 +12,7 @@ class ContestHandler extends Component {
         this.state=  { 
           showLiteraryModal: false,
           showTriviaModal: false,
+          showCustomModal: false,
           dataFromLiteraryContests: [],
           dataFromTriviaGames: [],
           contest: {
@@ -23,7 +22,9 @@ class ContestHandler extends Component {
             type: '',
             rules: [],
             extras: {
-              questions: []
+              questions: [],
+              keyword: '',
+              username: ''
             }
           }
         };
@@ -111,8 +112,7 @@ class ContestHandler extends Component {
           ...prevState.contest,
             type: 'custom'
         }
-      }))
-      
+      }))  
     } 
 
     addQuestion(e) {
@@ -121,6 +121,20 @@ class ContestHandler extends Component {
         text: '',
         correctAnswers: "'example1' 'example2'"
       })
+      this.setState(prevState => ({
+        contest: {
+          ...prevState.contest,
+          extras: {
+            ...prevState.contest.extras,
+            questions: newQuestions 
+          }
+        }
+      }))
+    }
+
+    removeQuestion(){
+      const last = this.state.contest.extras.questions.length - 1;
+      let newQuestions = this.state.contest.extras.questions.slice(0,last)
       this.setState(prevState => ({
         contest: {
           ...prevState.contest,
@@ -176,7 +190,17 @@ class ContestHandler extends Component {
     }
 
     createCustomStream() {
-      
+      let object = this.state.contest;
+      object.name = '#'+object.name;
+      object.startDate = new Date (object.startDate);
+      object.endDate = new Date (object.endDate);
+      object.rules = [{
+        value: object.keyword,
+        tag: object.keyword
+      }]
+      createCustom(object).then((res) => {
+        this.setState({showCustomModal:false})
+      }).catch(err => console.log(err))
     }
 
     literaryModal() {
@@ -265,7 +289,7 @@ class ContestHandler extends Component {
               }
 
               <Button onClick={() => {this.addQuestion()}}> Add question</Button>
-              
+              <Button style ={{marginTop:"3px"}} hidden={!(this.state.contest.extras.questions.length > 0)} variant="danger" onClick={() => {this.removeQuestion()}}> remove question</Button>
             </Row>
           } 
           </Modal.Body>
@@ -281,6 +305,46 @@ class ContestHandler extends Component {
     customStreamModal(){
       return  (
         <>
+        <Modal
+          show={this.state.showCustomModal}
+          size="md"
+          aria-labelledby="example-modal-sizes-title-md"
+          onHide={() => this.setState({showCustomModal:false})}
+
+        >
+          <Modal.Header closeButton>
+            <Modal.Title id="example-modal-sizes-title-md">
+              Create Custom stream
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+          {
+            <Row>
+              <Form.Group className="mb-3" controlId="name">
+                  <Form.Label>Insert a name for the stream</Form.Label>
+                  <Form.Control value={this.state.contest.name} onChange={(e)=>{this.handleChange(e)}} type="text" placeholder="Name"/>
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="endDate">
+                  <Form.Label>Insert End Date for the custom stream</Form.Label>
+                  <Form.Control value={this.state.contest.endDate} onChange={this.handleChange} type="date"/>
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="name">
+                  <Form.Label>Insert Keyword for the Custom stream</Form.Label>
+                  <p style={{color:"#444444"}}>(It can also be a whole sentence)</p>
+                  <Form.Control value={this.state.contest.extras.keyword} onChange={(e)=>{this.handleChange(e)}} type="text" placeholder="Keyword"/>
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="name">
+                  <Form.Label>Insert username to filter (optional)</Form.Label>
+                  <Form.Control value={this.state.contest.extras.username} onChange={(e)=>{this.handleChange(e)}} type="text" placeholder="Contest hashtag"/>
+              </Form.Group>  
+            </Row>
+          } 
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={() => this.setState({showCustomModal:false})} variant="secondary">Close</Button>
+            <Button variant="primary" onClick={() => this.createCustomStream()}>Create stream</Button>
+          </Modal.Footer>
+          </Modal>
         </>
       );
     }
