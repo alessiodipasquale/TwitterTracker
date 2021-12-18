@@ -91,6 +91,10 @@ export default abstract class Database {
         return JSON.parse(JSON.stringify(Data.DataFromTriviaGames));
     }
 
+    public static get customStreamsData() {
+        return JSON.parse(JSON.stringify(Data.DataFromCustomStreams));
+    }
+
     public static set literaryContestsData(newData: any[]) {
         let allData = Data;
         allData.DataFromLiteraryContests = newData;
