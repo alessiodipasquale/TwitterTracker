@@ -9,6 +9,12 @@ import { StreamDefinition } from '../types/StreamDefinition'
 import Config from '../config/Config';
 import Sentiment from 'sentiment'
 
+/**
+ * Search a tweet by its id
+ * @param req - Express standard request
+ * @param res - Express standard response
+ */
+
 export const searchTweetById: any = async (req: IRequest, res: IResponse): Promise<void> => {
     const id: string = req.params.tweetId;
     Twitter.searchTweetById(id, {})
@@ -18,6 +24,12 @@ export const searchTweetById: any = async (req: IRequest, res: IResponse): Promi
             throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
         })
 }
+
+/**
+ * Search a group of tweets by parameters present in a standard query
+ * @param req - Express standard request
+ * @param res - Express standard response
+ */
 
 export const searchByKeyword: any = async (req: IRequest, res: IResponse): Promise<void> => {
     const optionalParams: Partial<Tweetv2SearchParams> = {
@@ -93,6 +105,12 @@ export const searchByKeyword: any = async (req: IRequest, res: IResponse): Promi
         })
 }
 
+/**
+ * Search an user by Id
+ * @param req - Express standard request
+ * @param res - Express standard response
+ */
+
 export const getUserInformations: any = async (req: IRequest, res: IResponse): Promise<void> => {
     const options = {}
     let query;
@@ -120,6 +138,13 @@ export const getRetweetsByTweetId: any = async (req: IRequest, res: IResponse): 
             throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
         })
 }
+
+/**
+ * Search retweets related to a specific tweet id
+ * @param req - Express standard request
+ * @param res - Express standard response
+ */
+
 export const getRetweetersByTweetId: any = async (req: IRequest, res: IResponse): Promise<void> => {
     const options = {}
     const id: string = req.params.tweetId;
@@ -132,6 +157,13 @@ export const getRetweetersByTweetId: any = async (req: IRequest, res: IResponse)
             throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
         })
 }
+
+/**
+ * Perform a sentiment analysis on a specific tweet
+ * @param req - Express standard request
+ * @param res - Express standard response
+ */
+
 export const getSentimentFromTweet: any = async (req: IRequest, res: IResponse): Promise<void> => {
     const id: string = req.params.tweetId;
 
@@ -143,6 +175,12 @@ export const getSentimentFromTweet: any = async (req: IRequest, res: IResponse):
             throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
         })
 }
+
+/**
+ * Perform a sentiment analysis on a group of tweets
+ * @param req - Express standard request
+ * @param res - Express standard response
+ */
 
 export const getSentimentFromGroupOfTweets: any = async (req: IRequest, res: IResponse): Promise<void> => {
     const ids: string[] = [];
@@ -167,6 +205,12 @@ export const getSentimentFromGroupOfTweets: any = async (req: IRequest, res: IRe
     res.send(toReturn);
 }
 
+/**
+ * Wrapper function that add an element to present streams
+ * @param req - Express standard request
+ * @param res - Express standard response
+ */
+
 export const addElementToStreamData = async (req: IRequest, res: IResponse) => {
     try {
         if(!Database.eventAlreadyPresent(req.body.streamDefinitions.name)) {
@@ -179,6 +223,12 @@ export const addElementToStreamData = async (req: IRequest, res: IResponse) => {
     }
 }
 
+/**
+ * Wrapper function that remove an element from present streams
+ * @param req - Express standard request
+ * @param res - Express standard response
+ */
+
 export const removeStreamElementFromData = async (req: IRequest, res: IResponse) => {
     try {
         if(Database.eventAlreadyPresent(req.params.streamName)){
@@ -190,6 +240,12 @@ export const removeStreamElementFromData = async (req: IRequest, res: IResponse)
         throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
     }
 }
+
+/**
+ * Function that set the user to follow in User Tracking feature
+ * @param req - Express standard request
+ * @param res - Express standard response
+ */
 
 export const startFollowingUser = async (req: IRequest, res: IResponse) => {
     try {

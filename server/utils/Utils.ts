@@ -1,10 +1,19 @@
+/**
+ * File that contains some utility functions
+ */
+
 import queryParams from "./Interfaces/QueryParams";
 import { Tweetv2TimelineResult } from 'twitter-api-v2';
 import Config from "../config/Config";
 import Sentiment from "sentiment";
 import Translate from "@vitalets/google-translate-api";
 
-/* Builds the q field */
+/**
+ * Builds q field for standard queries
+ * @param q - Contains query params
+ * @returns A string containing a standard query
+ */
+
 export function buildQ(q: queryParams): string {
 
   let query = q.keywords+" " || "";
@@ -28,9 +37,20 @@ export function buildQ(q: queryParams): string {
   return query;
 }
 
+/**
+ * Simple delay function to avoid error 429
+ * @param ms - milliseconds to wait
+ */
+
 export function delay(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+/**
+ * Function that format data returned by V2 Twitter apis
+ * @param data - Tweetv2TimelineResult type object
+ * @returns A JSON containing formatted data
+ */
 
 export function formatData(data: Tweetv2TimelineResult): any {
   let toReturn: any = data;
@@ -63,6 +83,12 @@ export function formatData(data: Tweetv2TimelineResult): any {
   }
   return toReturn;
 }
+
+/**
+ * Function that implements a special version of sentiment analysis that use translation before analisys
+ * @param inputText -
+ * @returns A JSON containing analysis result
+ */
 
 export async function translateAndGetSentiments(inputText: string) {
   const sentiment = new Sentiment();

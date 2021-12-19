@@ -33,11 +33,19 @@ export default abstract class Twitter {
       });
     }
 
+    /**
+     * Initialization that includes both autentications and V2 stream starting
+     */
+
     public static async init() {
         Twitter.authentication_v1();
         Twitter.authentication();
         Twitter.startStream();
     }
+
+    /**
+     * V2 stream starting
+     */
 
     public static async startStream() {
       Twitter.stream = Twitter.roClient.v2.searchStream({ autoConnect: false });
@@ -54,6 +62,11 @@ export default abstract class Twitter {
       await Twitter.getStreamRules();
     }
 
+    /**
+     * V1 stream starting for User Tracking feature
+     * @param followArgs - Array of user ids to follow
+     */
+
     public static async startStream_v1(followArgs: string[]) {
       Twitter._currentlyActive_v1 = true;
       Twitter.stream_v1 = await Twitter.roClient_v1.v1.filterStream({follow:followArgs})
@@ -69,14 +82,29 @@ export default abstract class Twitter {
       await Twitter.stream_v1.connect({ autoReconnect: true, autoReconnectRetries: Infinity });
     }
 
+    /**
+     * V1 stream ending
+     */
+
     public static async stopStream_v1() {
       Twitter.stream_v1.close();
       Twitter._currentlyActive_v1 = false;
     }
 
+    /**
+     * Getter method
+     * @returns - true if there is a V1 stream active, false otherwise
+     */
+
     public static get currentlyActive_v1(){
       return Twitter._currentlyActive_v1;
     }
+
+    /**
+     * Function that build and add/delete rules for stream
+     * @param elem - object that contains params for rules construction
+     * @param type - add or delete
+     */
 
     public static async rulesConstruction(elem:any, type:string): Promise<void>{
       let rules: any
@@ -99,6 +127,10 @@ export default abstract class Twitter {
       await Twitter.roClient.v2.updateStreamRules(rules);
     }
 
+    /** 
+     * Wrapper for {@link rulesConstruction}
+     */ 
+
     public static async removeFromRules(hashtag: string){
       for(const element of Database.streamDefinitions){
         if(element.name == hashtag){
@@ -113,6 +145,10 @@ export default abstract class Twitter {
       return rules;
     }
 
+    /**
+     * Function that delete all stream rules active (if present)
+     */
+
     private static async clearStreamRulesIfPresent() {
       const rules = await Twitter.roClient.v2.streamRules();
       if(rules.data){
@@ -124,10 +160,18 @@ export default abstract class Twitter {
       }
     }
 
+    /**
+     * Comunication with Twitter V2 standard API using "twitter-api-v2" npm package
+     */
+
     public static async searchTweetById(queryPath: string, options:any) {
         return await Twitter.roClient.v2.singleTweet(queryPath,options);
     }
 
+    /**
+     * Comunication with Twitter V2 standard API using "twitter-api-v2" npm package
+     */
+    
     public static async searchTweetsByKeyword({query, options}: any) {
         return await Twitter.roClient.v2.searchAll(query, options);
     }
@@ -139,13 +183,25 @@ export default abstract class Twitter {
         return await Twitter.roClient.v2.userByUsername(query.username,options);
     }
 
+    /**
+     * Comunication with Twitter V2 standard API using "twitter-api-v2" npm package
+     */
+
     public static async getRetweetersByTweetId({query,options}: any) {
         return await Twitter.roClient.v2.tweetRetweetedBy(query.id,options);
     }
 
+    /**
+     * Comunication with Twitter V2 standard API using "twitter-api-v2" npm package
+     */
+
     public static async getRetweetsByTweetId({query,options}: any) {
       return await Twitter.roClient.v1.get('statuses/retweets/'.concat(query.id).concat('.json'),{})
     }
+
+    /**
+     * Comunication with Twitter V2 standard API using "twitter-api-v2" npm package
+     */
 
     public static async findIdByUsername(username:string){
       return (await Twitter.roClient.v1.user({screen_name:username})).id_str;

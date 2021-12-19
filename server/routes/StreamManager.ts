@@ -5,6 +5,11 @@ import Socket from '../connection/Socket';
 import Config from '../config/Config';
 import { BadRequest } from "../config/Error";
 
+/**
+ * Handler for V2 stream event
+ * @param eventData - Data retrieved from the event handling
+ */
+
 export async function tweetEventHandler(eventData: TweetV2SingleStreamResult) {
     const hashtag = eventData.data.text.split(" ")[0];
     console.log(eventData)
@@ -22,9 +27,14 @@ export async function tweetEventHandler(eventData: TweetV2SingleStreamResult) {
   
 }
 
-export async function userEventHandler(eventData: TweetV2SingleStreamResult) {
-  console.log(eventData)
-}
+/**
+ * Stream requests manager that handle data from a new Tweet related to a stream and uses it in a properly way
+ * @param type - Type of the stream
+ * @param value - Value passed
+ * @param hashtag - Name of the stream
+ * @param matchingRule - Rule matched by the Tweet
+ * @param tweet - Retrieved tweet
+ */
 
 async function manageStreamRequest(type: string, value: string | null, hashtag: string, matchingRule: any, tweet: any){
   switch (type){
@@ -62,13 +72,24 @@ async function manageStreamRequest(type: string, value: string | null, hashtag: 
   }
 }
 
+/**
+ * Function that set standard listeners for a socket
+ * @param socket - A Socket.io object
+ */
+
 export async function setListenersForSocket(socket: any): Promise<void> {
   await addListener(socket, '/readyToReceiveData', ()=>{ return sendPastData(socket) });
   await addListener(socket, '/testSocketConnection', () => {socket.emit("test",{"test":"test"})});
 }
 
+/**
+ * Function that add a single listener to a socket
+ * @param socket - A Socket.io object
+ * @param event - Event to handle
+ * @param listener - Function for event handling
+ */
 
-export async function addListener(socket:any, event: string, listener: Function) {
+export async function addListener(socket:any, event: string, listener: any) {
   socket.on(event, async (callback:any) => {
       try {
           const result = await listener();
@@ -84,11 +105,15 @@ export async function addListener(socket:any, event: string, listener: Function)
   });
 }
 
+/**
+ * Function that send past data to a specific socket
+ * @param socket - A Socket.io object
+ * @returns A JSON containing data from streams in database
+ */
+
 export function sendPastData(socket: any) {
   const dataFromLiteraryContests = Database.literaryContestsData;
   const dataFromTriviaGames = Database.triviaGamesData;
   const dataFromCustomStreams = Database.customStreamsData;
   return {dataFromLiteraryContests,dataFromTriviaGames, dataFromCustomStreams}
-  //await Socket.sendSocketMessage(socket, "dataFromLiteraryContests",{"dataFromLiteraryContests":dataFromLiteraryContests});
-  //await Socket.sendSocketMessage(socket, "dataFromTriviaGames",{"dataFromTriviaGames":dataFromTriviaGames});
 }

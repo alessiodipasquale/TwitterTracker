@@ -1,6 +1,10 @@
 import { Server as SocketServer } from 'socket.io'
 import { setListenersForSocket} from '../routes/StreamManager'
 
+/** 
+ * Class that contain methods for socket comunication
+ */
+
 export default abstract class Socket{
 
     private static io: any;

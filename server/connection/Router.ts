@@ -5,6 +5,10 @@ import Config from '../config/Config';
 import { errorHandler } from '../config/Error';
 import history from 'connect-history-api-fallback';
 
+/**
+ * Abstract class that initialize endpoints for client-server comunication
+ */
+
 export default abstract class Router {
     public static init(app: any): void {
 
