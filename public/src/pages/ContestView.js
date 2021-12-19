@@ -325,12 +325,12 @@ class ContestView extends Component {
                                     className="d-flex justify-content-between align-items-start"
                                   >
                                       <div className="ms-2 me-auto" style={{width:"95%"}}>
-                                      <Row style={{width:"90%"}}>
+                                      <Row >
                                         <Col style={{width:"30%"}}>
                                           <div className="fw-bold">{question.text}</div>
                                         </Col>
                                         <Col style={{display:"flex"}}>
-                                          <p style={{marginLeft:"60%",marginRight:"2%"}}>Answer: </p>
+                                          <p style={{marginLeft:"50%",marginRight:"2%"}}>Answer: </p>
                                           <a 
                                               target="_blank" 
                                               rel="noopener noreferrer"
