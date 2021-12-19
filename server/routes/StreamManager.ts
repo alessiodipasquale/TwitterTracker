@@ -7,7 +7,7 @@ import { BadRequest } from "../config/Error";
 
 export async function tweetEventHandler(eventData: TweetV2SingleStreamResult) {
     const hashtag = eventData.data.text.split(" ")[0];
-    //console.log(eventData)
+    console.log(eventData)
     const type = Database.getTypeFromHashtag(hashtag);
     let value = null;
     if(type != "custom" )

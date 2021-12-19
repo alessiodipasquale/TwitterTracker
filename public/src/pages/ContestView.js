@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Chart from "react-google-charts";
-import { Row, Col, Tabs, Tab, Card, Container, ListGroup, ListGroupItem } from 'react-bootstrap';
+import { Row, Col, Tabs, Tab, Card, Container, ListGroup, ListGroupItem, Button } from 'react-bootstrap';
 import { socketConnection } from '../services/socket-service';
 
 
@@ -74,6 +74,11 @@ class ContestView extends Component {
     socketConnection.instance.on("newAnswerInTriviaGame", (data) => { if (this._isMounted) this.handleNewAnswer(data) });
     socketConnection.instance.on("newElementInCustomStream", (data) => { if (this._isMounted) this.handleNewCustom(data) });
     socketConnection.instance.on("elementShiftedInCustomStream", (data) => { if (this._isMounted) this.handleNewShift(data.hashtag) });
+  
+    const script = document.createElement("script");
+    script.src = "https://platform.twitter.com/widgets.js";
+    script.async = true;
+    document.body.appendChild(script);
   }
 
   componentWillUnmount() {
@@ -229,16 +234,50 @@ class ContestView extends Component {
           <Tabs>
             <Tab eventKey="literaryContest" title="Literary Contests">
               {this.state.literaryContestData.map((contestData) => {
+                const hrefForCandidacy = "https://twitter.com/intent/tweet?text="+(contestData.name).concat("%20candido%20").concat("\"nomeLibro\"");
                 return (
                   <>
                     <Card>
                       <Card.Body>
-                        <Card.Title>{contestData.name}</Card.Title>
+                        <Row>
+                          <Col>
+                            <Card.Title>{contestData.name}</Card.Title>
+                          </Col>
+                          <Col style={{display:"flex"}}>
+                          <p style={{marginLeft:"60%",marginRight:"2%"}}>Candidacy: </p>
+                          <a 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              href={hrefForCandidacy}
+                              className="twitter-share-button" 
+                              data-size="large"
+                              data-show-count="false">
+                                Candidacy for this contest
+                            </a>
+                          </Col>
+                        </Row>
                         <ListGroup>
                           {contestData.books.map((book) => {
+                            const hrefForVote= "https://twitter.com/intent/tweet?text="+(contestData.name).concat("%20voto%20").concat("\"").concat(book.bookName).concat("\"");
                             return (<>
                               <ListGroupItem>
-                                <strong>{book.bookName}</strong>: {book.votes} votes
+                                <Row>
+                                <Col>
+                                  <strong style={{marginRight:"10px"}}>{book.bookName}:</strong> {book.votes} votes
+                                </Col>  
+                                <Col style={{display:"flex"}}>
+                                  <p style={{marginLeft:"60%",marginRight:"2%"}}>Vote: </p>
+                                  <a 
+                                      target="_blank" 
+                                      rel="noopener noreferrer"
+                                      href={hrefForVote}
+                                      className="twitter-share-button" 
+                                      data-size="large"
+                                      data-show-count="false">
+                                        Vote for this book
+                                    </a>
+                                  </Col>
+                                </Row>
                               </ListGroupItem>
                             </>);
                           })}
@@ -277,14 +316,32 @@ class ContestView extends Component {
                           <Card.Title>{gameData.name}</Card.Title>
                           <ListGroup as="ol" numbered>
                             {gameData.questions.map(question => {
+                              const hrefForAnswer= "https://twitter.com/intent/tweet?text="+(gameData.name).concat("risposta_").concat(question.number).concat("%20").concat("\"").concat("yourAnswer").concat("\"");
+
                               return (
                                 <>
                                   <ListGroup.Item
                                     as="li"
                                     className="d-flex justify-content-between align-items-start"
                                   >
-                                    <div className="ms-2 me-auto">
-                                      <div className="fw-bold">{question.text}</div>
+                                      <div className="ms-2 me-auto" style={{width:"95%"}}>
+                                      <Row style={{width:"90%"}}>
+                                        <Col style={{width:"30%"}}>
+                                          <div className="fw-bold">{question.text}</div>
+                                        </Col>
+                                        <Col style={{display:"flex"}}>
+                                          <p style={{marginLeft:"60%",marginRight:"2%"}}>Answer: </p>
+                                          <a 
+                                              target="_blank" 
+                                              rel="noopener noreferrer"
+                                              href={hrefForAnswer}
+                                              className="twitter-share-button" 
+                                              data-size="large"
+                                              data-show-count="false">
+                                                Answer the question
+                                          </a>
+                                        </Col>
+                                      </Row>
                                       <ListGroup variant="flush">
                                         {question.participants.map((answerData) => {
                                           return (
