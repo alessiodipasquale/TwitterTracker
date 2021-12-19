@@ -23,7 +23,7 @@ export default abstract class Socket{
     }
 
     public static async broadcast(event:string,data:any){
-        for(let socket of Socket.openSockets){
+        for(const socket of Socket.openSockets){
             socket.emit(event,data);
         }
     }

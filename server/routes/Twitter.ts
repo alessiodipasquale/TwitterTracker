@@ -48,7 +48,7 @@ export default abstract class Twitter {
       await Twitter.clearStreamRulesIfPresent();
 
       const contests = Database.streamDefinitions;
-      for (let elem of contests) {
+      for (const elem of contests) {
         await Twitter.rulesConstruction(elem,"add")
       }
       await Twitter.getStreamRules();
@@ -84,7 +84,7 @@ export default abstract class Twitter {
         rules = {
           "add": []
         };
-        for(let rule of elem.rules){
+        for(const rule of elem.rules){
           rules.add.push({value: rule.value, tag:rule.tag})
         }
       }
@@ -92,7 +92,7 @@ export default abstract class Twitter {
         rules = {
           "delete": []
         };
-        for(let rule of elem.rules){
+        for(const rule of elem.rules){
           rules.delete.push({value: rule.value, tag:rule.tag})
         }
       }
@@ -100,7 +100,7 @@ export default abstract class Twitter {
     }
 
     public static async removeFromRules(hashtag: string){
-      for(let element of Database.streamDefinitions){
+      for(const element of Database.streamDefinitions){
         if(element.name == hashtag){
           await this.rulesConstruction(element, "delete")
         }

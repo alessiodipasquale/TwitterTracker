@@ -42,8 +42,8 @@ export const searchByKeyword: any = async (req: IRequest, res: IResponse): Promi
         attitude: req.body.attitude ?? "",
     }
 
-    let queryOptions: Partial<Tweetv2SearchParams> | undefined = Object.fromEntries(Object.entries(optionalParams).filter(([_, v]) => v != null && v !== ""));
-    let queryPath: string = buildQ(queryParams)
+    const queryOptions: Partial<Tweetv2SearchParams> | undefined = Object.fromEntries(Object.entries(optionalParams).filter(([_, v]) => v != null && v !== ""));
+    const queryPath: string = buildQ(queryParams)
 
     const stopwatch = new Stopwatch()
     stopwatch.start();
@@ -54,7 +54,7 @@ export const searchByKeyword: any = async (req: IRequest, res: IResponse): Promi
             if (controlNumber > 100) {
                 const paginators = [];
                 let tot = paginator.meta.result_count;
-                let formattedData: any = {};
+                const formattedData: any = {};
                 formattedData.tweets = [];
 
                 paginators.push(paginator);
@@ -65,9 +65,9 @@ export const searchByKeyword: any = async (req: IRequest, res: IResponse): Promi
                     delay(500)
                 }
                 let count = 0;
-                for (let elem of paginators) {
+                for (const elem of paginators) {
                     const data = formatData(elem.data);
-                    for (let tweet of data) {
+                    for (const tweet of data) {
                         if(count <= controlNumber){
                             formattedData.tweets.push(tweet)
                             count = count+1;
@@ -78,7 +78,7 @@ export const searchByKeyword: any = async (req: IRequest, res: IResponse): Promi
                 formattedData.dataRetrievingTime = { time: stopwatch.getTime(), result_count: tot }
                 res.send(formattedData)
             } else {
-                let formattedData: any = {};
+                const formattedData: any = {};
                 formattedData.tweets = [];
                 formattedData.tweets = formatData(paginator.data);
                 formattedData.dataRetrievingTime = { time: stopwatch.getTime(), result_count: paginator.meta.result_count }
@@ -95,7 +95,7 @@ export const searchByKeyword: any = async (req: IRequest, res: IResponse): Promi
 
 export const getUserInformations: any = async (req: IRequest, res: IResponse): Promise<void> => {
     const options = {}
-    var query;
+    let query;
     if (req.body.id) {
         query = { id: req.body.id }
     } else {
@@ -145,10 +145,10 @@ export const getSentimentFromTweet: any = async (req: IRequest, res: IResponse):
 }
 
 export const getSentimentFromGroupOfTweets: any = async (req: IRequest, res: IResponse): Promise<void> => {
-    let ids: string[] = [];
-    let toAnalize: string = ""
-    let tweets = req.body;
-    for (let id of tweets) {
+    const ids: string[] = [];
+    let toAnalize = ""
+    const tweets = req.body;
+    for (const id of tweets) {
         await Twitter.searchTweetById(id, {}).then(data => {
                 toAnalize = toAnalize.concat(" ").concat((data.data.text).toString());
             }).catch(err => {
@@ -156,10 +156,10 @@ export const getSentimentFromGroupOfTweets: any = async (req: IRequest, res: IRe
                 //throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
             })
     }
-    let toReturn: any = {};
+    const toReturn: any = {};
     console.log(toAnalize)
     //const result = await translateAndGetSentiments(toAnalize);
-        var sentiment = new Sentiment();
+        const sentiment = new Sentiment();
         const options: any = Config.sentimentAnalysisOptions;
         const result = sentiment.analyze(toAnalize, options);
     toReturn.result = result;

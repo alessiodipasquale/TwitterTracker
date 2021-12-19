@@ -39,9 +39,9 @@ export function formatData(data: Tweetv2TimelineResult): any {
     const fields = Config.FieldsFromStandardQuery;
     const stringData = JSON.stringify(data);
     const object = JSON.parse(stringData);
-    for (let expectedField of fields) {
+    for (const expectedField of fields) {
       if (object.includes[expectedField.dataName]) {
-        for (let tweet of object.data) {
+        for (const tweet of object.data) {
           if (tweet[expectedField.matchingParam]) {
             let matchingParameter: string;
             if (expectedField.internalMatchingParam) {
@@ -50,7 +50,7 @@ export function formatData(data: Tweetv2TimelineResult): any {
             } else {
               matchingParameter = tweet[expectedField.matchingParam];
             }
-            for (let element of object.includes[expectedField.dataName]) {
+            for (const element of object.includes[expectedField.dataName]) {
               if (element.id == matchingParameter) {
                 tweet[expectedField.newBodyName] = element;
               }
@@ -65,16 +65,16 @@ export function formatData(data: Tweetv2TimelineResult): any {
 }
 
 export async function translateAndGetSentiments(inputText: string) {
-  var sentiment = new Sentiment();
+  const sentiment = new Sentiment();
   const options: any = Config.sentimentAnalysisOptions;
 
-  var translated: any = await Translate(String(inputText), { to: 'en' });
-  var full_text: string = translated.text;
+  const translated: any = await Translate(String(inputText), { to: 'en' });
+  const full_text: string = translated.text;
 
   const result = sentiment.analyze(full_text, options);
   const originalwords: string[] = [];
-  for (let elem of result.words) {
-    var orig: any = await Translate(String(elem), { from: 'en', to: translated.from.language.iso });
+  for (const elem of result.words) {
+    const orig: any = await Translate(String(elem), { from: 'en', to: translated.from.language.iso });
     if (inputText.toLowerCase().includes(orig.text.toLowerCase()) || inputText.toLowerCase().includes(orig.text.substring(0, orig.text.length - 1).toLowerCase()))
       originalwords.push(orig.text.toLowerCase());
   }

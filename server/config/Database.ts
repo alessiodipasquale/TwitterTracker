@@ -16,7 +16,7 @@ export default abstract class Database {
     }
 
     public static set streamDefinitions(definitions: StreamDefinition[]) {
-        let allData = Data;
+        const allData = Data;
         const objectData = JSON.parse(JSON.stringify({ streamDefinitions: definitions }));
         for (const elem of objectData) {
             elem.startDate = new Date(elem.startDate).toISOString().substring(0, 10);
@@ -96,7 +96,7 @@ export default abstract class Database {
     }
 
     public static set literaryContestsData(newData: any[]) {
-        let allData = Data;
+        const allData = Data;
         allData.DataFromLiteraryContests = newData;
         const stringedData = JSON.stringify(allData)
         try {
@@ -107,7 +107,7 @@ export default abstract class Database {
     }
 
     public static set triviaGamesData(newData: any[]) {
-        let allData = Data;
+        const allData = Data;
         allData.DataFromTriviaGames = newData
         const stringedData = JSON.stringify(allData)
         try {
@@ -118,7 +118,7 @@ export default abstract class Database {
     }
 
     public static newLiteraryContest(newStream: StreamDefinition) {
-        let allData = Data;
+        const allData = Data;
         const objectData = allData.DataFromLiteraryContests;
         objectData.push({ name: newStream.name, voters: [], books: [] });
         allData.DataFromLiteraryContests = objectData;
@@ -133,12 +133,12 @@ export default abstract class Database {
 
     public static newTriviaGame(newStream: StreamDefinition) {
 
-        let allData = Data;
+        const allData = Data;
         const objectData = allData.DataFromTriviaGames;
         const buildedQuestions = [];
-        for (let question of newStream.extras.questions) {
-            let lowerCase = []
-            for (let cAnswer of question.correctAnswers) {
+        for (const question of newStream.extras.questions) {
+            const lowerCase = []
+            for (const cAnswer of question.correctAnswers) {
                 lowerCase.push(cAnswer.toLowerCase())
             }
             const obj = { number: question.number, text: question.text, correctAnswers: lowerCase, participants: [] }
@@ -156,7 +156,7 @@ export default abstract class Database {
     }
 
     public static newCustomStream(newStream: StreamDefinition){
-        let allData = Data;
+        const allData = Data;
         const objectData = allData.DataFromCustomStreams;
         objectData.push({name: newStream.name, totalCount: 0, username: newStream.extras.username, keyword:newStream.extras.keyword, tweets:[]})
         allData.DataFromCustomStreams = objectData;
@@ -170,8 +170,8 @@ export default abstract class Database {
     }
 
     public static eventAlreadyPresent(name: string) {
-        let data = Database.streamDefinitions;
-        for (let elem of data) {
+        const data = Database.streamDefinitions;
+        for (const elem of data) {
             if (elem.name == name)
                 return true;
         }
@@ -180,7 +180,7 @@ export default abstract class Database {
 
     public static getTypeFromHashtag(hashtag: string) {
         const streamDefinitions = Database.streamDefinitions;
-        for (let element of streamDefinitions) {
+        for (const element of streamDefinitions) {
             if (element.name == hashtag) {
                 return element.type;
             }
@@ -190,9 +190,9 @@ export default abstract class Database {
 
     public static candidateNewBook(hashtag: string, name: string, author_id: string) {
         if (!Database.bookAlreadyPresent(hashtag, name)) {
-            let allData = Data;
+            const allData = Data;
             const objectData = allData.DataFromLiteraryContests;
-            for (let elem of objectData) {
+            for (const elem of objectData) {
                 if (elem.name == hashtag) {
                     elem.books.push({ candidatedBy: author_id, bookName: name, votes: 0, votedBy: [] })
                 }
@@ -211,9 +211,9 @@ export default abstract class Database {
 
     private static bookAlreadyPresent(hashtag: string, name: string) {
         const data = Data.DataFromLiteraryContests;
-        for (let contest of data) {
+        for (const contest of data) {
             if (contest.name == hashtag) {
-                for (let book of contest.books) {
+                for (const book of contest.books) {
                     if (book.bookName.toLowerCase() == name.toLowerCase()) {
                         return true;
                     }
@@ -226,13 +226,13 @@ export default abstract class Database {
     public static async voteBook(hashtag: string, name: string, author_id: string) {
         if (Database.bookAlreadyPresent(hashtag, name)) {
             if (!Database.reachedMaxVotes(hashtag, author_id) && !Database.hasVotedBook(hashtag, name, author_id)) {
-                let allData = Data;
+                const allData = Data;
                 const objectData = allData.DataFromLiteraryContests;
-                for (let contest of objectData) {
+                for (const contest of objectData) {
                     if (contest.name == hashtag) {
                         //incrementare voto in voters
                         let found = false;
-                        for (let voter of contest.voters) {
+                        for (const voter of contest.voters) {
                             if (voter.author_id == author_id) {
                                 found = true;
                                 voter.numVotes = voter.numVotes + 1;
@@ -242,7 +242,7 @@ export default abstract class Database {
                             contest.voters.push({ author_id, numVotes: 1 })
                         }
                         //aggiungere ai votanti e ai voti del libro
-                        for (let book of contest.books) {
+                        for (const book of contest.books) {
                             if (book.bookName.toLowerCase() == name.toLowerCase()) {
                                 book.votes = book.votes + 1;
                                 book.votedBy.push(author_id)
@@ -270,9 +270,9 @@ export default abstract class Database {
 
     private static reachedMaxVotes(hashtag: string, author_id: string) {
         const data = Data.DataFromLiteraryContests;
-        for (let contest of data) {
+        for (const contest of data) {
             if (contest.name == hashtag) {
-                for (let voter of contest.voters) {
+                for (const voter of contest.voters) {
                     if (voter.author_id == author_id && voter.numVotes == Config.maxVotes)
                         return true;
                 }
@@ -283,11 +283,11 @@ export default abstract class Database {
 
     private static hasVotedBook(hashtag: string, name: string, author_id: string) {
         const data = Data.DataFromLiteraryContests;
-        for (let contest of data) {
+        for (const contest of data) {
             if (contest.name == hashtag) {
-                for (let book of contest.books) {
+                for (const book of contest.books) {
                     if (book.bookName.toLowerCase() == name.toLowerCase()) {
-                        for (let voter of book.votedBy) {
+                        for (const voter of book.votedBy) {
                             if (voter == author_id)
                                 return true;
                         }
@@ -300,12 +300,12 @@ export default abstract class Database {
 
     public static registerAnswer(hashtag: string, answerNumber: number, answer: string, author_id: string, username: string) {
         if (!Database.hasAlreadyAnswered(hashtag, answerNumber, author_id)) {
-            let allData = Data;
+            const allData = Data;
             const objectData = allData.DataFromTriviaGames;
             let correct;
-            for (let game of objectData) {
+            for (const game of objectData) {
                 if (game.name == hashtag) {
-                    for (let question of game.questions) {
+                    for (const question of game.questions) {
                         if (question.number == answerNumber) {
                             correct = question.correctAnswers.includes(answer.toLowerCase())
                             question.participants.push({ username: username, userId: author_id, answeredTo: answerNumber, answer: answer, isCorrect: correct })
@@ -327,11 +327,11 @@ export default abstract class Database {
 
     private static hasAlreadyAnswered(hashtag: string, answerNumber: number, author_id: string) {
         const data = Data.DataFromTriviaGames;
-        for (let game of data) {
+        for (const game of data) {
             if (game.name == hashtag) {
-                for (let question of game.questions) {
+                for (const question of game.questions) {
                     if (question.number == answerNumber) {
-                        for (let participant of question.participants) {
+                        for (const participant of question.participants) {
                             if (participant.userId == author_id)
                                 return true;
                         }
@@ -343,11 +343,11 @@ export default abstract class Database {
     }
 
     public static registerTweetInCustomStream(hashtag: string, tweetId: string, text: string, username: string){
-        let allData = Data;
+        const allData = Data;
         const objectData = allData.DataFromCustomStreams;
         let shifted = false;
         let changed = false
-        for(let element of objectData){
+        for(const element of objectData){
             if(element.name == hashtag && (element.username === "" || element.username === username)){
                 element.totalCount = element.totalCount + 1;
                 if(element.tweets.length >= Config.maxElementsFromCustomStream){
@@ -372,7 +372,7 @@ export default abstract class Database {
 
     public static retrieveHashtagByKeyword(kw: string){
         const data = Database.customStreamsData;
-        for(let element of data){
+        for(const element of data){
             if(element.keyword == kw)
                 return element.name;
         }
