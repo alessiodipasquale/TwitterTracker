@@ -33,6 +33,15 @@ export default abstract class Config {
     }
 
     /**
+     * @returns Path for the application
+     */
+
+     public static get docsPath(): string {
+        return Constants.docsPath;
+
+    }
+
+    /**
      * @returns Some standard options for sentiment analysis
      */
 
