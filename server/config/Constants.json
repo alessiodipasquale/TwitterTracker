@@ -1,6 +1,7 @@
 {
     "port": 8000,
     "distPath":"./webapp/dist",
+    "docsPath":"./webapp/docs",
     "maxVotes":10,
     "maxElementsFromCustomStream": 5,
     "sentimentAnalysisOptions": {

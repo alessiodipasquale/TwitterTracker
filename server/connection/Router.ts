@@ -45,6 +45,7 @@ export default abstract class Router {
 		*/
 		
         app.use('/', express.static(Config.distPath));
+		app.use('/docs', express.static(Config.docsPath))
 
         app.post('/searchTweetsByKeyword', searchByKeyword);
         
