@@ -4,6 +4,10 @@ import Config from '../config/Config';
 import Router from './Router';
 import Socket from './Socket';
 
+/** 
+ * This class take care of initialize and start http and socket servers.
+ */
+
 export default abstract class Server {
     private static app: any;
     private static server: any;

@@ -1,5 +1,9 @@
 import Constants from './Constants.json';
 
+/**
+ * Configuration class that takes care of providing standard data 
+ */
+
 export default abstract class Config {
     private static _port: number;
 
@@ -18,7 +22,6 @@ export default abstract class Config {
 
     public static get sentimentAnalysisOptions(): any {
         return Constants.sentimentAnalysisOptions;
-
     }
 
     public static get FieldsFromStandardQuery(): any {

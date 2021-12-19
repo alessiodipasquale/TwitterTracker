@@ -3,6 +3,10 @@ import { tweetEventHandler } from "./StreamManager";
 import Database from "../config/Database";
 import Socket from '../connection/Socket';
 
+/** 
+ * This class manage everything related to interfacing with Twitter
+ */
+
 export default abstract class Twitter {
     private static roClient_v1: any;
     private static roClient: TwitterApiReadOnly;
@@ -10,6 +14,10 @@ export default abstract class Twitter {
     public static stream_v1: TweetStream;
 
     private static _currentlyActive_v1 = false;
+
+    /** 
+     * Authenication for V2 API
+     */    
 
     public static async authentication(){
       const twitterClient = new TwitterApi("AAAAAAAAAAAAAAAAAAAAAOKvNwEAAAAAoWNV8XrBS7KsdCqAZ6GHEkWZXm8%3D0pUlsutplEvsnmu9NQLbSjjvGq1zTs7YFKSxDtQr3bQHitkpN5")

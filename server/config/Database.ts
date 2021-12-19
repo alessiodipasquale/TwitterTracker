@@ -7,8 +7,8 @@ import type { StreamDefinition } from '../types/StreamDefinition'
 export default abstract class Database {
 
     public static get streamDefinitions(): StreamDefinition[] {
-        let objectArray = JSON.parse(JSON.stringify(Data.streamDefinitions));
-        for (let elem of objectArray) {
+        const objectArray = JSON.parse(JSON.stringify(Data.streamDefinitions));
+        for (const elem of objectArray) {
             elem.startDate = new Date(elem.startDate);
             elem.startDate = new Date(elem.endDate)
         }
@@ -18,7 +18,7 @@ export default abstract class Database {
     public static set streamDefinitions(definitions: StreamDefinition[]) {
         let allData = Data;
         const objectData = JSON.parse(JSON.stringify({ streamDefinitions: definitions }));
-        for (let elem of objectData) {
+        for (const elem of objectData) {
             elem.startDate = new Date(elem.startDate).toISOString().substring(0, 10);
             elem.endDate = new Date(elem.endDate).toISOString().substring(0, 10);
         }
