@@ -1,4 +1,13 @@
+/**
+ * This file contains a catch implementation for the most important kinds of errors
+ */
+
 import { IRequest, IResponse } from './Express';
+
+/**
+ * Error handler for http requests
+ * @returns Error, error message and status code
+ */
 
 export const errorHandler: any = () => (err: Error, req: IRequest, res: IResponse, next: Function) => {
     console.error(err);

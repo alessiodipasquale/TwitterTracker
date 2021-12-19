@@ -4,7 +4,16 @@ import fs from 'fs';
 import Socket from '../connection/Socket'
 import type { StreamDefinition } from '../types/StreamDefinition'
 
+/**
+ * Class that manage writing and reading from a json database, "Data.json"
+ */
+
 export default abstract class Database {
+
+    /**
+     * Getter method
+     * @returns All the streams active and present in the database
+     */
 
     public static get streamDefinitions(): StreamDefinition[] {
         const objectArray = JSON.parse(JSON.stringify(Data.streamDefinitions));
@@ -14,6 +23,11 @@ export default abstract class Database {
         }
         return objectArray as StreamDefinition[];
     }
+
+    /**
+     * Setter method
+     * @param definitions Is the new value to substitute streamDefinitions in database
+     */
 
     public static set streamDefinitions(definitions: StreamDefinition[]) {
         const allData = Data;
@@ -30,6 +44,11 @@ export default abstract class Database {
             console.error(error);
         }
     }
+
+    /**
+     * Creation of a new stream
+     * @param newStream Is the value for the new stream created
+     */
 
     public static newStreamDef(newStream: StreamDefinition) {
         let currentStreamDefs: StreamDefinition[] = Database.streamDefinitions;
@@ -57,6 +76,12 @@ export default abstract class Database {
         Database.streamDefinitions = currentStreamDefs;
     }
 
+    /**
+     * Deletion of a stream
+     * @param toDelete Is the name of the stream to delete
+     * @param type Is the type of the stream
+     */
+
     public static deleteStreamDef(toDelete: string, type: string) {
         let currentStreamDefs: StreamDefinition[] = Database.streamDefinitions;
         currentStreamDefs = currentStreamDefs.filter((element) => {
@@ -65,6 +90,12 @@ export default abstract class Database {
         Database.streamDefinitions = currentStreamDefs;
         Database.deleteStreamData(toDelete, type);
     }
+
+    /**
+     * Deletion of data related to a stream
+     * @param toDelete Is the name of the stream whose data we want to delete
+     * @param type Is the type of the stream
+     */
 
     public static deleteStreamData(toDelete: string, type: string) {
         let currentStreamData: any[] = [];
@@ -83,17 +114,37 @@ export default abstract class Database {
             Database.literaryContestsData = currentStreamData;
     }
 
+    /**
+     * Getter method
+     * @returns Data from literary contests currenctly active
+     */
+
     public static get literaryContestsData() {
         return JSON.parse(JSON.stringify(Data.DataFromLiteraryContests));
     }
+
+    /**
+     * Getter method
+     * @returns Data from trivia games currenctly active
+     */
 
     public static get triviaGamesData() {
         return JSON.parse(JSON.stringify(Data.DataFromTriviaGames));
     }
 
+    /**
+     * Getter method
+     * @returns Data from custom streams currenctly active
+     */
+
     public static get customStreamsData() {
         return JSON.parse(JSON.stringify(Data.DataFromCustomStreams));
     }
+
+    /**
+     * Setter method
+     * @param newData Data that substitute current data present in database related to literary contests
+     */
 
     public static set literaryContestsData(newData: any[]) {
         const allData = Data;
@@ -106,6 +157,11 @@ export default abstract class Database {
         }
     }
 
+    /**
+     * Setter method
+     * @param newData Data that substitute current data present in database related to trivia games
+     */
+
     public static set triviaGamesData(newData: any[]) {
         const allData = Data;
         allData.DataFromTriviaGames = newData
@@ -116,6 +172,11 @@ export default abstract class Database {
             console.error(error);
         }
     }
+
+    /**
+     * Initialize data from a new literary contest
+     * @param newStream Informations needed for data initialization
+     */
 
     public static newLiteraryContest(newStream: StreamDefinition) {
         const allData = Data;
@@ -130,6 +191,11 @@ export default abstract class Database {
         }
         return true;
     }
+
+    /**
+     * Initialize data from a new trivia game
+     * @param newStream Informations needed for data initialization
+     */
 
     public static newTriviaGame(newStream: StreamDefinition) {
 
@@ -155,6 +221,11 @@ export default abstract class Database {
         return true;
     }
 
+    /**
+     * Initialize data from a new custom stream
+     * @param newStream Informations needed for data initialization
+     */
+
     public static newCustomStream(newStream: StreamDefinition){
         const allData = Data;
         const objectData = allData.DataFromCustomStreams;
@@ -169,6 +240,11 @@ export default abstract class Database {
         return true;
     }
 
+    /**
+     * Assessment function that control if the event is already present in database
+     * @param name Name of the event to find
+     */
+
     public static eventAlreadyPresent(name: string) {
         const data = Database.streamDefinitions;
         for (const elem of data) {
@@ -177,6 +253,11 @@ export default abstract class Database {
         }
         return false;
     }
+
+    /**
+     * Utility function to retrieve type of a stream from its hashtag
+     * @param hashtag Name of the event to find
+     */
 
     public static getTypeFromHashtag(hashtag: string) {
         const streamDefinitions = Database.streamDefinitions;
@@ -187,6 +268,13 @@ export default abstract class Database {
         }
         return "custom";
     }
+
+    /**
+     * New book candidation
+     * @param hashtag Name of the event
+     * @param name Name of the book
+     * @param author_id Id of the author of the Tweet
+     */
 
     public static candidateNewBook(hashtag: string, name: string, author_id: string) {
         if (!Database.bookAlreadyPresent(hashtag, name)) {
@@ -209,6 +297,12 @@ export default abstract class Database {
         return false;
     }
 
+    /**
+     * Assessment function that control if the book is already present in the contest
+     * @param hashtag Name of the event to find
+     * @param name Name of the book to find
+     */
+
     private static bookAlreadyPresent(hashtag: string, name: string) {
         const data = Data.DataFromLiteraryContests;
         for (const contest of data) {
@@ -222,6 +316,13 @@ export default abstract class Database {
         }
         return false;
     }
+
+    /**
+     * New book votation
+     * @param hashtag Name of the event
+     * @param name Name of the book
+     * @param author_id Id of the author of the Tweet
+     */
 
     public static async voteBook(hashtag: string, name: string, author_id: string) {
         if (Database.bookAlreadyPresent(hashtag, name)) {
@@ -281,6 +382,13 @@ export default abstract class Database {
         return false;
     }
 
+    /**
+     * Assessment function that control if the book was already voted by a specific user
+     * @param hashtag Name of the event to find
+     * @param name Name of the book to find
+     * @param author_id Id of the user to find
+     */
+
     private static hasVotedBook(hashtag: string, name: string, author_id: string) {
         const data = Data.DataFromLiteraryContests;
         for (const contest of data) {
@@ -297,6 +405,15 @@ export default abstract class Database {
         }
         return false;
     }
+
+    /**
+     * New answer in a trivia game
+     * @param hashtag Name of the event
+     * @param answerNumber Number of the answer
+     * @param answer Value of the answer
+     * @param author_id Id of the author of the Tweet
+     * @param username Username of the author of the Tweet
+     */
 
     public static registerAnswer(hashtag: string, answerNumber: number, answer: string, author_id: string, username: string) {
         if (!Database.hasAlreadyAnswered(hashtag, answerNumber, author_id)) {
@@ -325,6 +442,13 @@ export default abstract class Database {
         return -1;
     }
 
+    /**
+     * Assessment function that control if an user has already answered to a question
+     * @param hashtag Name of the event to find
+     * @param answerNumber Number of the answer
+     * @param author_id Id of the user to find
+     */
+
     private static hasAlreadyAnswered(hashtag: string, answerNumber: number, author_id: string) {
         const data = Data.DataFromTriviaGames;
         for (const game of data) {
@@ -341,6 +465,14 @@ export default abstract class Database {
         }
         return false;
     }
+
+    /**
+     * New Tweet related to a custom stream
+     * @param hashtag Name of the stream
+     * @param tweetId Id of the Tweet
+     * @param text Text of the Tweet
+     * @param username Username of the user that tweeted  
+     */
 
     public static registerTweetInCustomStream(hashtag: string, tweetId: string, text: string, username: string){
         const allData = Data;
@@ -369,6 +501,12 @@ export default abstract class Database {
             return -1;
         }
     }
+
+    /**
+     * Function to retrieve an hashtag by a keyword in a custom stream
+     * @param kw keyword
+     * @returns the name of the event
+     */
 
     public static retrieveHashtagByKeyword(kw: string){
         const data = Database.customStreamsData;
