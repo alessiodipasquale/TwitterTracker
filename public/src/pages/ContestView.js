@@ -230,14 +230,14 @@ class ContestView extends Component {
   render() {
     return (
       <>
-        <Container fluid style={{ padding: '2%' }} >
+        <Container fluid style={{ padding: '2%', overflow: 'scroll' }} >
           <Tabs>
             <Tab eventKey="literaryContest" title="Literary Contests">
               {this.state.literaryContestData.map((contestData) => {
                 const hrefForCandidacy = "https://twitter.com/intent/tweet?text="+(contestData.name).concat("%20candido%20").concat("\"nomeLibro\"");
                 return (
                   <>
-                    <Card>
+                    <Card style={{marginTop: "3px"}}>
                       <Card.Body>
                         <Row>
                           <Col>
@@ -286,8 +286,8 @@ class ContestView extends Component {
                           <Col >
                             <Chart
                               style={{}}
-                              width={"800px"}
-                              height={'500px'}
+                              width="100%"
+                              height='300px'
                               chartType="PieChart"
                               loader={<div>Loading Chart</div>}
                               data={this.getFormattedDataForLiteraryContests(contestData.name)}
@@ -311,12 +311,13 @@ class ContestView extends Component {
                 {this.state.triviaGamesData.map((gameData) => {
                   return (
                     <>
-                      <Card>
+                      <Card style={{marginTop: "3px"}}>
                         <Card.Body>
                           <Card.Title>{gameData.name}</Card.Title>
                           <ListGroup as="ol" numbered>
                             {gameData.questions.map(question => {
-                              const hrefForAnswer= "https://twitter.com/intent/tweet?text="+(gameData.name).concat("risposta_").concat(question.number).concat("%20").concat("\"").concat("yourAnswer").concat("\"");
+                              console.log(question);
+                              const hrefForAnswer= "https://twitter.com/intent/tweet?text="+(gameData.name).concat("%20risposta_").concat(question.number).concat("%20").concat("\"").concat("yourAnswer").concat("\"");
 
                               return (
                                 <>
@@ -356,12 +357,12 @@ class ContestView extends Component {
                                       </ListGroup>
                                     </div>
                                   </ListGroup.Item>
-                                  <Row >
-                                    <Col >
+                                  <Row style={{marginTop: "2%"}}>
+                                    <Col>
                                       <Chart
-                                        style={{}}
-                                        width={"800px"}
-                                        height={'500px'}
+                                        
+                                        width="600px"
+                                        height='300px'
                                         chartType="PieChart"
                                         loader={<div>Loading Chart</div>}
                                         data={[
@@ -376,15 +377,16 @@ class ContestView extends Component {
                                         options={{
                                           title: 'Answers percentages',
                                           sliceVisibilityThreshold: 0, // 0%
+                                          
                                         }}
                                         rootProps={{ 'data-testid': '7' }}
                                       />
                                     </Col>
                                     <Col>
                                       <Chart
-                                        style={{ marginTop: "5%" }}
-                                        width={'500px'}
-                                        height={'300px'}
+                                        
+                                        width="600px"
+                                        height='300px'
                                         chartType="Bar" // or BarChart
                                         loader={<div>Loading Chart</div>}
                                         data={this.getFormattedDataFromTrivias(gameData, question)}
@@ -417,7 +419,7 @@ class ContestView extends Component {
                 {this.state.customStreamsData.map((data) => {
                   return (
                     <>
-                      <Card>
+                      <Card style={{marginTop: "3px"}}>
                         <Card.Body>
                           <Card.Title>{data.name}</Card.Title>
                           <Card.Subtitle style={{marginTop:"1%"}}>Total count: {data.totalCount}</Card.Subtitle>
