@@ -97,7 +97,7 @@ function TweetCard({tweet, showOptions}) {
           openInNewTab(word)
         else
           openInNewTab(`https://www.google.com/search?q=${word}`);
-    };
+    }
 
     function makeClickable(paragraph) {
 

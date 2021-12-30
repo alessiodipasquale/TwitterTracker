@@ -4,7 +4,7 @@ import { MapContainer, TileLayer  } from 'react-leaflet'
 import L, { LatLng } from "leaflet";
 import TweetCard from '../components/TweetCard';
 import { searchTweet } from '../services/searchTweet-service';
-import { GeoSearchControl, MapBoxProvider } from "leaflet-geosearch";
+
 import Sentiment from 'sentiment';
 import Chart from "react-google-charts";
 
@@ -95,10 +95,7 @@ class Home extends Component {
             if (tweet.placeDetails) {
               const lat = new LatLng(tweet.placeDetails.geo.bbox[3], tweet.placeDetails.geo.bbox[2]);
               const marker = L.marker(lat).bindTooltip("@" + tweet.userDetails.username).addTo(map).on('click', (e) => {
-                /*setSelectedMarker(e._latlng);
-                tweets.forEach(tweet => {
 
-                })*/
               });
               markersList.push(marker);
             }
@@ -120,6 +117,20 @@ class Home extends Component {
     let result = sentiment.analyze(toAnalize, {});
     this.setState({ generalSentimentData: result })
     this.setState({ showGeneralSentimentAnalysis: true })
+  }
+
+  selectSentimentImg() {
+
+      if (this.state.generalSentimentData !== {}) {
+        return '';
+      } else if (this.state.generalSentimentData.score === 0) {
+        return <img src={neutralImg} alt="neutral" />;
+      } else if (this.state.generalSentimentData.score > 0) {
+        return <img src={positiveImg} alt="postive" />;
+      } else {
+        return <img src={negativeImg} alt="negative" />;
+      }
+
   }
 
   render() {
@@ -262,7 +273,7 @@ class Home extends Component {
             </Row>
           </Col>
         </Row>
-        
+
         <>
         <Modal
           size="lg"
@@ -295,7 +306,7 @@ class Home extends Component {
             <Row>
               <Col lg={12} style={{ display: 'flex', justifyContent: 'center' }}>
                 {
-                  this.state.generalSentimentData !== {} ?
+                  /*this.state.generalSentimentData !== {} ?
                   this.state.generalSentimentData.score === 0 ?
                       <img src={neutralImg} alt="neutral" />
                       :
@@ -303,7 +314,8 @@ class Home extends Component {
                         <img src={positiveImg} alt="postive" />
                         :
                         <img src={negativeImg} alt="negative" />
-                    : ''
+                    : ''*/
+                    this.selectSentimentImg()
                 }
               </Col>
             </Row>
