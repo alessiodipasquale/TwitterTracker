@@ -39,7 +39,7 @@ export default abstract class Database {
         allData.streamDefinitions = objectData.streamDefinitions;
         const stringedData = JSON.stringify(allData)
         try {
-            fs.writeFileSync('./server/config/Data.json', stringedData);
+            fs.writeFileSync('./out/server/config/Data.json', stringedData);
         } catch (error) {
             console.error(error);
         }
@@ -151,7 +151,7 @@ export default abstract class Database {
         allData.DataFromLiteraryContests = newData;
         const stringedData = JSON.stringify(allData)
         try {
-            fs.writeFileSync('./server/config/Data.json', stringedData);
+            fs.writeFileSync('./out/server/config/Data.json', stringedData);
         } catch (error) {
             console.error(error);
         }
@@ -167,7 +167,7 @@ export default abstract class Database {
         allData.DataFromTriviaGames = newData
         const stringedData = JSON.stringify(allData)
         try {
-            fs.writeFileSync('./server/config/Data.json', stringedData);
+            fs.writeFileSync('./out/server/config/Data.json', stringedData);
         } catch (error) {
             console.error(error);
         }
@@ -185,7 +185,7 @@ export default abstract class Database {
         allData.DataFromLiteraryContests = objectData;
         const stringedData = JSON.stringify(allData)
         try {
-            fs.writeFileSync('./server/config/Data.json', stringedData);
+            fs.writeFileSync('./out/server/config/Data.json', stringedData);
         } catch (error) {
             console.error(error);
         }
@@ -214,7 +214,7 @@ export default abstract class Database {
         allData.DataFromTriviaGames = objectData;
         const stringedData = JSON.stringify(allData)
         try {
-            fs.writeFileSync('./server/config/Data.json', stringedData);
+            fs.writeFileSync('./out/server/config/Data.json', stringedData);
         } catch (error) {
             console.error(error);
         }
@@ -233,7 +233,7 @@ export default abstract class Database {
         allData.DataFromCustomStreams = objectData;
         const stringedData = JSON.stringify(allData)
         try {
-            fs.writeFileSync('./server/config/Data.json', stringedData);
+            fs.writeFileSync('./out/server/config/Data.json', stringedData);
         } catch (error) {
             console.error(error);
         }
@@ -288,7 +288,7 @@ export default abstract class Database {
             allData.DataFromLiteraryContests = objectData;
             const stringedData = JSON.stringify(allData)
             try {
-                fs.writeFileSync('./server/config/Data.json', stringedData);
+                fs.writeFileSync('./out/server/config/Data.json', stringedData);
             } catch (error) {
                 console.error(error);
             }
@@ -354,7 +354,7 @@ export default abstract class Database {
                 allData.DataFromLiteraryContests = objectData;
                 const stringedData = JSON.stringify(allData)
                 try {
-                    fs.writeFileSync('./server/config/Data.json', stringedData);
+                    fs.writeFileSync('./out/server/config/Data.json', stringedData);
                 } catch (error) {
                     console.error(error);
                 }
@@ -433,7 +433,7 @@ export default abstract class Database {
             allData.DataFromTriviaGames = objectData;
             const stringedData = JSON.stringify(allData)
             try {
-                fs.writeFileSync('./server/config/Data.json', stringedData);
+                fs.writeFileSync('./out/server/config/Data.json', stringedData);
             } catch (error) {
                 console.error(error);
             }
@@ -494,7 +494,7 @@ export default abstract class Database {
         allData.DataFromCustomStreams = objectData;
         const stringedData = JSON.stringify(allData)
         try {
-            fs.writeFileSync('./server/config/Data.json', stringedData);
+            fs.writeFileSync('./out/server/config/Data.json', stringedData);
             return shifted;
         } catch (error) {
             console.error(error);
