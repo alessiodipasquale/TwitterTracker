@@ -1,11 +1,9 @@
-import e from 'cors';
 import L, { LatLng } from "leaflet";
 import TweetCard from '../components/TweetCard';
-import React, { Component, useImperativeHandle, useState } from 'react';
-import { Modal, Card, Form, Row, Col, Button, Container, Alert, ListGroup, ListGroupItem, Accordion } from 'react-bootstrap';
-import { createContest } from '../services/contest-service';
+import React, { Component} from 'react';
+import { Card, Form, Row, Col, Button, Container, Alert} from 'react-bootstrap';
 import {socketConnection} from '../services/socket-service'
-import { MapContainer, TileLayer, Marker, Popup, useMap, LayerGroup, Circle } from 'react-leaflet'
+import { MapContainer, TileLayer} from 'react-leaflet'
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
 import { httpPost } from "../services/http-service";
 
@@ -33,10 +31,6 @@ class UserTracking extends Component {
           showUserNotFound: false
         };
 
-        /*socketConnection.instance.emit("/readyToReceiveData", (data) => {
-          console.log(data);
-        })*/
-
         this.handleChange = this.handleChange.bind(this);
     }
 
@@ -52,9 +46,9 @@ class UserTracking extends Component {
       });
     }
 
-    handleChange(e) {
+    handleChange(ev) {
       const newContest = {...this.state.contest}
-      newContest[e.target.id] = e.target.value;
+      newContest[ev.target.id] = ev.target.value;
       this.setState({contest: newContest});
     }
 
@@ -69,7 +63,7 @@ class UserTracking extends Component {
         else latlang = new LatLng(tweet.place.bounding_box.coordinates[0][3][1], tweet.place.bounding_box.coordinates[0][2][0]);
       }
       if (latlang) {
-        const marker = L.marker(latlang).bindTooltip(tweet.text).on('click', (e) => console.log(e)).addTo(map);
+        const marker = L.marker(latlang).bindTooltip(tweet.text).on('click', (event) => console.log(event)).addTo(map);
         newMarkers.push(marker);
         map.flyTo(latlang, 12);
         this.setState({markers: newMarkers});
@@ -96,13 +90,12 @@ class UserTracking extends Component {
     async searchCity(name) {
       const results = await provider.search({ query: name });
       const res = results[0];
-      const latlng = new LatLng(res.y, res.x);
-      return latlng;
+      return (new LatLng(res.y, res.x));
     }
 
-    handle(e) {
+    handle(ev) {
       const newdata = { ...this.state.data };
-      newdata[e.target.id] = e.target.value;
+      newdata[ev.target.id] = ev.target.value;
       this.setState({data: newdata});
     }
 
@@ -120,8 +113,8 @@ class UserTracking extends Component {
       }
     }
   
-    async submit(e) {
-      e.preventDefault();
+    async submit(ev) {
+      ev.preventDefault();
       this.setState({usernameSelected:true});
       localStorage.setItem('data', JSON.stringify(this.state.data))
   

@@ -70,7 +70,6 @@ describe('Stream utests', () => {
 			(function() {
 				console.log = function(msg: string) {
 					if (typeof msg[0] == 'undefined') {
-						const res = JSON.parse(JSON.stringify(msg));
 						const today: Date = new Date();
 						const yesterday: Date = new Date(today.getTime() - (24 * 60 * 60 * 1000));
 						const tomorrow: Date = new Date(today.getTime() + (24 * 60 * 60 * 1000));

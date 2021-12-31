@@ -94,8 +94,8 @@ class Home extends Component {
           res.data.tweets.forEach(tweet => {
             if (tweet.placeDetails) {
               const lat = new LatLng(tweet.placeDetails.geo.bbox[3], tweet.placeDetails.geo.bbox[2]);
-              const marker = L.marker(lat).bindTooltip("@" + tweet.userDetails.username).addTo(map).on('click', (e) => {
-
+              const marker = L.marker(lat).bindTooltip("@" + tweet.userDetails.username).addTo(map).on('click', (event) => {
+                console.log(event) //insert operations to do on click
               });
               markersList.push(marker);
             }

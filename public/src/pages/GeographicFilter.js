@@ -1,19 +1,14 @@
-import React, { Component, useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMap, LayerGroup, Circle} from 'react-leaflet'
+import React, { Component} from "react";
+import { MapContainer, TileLayer} from 'react-leaflet'
 import L, { LatLng } from "leaflet";
-import icon from "../constants";
-import Axios from 'axios';
 
 import { Col, Row, Container, Form, Button, Card} from "react-bootstrap";
-import { GeoSearchControl, MapBoxProvider } from "leaflet-geosearch";
 
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
 import TweetCard from "../components/TweetCard";
 import { getTweetsByLocation } from "../services/geographic-service";
-const provider = new OpenStreetMapProvider();
 
 // add to leaflet
-
 
 class GeographicFilter extends Component {
 
@@ -84,14 +79,14 @@ class GeographicFilter extends Component {
   const markersList = [];
 
   getTweetsByLocation(res.y, res.x, data.radius, data.keyword, data.count)
-  .then(res => {
-    this.setState({tweets: res.data.data.statuses});
+  .then(response => {
+    this.setState({tweets: response.data.data.statuses});
 
-    console.log(res)
-    res.data.data.statuses.forEach(tweet => {
+    console.log(response)
+    response.data.data.statuses.forEach(tweet => {
       if(tweet.geo) {
-        const lat = new LatLng(tweet.geo.coordinates[0], tweet.geo.coordinates[1]);
-        const marker = L.marker(lat).bindTooltip("@"+tweet.user.screen_name).addTo(map)/*.on('click', (e) => {
+        const latitude = new LatLng(tweet.geo.coordinates[0], tweet.geo.coordinates[1]);
+        const marker = L.marker(latitude).bindTooltip("@"+tweet.user.screen_name).addTo(map)/*.on('click', (e) => {
           console.log(e);
           console.log(tweet);
 
@@ -101,8 +96,8 @@ class GeographicFilter extends Component {
       } else {
         if(tweet.place) {
           console.log("Aggiungo place");
-          const lat = new LatLng(tweet.place.bounding_box.coordinates[0][0][0],tweet.place.bounding_box.coordinates[0][0][1]);
-          const marker = L.marker(lat).bindTooltip("@"+tweet.user.screen_name).addTo(map)/*.on('click', (e) => {
+          const latitude = new LatLng(tweet.place.bounding_box.coordinates[0][0][0],tweet.place.bounding_box.coordinates[0][0][1]);
+          const marker = L.marker(latitude).bindTooltip("@"+tweet.user.screen_name).addTo(map)/*.on('click', (e) => {
             console.log(tweet);
           });  */
           markersList.push(marker);            
@@ -112,7 +107,7 @@ class GeographicFilter extends Component {
     })
    })
   .catch(err => console.log(err));
-};
+}
 
 
   render() {
