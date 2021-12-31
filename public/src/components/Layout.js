@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Navbar from './Navbar';
-import { BrowserRouter as Router, Switch, Route, HashRouter } from 'react-router-dom';
+import { Switch, Route, HashRouter } from 'react-router-dom';
 import GeographicFilter from '../pages/GeographicFilter';
 import Home from '../pages/Home';
 import ContestHandler from '../pages/ContestHandler';
@@ -11,9 +11,12 @@ function Layout({ setLocale }) {
   const [collapsed, setCollapsed] = useState(false);
   const [toggled, setToggled] = useState(false);
 
-  const handleCollapsedChange = (checked) => {
-    setCollapsed(checked);
-  };
+  /*
+  *This may be considered unused
+  *const handleCollapsedChange = (checked) => {
+  *  setCollapsed(checked);
+  *};
+  */
 
   const handleToggleSidebar = (value) => {
     setToggled(value);

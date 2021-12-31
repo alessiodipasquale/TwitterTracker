@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Chart from "react-google-charts";
-import { Row, Col, Tabs, Tab, Card, Container, ListGroup, ListGroupItem, Button } from 'react-bootstrap';
+import { Row, Col, Tabs, Tab, Card, Container, ListGroup, ListGroupItem } from 'react-bootstrap';
 import { socketConnection } from '../services/socket-service';
 
 
@@ -87,8 +87,8 @@ class ContestView extends Component {
 
   handleCandidatura(data) {
     const newLiteraryContestData = JSON.parse(JSON.stringify(this.state.literaryContestData));
-    const contest = newLiteraryContestData.find((contest, i) => {
-      if (contest.name === data.contestName) {
+    const contest = newLiteraryContestData.find((cont, i) => {
+      if (cont.name === data.contestName) {
         newLiteraryContestData[i].books.push({
           "candidatedBy": data.candidatedBy,
           "bookName": data.bookName,

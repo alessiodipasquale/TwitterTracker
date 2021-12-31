@@ -302,7 +302,7 @@ class ContestHandler extends Component {
               }
 
               <Button onClick={() => {this.addQuestion()}}> Add question</Button>
-              <Button style ={{marginTop:"3px"}} hidden={!(this.state.contest.extras.questions.length > 0)} variant="danger" onClick={() => {this.removeQuestion()}}> remove question</Button>
+              <Button style ={{marginTop:"3px"}} hidden={this.state.contest.extras.questions.length <= 0} variant="danger" onClick={() => {this.removeQuestion()}}> remove question</Button>
             </Row>
           } 
           </Modal.Body>

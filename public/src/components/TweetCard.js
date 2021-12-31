@@ -161,9 +161,9 @@ function TweetCard({tweet, showOptions}) {
           </Modal.Header>
           <Modal.Body>
           {
-              retweets && retweets.map(tweet=>{
+              retweets && retweets.map(tw=>{
                   return(
-                    <TweetCard tweet={tweet} showOptions={false}/>
+                    <TweetCard tweet={tw} showOptions={false}/>
               )})
 
           }

@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Row } from 'react-bootstrap';
 
 import WordCloud from 'react-d3-cloud';
 
@@ -39,7 +38,7 @@ function GeneralWordClout({tweets}) {
     <>
     <WordCloud
       data={wordCloudData}
-      fontSize={(word) => ((word.value / 40) + 2) * 15}//(word.value * 3 + 30) % 30}
+      fontSize={(word) => ((word.value / 40) + 2) * 15} //old version: (word.value * 3 + 30) % 30}
       />
 
     </>

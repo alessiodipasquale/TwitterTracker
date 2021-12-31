@@ -1,5 +1,5 @@
-import { render, screen, cleanup } from '@testing-library/react';
-import { shallow, configure, mount } from 'enzyme';
+import { render} from '@testing-library/react';
+import { configure, mount } from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Layout from '../components/Layout';
 configure({adapter: new Adapter()});
