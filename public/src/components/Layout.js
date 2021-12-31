@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Navbar from './Navbar';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, HashRouter } from 'react-router-dom';
 import GeographicFilter from '../pages/GeographicFilter';
 import Home from '../pages/Home';
 import ContestHandler from '../pages/ContestHandler';
@@ -21,7 +21,7 @@ function Layout({ setLocale }) {
 
   return (
     <div className={`app  ${toggled ? 'toggled' : ''}`}>
-    <Router>
+    <HashRouter>
       <Navbar
         collapsed={collapsed}
         toggled={toggled}
@@ -34,7 +34,7 @@ function Layout({ setLocale }) {
           <Route path='/contest-viewer' component={ContestView} />
           <Route path='/user-tracking' component={UserTracking} />
         </Switch>
-      </Router>
+      </HashRouter>
     </div>
   );
 }
