@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Component, useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap, LayerGroup, Circle} from 'react-leaflet'
 import L, { LatLng } from "leaflet";
 import icon from "../constants";
@@ -15,42 +15,45 @@ const provider = new OpenStreetMapProvider();
 // add to leaflet
 
 
-function GeographicFilter() {
+class GeographicFilter extends Component {
 
-  let center = [41.8933203,12.4829321];
+  center = [41.8933203,12.4829321];
 
-  const [data, setData] = useState({
-    city:"",
-    radius: 3000,
-    keyword: "",
-    count: 10
-  });
-
-  const [circ,setCirc] = useState({
-    circ: null
-  });
-
-  const [map, setMap] = useState(null);
-
-  const [tweets,setTweets]=useState([])
-
-  const [markers, setMarkers] = useState([])
+  constructor(props) {
+    this.state = {
+      data: {
+        city:"",
+        radius: 3000,
+        keyword: "",
+        count: 10,
+      },
+      circ: null,
+      map: null,
+      tweets: [],
+      markers: []
+    }
+  }
 
 
-  function handle(e, value) {
-    const newdata = {...data};
+
+  handle(e, value) {
+    const newdata = {...this.state.data};
     newdata[e.target.id] = value;
-    setData(newdata);
-}
+    this.setState({ data: newdata });
+  }
 
-async function  SearchField  ( ) {
+  async SearchField  ( ) {
   const provider = new OpenStreetMapProvider({
     params: {
       email: 'john@example.com', // auth for large number of requests
     },
   });
   
-  console.log(data)
+  const circ = this.state.circ;
+  const data = this.state.data;
+  const map = this.state.map;
+  const markers = this.state.markers;
+  
   if(circ.circ != null) {
     console.log('rimuovo')
     circ.circ.removeFrom(map);
@@ -61,7 +64,7 @@ async function  SearchField  ( ) {
   const res = results[0];
   const lat = new LatLng(res.y, res.x);
 
-  center = [res.y, res.x]
+  this.center = [res.y, res.x]
 
   markers.forEach(marker => {
     marker.removeFrom(map);
@@ -73,7 +76,7 @@ async function  SearchField  ( ) {
 
   const circle = L.circle(lat, data.radius);
   console.log(data.radius)
-  setCirc({circ: circle});
+  this.setState({circ: circle});
 
   circle.addTo(map);
 
@@ -81,7 +84,7 @@ async function  SearchField  ( ) {
 
   getTweetsByLocation(res.y, res.x, data.radius, data.keyword, data.count)
   .then(res => {
-    setTweets(res.data.data.statuses);
+    this.setState({tweets: res.data.data.statuses});
 
     console.log(res)
     res.data.data.statuses.forEach(tweet => {
@@ -104,103 +107,105 @@ async function  SearchField  ( ) {
           markersList.push(marker);            
         }
       }
-      setMarkers(markersList);
+      this.setState({markers: markersList});
     })
    })
   .catch(err => console.log(err));
 };
 
 
-  return (
-    <Container fluid  style={{padding: '2%'}} >
-    <Form>
+  render() {
+    return (
+      <Container fluid  style={{padding: '2%'}} >
+      <Form>
+        <Row>
+          <Col>
+          <Form.Group className="mb-3" controlId="city">
+            <Form.Label>Insert city</Form.Label>
+            <Form.Control onChange={(e)=>this.handle(e, e.target.value)} type="text" placeholder="Enter city" value={this.state.data.city}/>
+          </Form.Group>
+          </Col>
+          <Col>
+          <Form.Group className="mb-3" controlId="radius">
+            <Form.Label>Insert radius</Form.Label>
+            <Form.Control onChange={(e)=>{this.handle(e, parseInt(e.target.value))}} type="number" placeholder="Enter Radius" value={this.state.data.radius}/>
+          </Form.Group>
+          </Col>
+          <Col>
+          <Form.Group className="mb-3" controlId="keyword">
+            <Form.Label>Insert Keyword</Form.Label>
+            <Form.Control onChange={(e)=>{this.handle(e, e.target.value)}} type="text" placeholder="Enter Keyword" value={this.state.data.keyword}/>
+          </Form.Group>
+          </Col>
+          <Col>
+          <Form.Group className="mb-3" controlId="count">
+            <Form.Label>Insert count</Form.Label>
+            <Form.Control onChange={(e)=>{this.handle(e, parseInt(e.target.value))}} type="number" placeholder="Enter Number of elements" value={this.state.data.count}/>
+          </Form.Group>
+          </Col>
+          <Col style={{display: 'flex', alignItems: 'flex-end', marginBottom: '1rem'}}>
+            <Button disabled={this.data.city == ""} onClick={() => this.SearchField()} variant="primary">Search Tweets</Button>{' '}
+          </Col>
+        </Row>
+      </Form>
+
       <Row>
-        <Col>
-        <Form.Group className="mb-3" controlId="city">
-          <Form.Label>Insert city</Form.Label>
-          <Form.Control onChange={(e)=>handle(e, e.target.value)} type="text" placeholder="Enter city" value={data.city}/>
-        </Form.Group>
+        <Col lg={6}>
+            <MapContainer
+            center={this.center}
+            zoom={13}
+            scrollWheelZoom={false}
+            style={{ height: "85vh", width: '100%', borderRadius: '4%'}}
+            whenCreated={(map) => this.setState({map: map})}
+            >
+
+            <TileLayer
+              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+
+          </MapContainer>
+
         </Col>
-        <Col>
-        <Form.Group className="mb-3" controlId="radius">
-          <Form.Label>Insert radius</Form.Label>
-          <Form.Control onChange={(e)=>{handle(e, parseInt(e.target.value))}} type="number" placeholder="Enter Radius" value={data.radius}/>
-        </Form.Group>
-        </Col>
-        <Col>
-        <Form.Group className="mb-3" controlId="keyword">
-          <Form.Label>Insert Keyword</Form.Label>
-          <Form.Control onChange={(e)=>{handle(e, e.target.value)}} type="text" placeholder="Enter Keyword" value={data.keyword}/>
-        </Form.Group>
-        </Col>
-        <Col>
-        <Form.Group className="mb-3" controlId="count">
-          <Form.Label>Insert count</Form.Label>
-          <Form.Control onChange={(e)=>{handle(e, parseInt(e.target.value))}} type="number" placeholder="Enter Number of elements" value={data.count}/>
-        </Form.Group>
-        </Col>
-        <Col style={{display: 'flex', alignItems: 'flex-end', marginBottom: '1rem'}}>
-          <Button disabled={data.city == ""} onClick={() => SearchField()} variant="primary">Search Tweets</Button>{' '}
+        <Col lg={6}>
+        <Card style={{ height: '85vh', overflow: 'scroll'}}>
+          
+            {this.state.tweets.length == 0 ?
+              <Card.Body  style={{display: "flex", justifyContent: "center", alignItems: "center", textAlign: 'center'}}>
+              <div >
+                <h3 className="text-muted">
+                  Your Tweets will appear here.<br/> Do a research.
+                </h3>
+              </div>
+              </Card.Body> :
+
+
+          <Card.Body>
+          {
+      
+
+              
+              this.state.tweets && this.state.tweets.map(tweet=>{
+                  return(
+                    <TweetCard tweet = {tweet} showOptions={true}/>
+                      
+                  )
+          
+                  })
+              }
+          </Card.Body>
+            }
+              
+          </Card>
+      
         </Col>
       </Row>
-    </Form>
-
-    <Row>
-      <Col lg={6}>
-          <MapContainer
-          center={center}
-          zoom={13}
-          scrollWheelZoom={false}
-          style={{ height: "85vh", width: '100%', borderRadius: '4%'}}
-          whenCreated={setMap}
-          >
-
-          <TileLayer
-            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-
-        </MapContainer>
-
-      </Col>
-      <Col lg={6}>
-      <Card style={{ height: '85vh', overflow: 'scroll'}}>
-        
-          {tweets.length == 0 ?
-            <Card.Body  style={{display: "flex", justifyContent: "center", alignItems: "center", textAlign: 'center'}}>
-            <div >
-              <h3 className="text-muted">
-                Your Tweets will appear here.<br/> Do a research.
-              </h3>
-            </div>
-            </Card.Body> :
-
-
-        <Card.Body>
-        {
-     
-
-             
-             tweets && tweets.map(tweet=>{
-                 return(
-                   <TweetCard tweet = {tweet} showOptions={true}/>
-                     
-                 )
-         
-                 })
-             }
-         </Card.Body>
-          }
-            
-        </Card>
     
-      </Col>
-    </Row>
-  
-  
-</Container>
+    
+  </Container>
 
-  );
+    );
+  }
 }
 
 export default GeographicFilter;
