@@ -20,6 +20,7 @@ class GeographicFilter extends Component {
   center = [41.8933203,12.4829321];
 
   constructor(props) {
+    super(props)
     this.state = {
       data: {
         city:"",
