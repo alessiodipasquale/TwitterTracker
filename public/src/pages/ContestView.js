@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import Chart from "react-google-charts";
-import { Row, Col, Tabs, Tab, Card, Container, ListGroup, ListGroupItem } from 'react-bootstrap';
+import { Row, Col, Tabs, Tab, Card, Container, ListGroup, ListGroupItem, Button } from 'react-bootstrap';
 import { socketConnection } from '../services/socket-service';
+import { IoLogoTwitter } from 'react-icons/io';
 
 
 class ContestView extends Component {
@@ -234,7 +235,6 @@ class ContestView extends Component {
           <Tabs>
             <Tab eventKey="literaryContest" title="Literary Contests">
               {this.state.literaryContestData.map((contestData) => {
-                const hrefForCandidacy = "https://twitter.com/intent/tweet?text="+(contestData.name).concat("%20candido%20").concat("\"nomeLibro\"");
                 return (
                   <>
                     <Card style={{marginTop: "3px"}}>
@@ -243,9 +243,9 @@ class ContestView extends Component {
                           <Col>
                             <Card.Title>{contestData.name}</Card.Title>
                           </Col>
-                          <Col style={{display:"flex"}}>
-                          <p style={{marginLeft:"60%",marginRight:"2%"}}>Candidacy: </p>
-                          <a 
+                          <Col style={{display:"flex", padding: "1%", alignItems: 'center', justifyContent: 'flex-end'}}>
+                          <p style={{marginRight:"2%", marginBottom: '0'}}>Candidacy: </p>
+                         { /*<a 
                               target="_blank" 
                               rel="noopener noreferrer"
                               href={hrefForCandidacy}
@@ -253,21 +253,31 @@ class ContestView extends Component {
                               data-size="large"
                               data-show-count="false">
                                 Candidacy for this contest
-                            </a>
+                         </a>
+                         href="https://twitter.com/intent/tweet?text=optional%20promo%20text%20http://example.com/foo.htm?bar=123&baz=456" 
+                         */}
+
+                            <Button size="sm" variant="primary" onClick={()=> {
+                              const link = "https://twitter.com/intent/tweet?text=%23"+(contestData.name.substring(1)).concat("%20candido%20").concat("\"nomeLibro\"")
+                              window.open(link,"_blank")}
+                            }  style={{display: 'flex', alignItems:'center'}}>
+                              <IoLogoTwitter style={{marginRight: "3px"}}/>
+                              Candidacy for this contest</Button>
+
                           </Col>
                         </Row>
                         <ListGroup>
                           {contestData.books.map((book) => {
-                            const hrefForVote= "https://twitter.com/intent/tweet?text="+(contestData.name).concat("%20voto%20").concat("\"").concat(book.bookName).concat("\"");
+                            const hrefForVote= "https://twitter.com/intent/tweet?text=%23"+(contestData.name.substring(1)).concat("%20voto%20").concat("\"").concat(book.bookName).concat("\"");
                             return (<>
                               <ListGroupItem>
                                 <Row>
                                 <Col>
                                   <strong style={{marginRight:"10px"}}>{book.bookName}:</strong> {book.votes} votes
                                 </Col>  
-                                <Col style={{display:"flex"}}>
-                                  <p style={{marginLeft:"60%",marginRight:"2%"}}>Vote: </p>
-                                  <a 
+                                <Col style={{display:"flex", padding: "1%", alignItems: 'center', justifyContent: 'flex-end'}}>
+                                  <p style={{marginRight:"2%", marginBottom: '0'}}>Vote: </p>
+                                 {/* <a 
                                       target="_blank" 
                                       rel="noopener noreferrer"
                                       href={hrefForVote}
@@ -275,7 +285,11 @@ class ContestView extends Component {
                                       data-size="large"
                                       data-show-count="false">
                                         Vote for this book
-                                    </a>
+                                 </a>*/}
+                                  <Button size="sm" variant="primary" href={hrefForVote}  style={{display: 'flex', alignItems:'center'}}>
+                                  <IoLogoTwitter style={{marginRight: "3px"}}/>
+                                    Vote for this book</Button>
+
                                   </Col>
                                 </Row>
                               </ListGroupItem>
@@ -317,7 +331,7 @@ class ContestView extends Component {
                           <ListGroup as="ol" numbered>
                             {gameData.questions.map(question => {
                               console.log(question);
-                              const hrefForAnswer= "https://twitter.com/intent/tweet?text="+(gameData.name).concat("%20risposta_").concat(question.number).concat("%20").concat("\"").concat("yourAnswer").concat("\"");
+                              const hrefForAnswer= "https://twitter.com/intent/tweet?text=%23"+(gameData.name.substring(1)).concat("%20risposta_").concat(question.number).concat("%20").concat("\"").concat("yourAnswer").concat("\"");
 
                               return (
                                 <>
@@ -330,9 +344,9 @@ class ContestView extends Component {
                                         <Col style={{width:"30%"}}>
                                           <div className="fw-bold">{question.text}</div>
                                         </Col>
-                                        <Col style={{display:"flex"}}>
-                                          <p style={{marginLeft:"50%",marginRight:"2%"}}>Answer: </p>
-                                          <a 
+                                        <Col style={{display:"flex", padding: "1%", alignItems: 'center', justifyContent: 'flex-end'}}>
+                                          <p style={{marginRight:"2%", marginBottom: '0'}}>Answer: </p>
+                                          {/*<a 
                                               target="_blank" 
                                               rel="noopener noreferrer"
                                               href={hrefForAnswer}
@@ -340,7 +354,11 @@ class ContestView extends Component {
                                               data-size="large"
                                               data-show-count="false">
                                                 Answer the question
-                                          </a>
+                                          </a>*/}
+                                          <Button size="sm" variant="primary" href={hrefForAnswer} style={{display: 'flex', alignItems:'center'}}>
+                                          <IoLogoTwitter style={{marginRight: "3px"}}/>
+                                            Answer the question</Button>
+
                                         </Col>
                                       </Row>
                                       <ListGroup variant="flush">
