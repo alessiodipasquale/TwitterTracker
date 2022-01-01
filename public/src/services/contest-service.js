@@ -11,3 +11,15 @@ export const createTrivia = (trivia) => {
 export const createCustom = (custom) => {
     return httpPost("addElementToStreamData", {streamDefinitions: custom});
 }
+
+export const deleteContest = (contestName) => {
+    return httpPost("removeStreamElementFromData", {streamName:contestName, type:"literaryContest"})
+}
+
+export const deleteTrivia = (contestName) => {
+    return httpPost("removeStreamElementFromData", {streamName:contestName, type:"triviaGame"})
+}
+
+export const deleteCustom = (contestName) => {
+    return httpPost("removeStreamElementFromData", {streamName:contestName, type:"custom"})
+}

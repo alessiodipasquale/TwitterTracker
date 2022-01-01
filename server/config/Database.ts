@@ -11,6 +11,12 @@ import type { StreamDefinition } from '../types/StreamDefinition'
 export default abstract class Database {
 
     /**
+     * Attribute that change database path based on production/developement phase 
+     */
+
+    private static production = false;
+
+    /**
      * Getter method
      * @returns All the streams active and present in the database
      */
@@ -38,8 +44,12 @@ export default abstract class Database {
         }
         allData.streamDefinitions = objectData.streamDefinitions;
         const stringedData = JSON.stringify(allData)
-        try {
-            fs.writeFileSync('/webapp/server/config/Data.json', stringedData);
+        try 
+        {
+            if(Database.production){
+                fs.writeFileSync(Config.productionDatabasePath, stringedData);
+            }else fs.writeFileSync(Config.devDatabasePath, stringedData);
+
         } catch (error) {
             console.error(error);
         }
@@ -103,6 +113,8 @@ export default abstract class Database {
             currentStreamData = Database.triviaGamesData
         if (type == 'literaryContest')
             currentStreamData = Database.literaryContestsData
+        if (type == 'custom')
+            currentStreamData = Database.customStreamsData
 
         currentStreamData = currentStreamData.filter((element) => {
             return element.name != toDelete
@@ -112,6 +124,8 @@ export default abstract class Database {
             Database.triviaGamesData = currentStreamData;
         if (type == 'literaryContest')
             Database.literaryContestsData = currentStreamData;
+        if (type == 'custom')
+            Database.customStreamsData = currentStreamData;
     }
 
     /**
@@ -151,7 +165,10 @@ export default abstract class Database {
         allData.DataFromLiteraryContests = newData;
         const stringedData = JSON.stringify(allData)
         try {
-            fs.writeFileSync('/webapp/server/config/Data.json', stringedData);
+            if(Database.production){
+                fs.writeFileSync(Config.productionDatabasePath, stringedData);
+            }else fs.writeFileSync(Config.devDatabasePath, stringedData);
+            
         } catch (error) {
             console.error(error);
         }
@@ -167,7 +184,29 @@ export default abstract class Database {
         allData.DataFromTriviaGames = newData
         const stringedData = JSON.stringify(allData)
         try {
-            fs.writeFileSync('/webapp/server/config/Data.json', stringedData);
+            if(Database.production){
+                fs.writeFileSync(Config.productionDatabasePath, stringedData);
+            }else fs.writeFileSync(Config.devDatabasePath, stringedData);
+            
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    /**
+     * Setter method
+     * @param newData Data that substitute current data present in database related to custom streams
+     */
+
+     public static set customStreamsData(newData: any[]) {
+        const allData = Data;
+        allData.DataFromCustomStreams = newData
+        const stringedData = JSON.stringify(allData)
+        try {
+            if(Database.production){
+                fs.writeFileSync(Config.productionDatabasePath, stringedData);
+            }else fs.writeFileSync(Config.devDatabasePath, stringedData);
+            
         } catch (error) {
             console.error(error);
         }
@@ -185,7 +224,10 @@ export default abstract class Database {
         allData.DataFromLiteraryContests = objectData;
         const stringedData = JSON.stringify(allData)
         try {
-            fs.writeFileSync('/webapp/server/config/Data.json', stringedData);
+            if(Database.production){
+                fs.writeFileSync(Config.productionDatabasePath, stringedData);
+            }else fs.writeFileSync(Config.devDatabasePath, stringedData);
+            
         } catch (error) {
             console.error(error);
         }
@@ -214,7 +256,10 @@ export default abstract class Database {
         allData.DataFromTriviaGames = objectData;
         const stringedData = JSON.stringify(allData)
         try {
-            fs.writeFileSync('/webapp/server/config/Data.json', stringedData);
+            if(Database.production){
+                fs.writeFileSync(Config.productionDatabasePath, stringedData);
+            }else fs.writeFileSync(Config.devDatabasePath, stringedData);
+            
         } catch (error) {
             console.error(error);
         }
@@ -233,7 +278,10 @@ export default abstract class Database {
         allData.DataFromCustomStreams = objectData;
         const stringedData = JSON.stringify(allData)
         try {
-            fs.writeFileSync('/webapp/server/config/Data.json', stringedData);
+            if(Database.production){
+                fs.writeFileSync(Config.productionDatabasePath, stringedData);
+            }else fs.writeFileSync(Config.devDatabasePath, stringedData);
+            
         } catch (error) {
             console.error(error);
         }
@@ -288,7 +336,10 @@ export default abstract class Database {
             allData.DataFromLiteraryContests = objectData;
             const stringedData = JSON.stringify(allData)
             try {
-                fs.writeFileSync('/webapp/server/config/Data.json', stringedData);
+                if(Database.production){
+                    fs.writeFileSync(Config.productionDatabasePath, stringedData);
+                }else fs.writeFileSync(Config.devDatabasePath, stringedData);
+                
             } catch (error) {
                 console.error(error);
             }
@@ -354,7 +405,10 @@ export default abstract class Database {
                 allData.DataFromLiteraryContests = objectData;
                 const stringedData = JSON.stringify(allData)
                 try {
-                    fs.writeFileSync('/webapp/server/config/Data.json', stringedData);
+                    if(Database.production){
+                        fs.writeFileSync(Config.productionDatabasePath, stringedData);
+                    }else fs.writeFileSync(Config.devDatabasePath, stringedData);
+                    
                 } catch (error) {
                     console.error(error);
                 }
@@ -433,7 +487,10 @@ export default abstract class Database {
             allData.DataFromTriviaGames = objectData;
             const stringedData = JSON.stringify(allData)
             try {
-                fs.writeFileSync('/webapp/server/config/Data.json', stringedData);
+                if(Database.production){
+                    fs.writeFileSync(Config.productionDatabasePath, stringedData);
+                }else fs.writeFileSync(Config.devDatabasePath, stringedData);
+                
             } catch (error) {
                 console.error(error);
             }
@@ -494,7 +551,10 @@ export default abstract class Database {
         allData.DataFromCustomStreams = objectData;
         const stringedData = JSON.stringify(allData)
         try {
-            fs.writeFileSync('/webapp/server/config/Data.json', stringedData);
+            if(Database.production){
+                fs.writeFileSync(Config.productionDatabasePath, stringedData);
+            }else fs.writeFileSync(Config.devDatabasePath, stringedData);
+            
             return shifted;
         } catch (error) {
             console.error(error);

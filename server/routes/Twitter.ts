@@ -115,16 +115,20 @@ export default abstract class Twitter {
         for(const rule of elem.rules){
           rules.add.push({value: rule.value, tag:rule.tag})
         }
+        await Twitter.roClient.v2.updateStreamRules(rules);
       }
       if(type=="delete"){
         rules = {
           "delete": []
         };
-        for(const rule of elem.rules){
-          rules.delete.push({value: rule.value, tag:rule.tag})
+        const currentRules: any = await Twitter.roClient.v2.streamRules();
+        for(const rule of currentRules){
+          for(const r of elem.rules){
+            if(r.value == rule.value)
+              rules.delete.push(rule.id)
+          }
         }
-      }
-      await Twitter.roClient.v2.updateStreamRules(rules);
+      }      
     }
 
     /** 

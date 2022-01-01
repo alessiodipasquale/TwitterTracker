@@ -62,7 +62,7 @@ export default abstract class Router {
         app.post('/getSentimentFromGroupOfTweets', getSentimentFromGroupOfTweets );
 
         app.post('/addElementToStreamData', addElementToStreamData );
-        app.delete('/removeStreamElementFromData', removeStreamElementFromData)
+        app.post('/removeStreamElementFromData', removeStreamElementFromData)
 
         app.post('/startFollowingUser', startFollowingUser );
 

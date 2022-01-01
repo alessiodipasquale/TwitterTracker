@@ -231,12 +231,13 @@ export const addElementToStreamData = async (req: IRequest, res: IResponse) => {
 
 export const removeStreamElementFromData = async (req: IRequest, res: IResponse) => {
     try {
-        if(Database.eventAlreadyPresent(req.params.streamName)){
-            await Twitter.removeFromRules(req.params.streamName);
-            Database.deleteStreamDef(req.params.streamName, req.params.type)
+        if(Database.eventAlreadyPresent(req.body.streamName)){
+            await Twitter.removeFromRules(req.body.streamName);
+            Database.deleteStreamDef(req.body.streamName, req.body.type)
         }
         res.send();
     } catch (err) {
+        //console.log(err)
         throw new BadRequest('INCORRECT_BODY', `Il body non è corretto`)
     }
 }

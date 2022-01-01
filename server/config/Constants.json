@@ -2,6 +2,8 @@
     "port": 8000,
     "distPath":"./webapp/dist",
     "docsPath":"./webapp/docs",
+    "productionDatabasePath":"/webapp/server/config/Data.json'",
+    "devDatabasePath":"./server/config/Data.json",
     "maxVotes":10,
     "maxElementsFromCustomStream": 5,
     "sentimentAnalysisOptions": {

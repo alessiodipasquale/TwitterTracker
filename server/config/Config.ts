@@ -80,4 +80,20 @@ export default abstract class Config {
     public static get maxElementsFromCustomStream(): number{
         return Constants.maxElementsFromCustomStream;
     }
+
+    /**
+     * @returns Production path for database file
+     */
+
+     public static get productionDatabasePath(): string{
+        return Constants.productionDatabasePath;
+    }
+
+    /**
+     * @returns Developement path for database file
+     */
+
+     public static get devDatabasePath(): string{
+        return Constants.devDatabasePath;
+    }
 }

@@ -3,6 +3,7 @@ import Chart from "react-google-charts";
 import { Row, Col, Tabs, Tab, Card, Container, ListGroup, ListGroupItem, Button } from 'react-bootstrap';
 import { socketConnection } from '../services/socket-service';
 import { IoLogoTwitter } from 'react-icons/io';
+import { deleteContest, deleteTrivia, deleteCustom } from '../services/contest-service';
 
 
 class ContestView extends Component {
@@ -240,8 +241,9 @@ class ContestView extends Component {
                     <Card style={{marginTop: "3px"}}>
                       <Card.Body>
                         <Row>
-                          <Col>
+                          <Col style={{display:"flex"}}>
                             <Card.Title>{contestData.name}</Card.Title>
+                            <Button style={{marginLeft:"3%",height: "30px"}} size="sm" variant="danger" onClick={()=> {deleteContest(contestData.name)}}>Delete</Button>
                           </Col>
                           <Col style={{display:"flex", padding: "1%", alignItems: 'center', justifyContent: 'flex-end'}}>
                           <p style={{marginRight:"2%", marginBottom: '0'}}>Candidacy: </p>
@@ -327,8 +329,11 @@ class ContestView extends Component {
                     <>
                       <Card style={{marginTop: "3px"}}>
                         <Card.Body>
-                          <Card.Title>{gameData.name}</Card.Title>
-                          <ListGroup as="ol" numbered>
+                          <Col style={{display:"flex"}}>
+                            <Card.Title>{gameData.name}</Card.Title>
+                            <Button style={{marginLeft:"3%",height: "30px"}} size="sm" variant="danger" onClick={()=> {deleteTrivia(gameData.name)}}>Delete</Button>
+                          </Col>
+                            <ListGroup as="ol" numbered>
                             {gameData.questions.map(question => {
                               console.log(question);
                               const hrefForAnswer= "https://twitter.com/intent/tweet?text=%23"+(gameData.name.substring(1)).concat("%20risposta_").concat(question.number).concat("%20").concat("\"").concat("yourAnswer").concat("\"");
@@ -439,7 +444,10 @@ class ContestView extends Component {
                     <>
                       <Card style={{marginTop: "3px"}}>
                         <Card.Body>
-                          <Card.Title>{data.name}</Card.Title>
+                          <Col style={{display:"flex"}}>
+                            <Card.Title>{data.name}</Card.Title>
+                            <Button style={{marginLeft:"3%",height: "30px"}} size="sm" variant="danger" onClick={()=> {deleteCustom(data.name)}}>Delete</Button>
+                          </Col>
                           <Card.Subtitle style={{marginTop:"1%"}}>Total count: {data.totalCount}</Card.Subtitle>
                           <ListGroup style={{marginTop:"1%"}}>
                             {data.tweets.map((tweet) => {
