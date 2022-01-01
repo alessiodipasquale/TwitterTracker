@@ -14,7 +14,7 @@ export default abstract class Database {
      * Attribute that change database path based on production/developement phase 
      */
 
-    private static production = false;
+    private static production = true;
 
     /**
      * Getter method
