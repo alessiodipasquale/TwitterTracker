@@ -32,7 +32,7 @@ export default abstract class Database {
 
     /**
      * Setter method
-     * @param definitions Is the new value to substitute streamDefinitions in database
+     * @param definitions - Is the new value to substitute streamDefinitions in database
      */
 
     public static set streamDefinitions(definitions: StreamDefinition[]) {
@@ -44,11 +44,10 @@ export default abstract class Database {
         }
         allData.streamDefinitions = objectData.streamDefinitions;
         const stringedData = JSON.stringify(allData)
-        try 
-        {
-            if(Database.production){
+        try {
+            if (Database.production) {
                 fs.writeFileSync(Config.productionDatabasePath, stringedData);
-            }else fs.writeFileSync(Config.devDatabasePath, stringedData);
+            } else fs.writeFileSync(Config.devDatabasePath, stringedData);
 
         } catch (error) {
             console.error(error);
@@ -57,7 +56,7 @@ export default abstract class Database {
 
     /**
      * Creation of a new stream
-     * @param newStream Is the value for the new stream created
+     * @param newStream - Is the value for the new stream created
      */
 
     public static newStreamDef(newStream: StreamDefinition) {
@@ -88,8 +87,8 @@ export default abstract class Database {
 
     /**
      * Deletion of a stream
-     * @param toDelete Is the name of the stream to delete
-     * @param type Is the type of the stream
+     * @param toDelete - Is the name of the stream to delete
+     * @param type - Is the type of the stream
      */
 
     public static deleteStreamDef(toDelete: string, type: string) {
@@ -103,8 +102,8 @@ export default abstract class Database {
 
     /**
      * Deletion of data related to a stream
-     * @param toDelete Is the name of the stream whose data we want to delete
-     * @param type Is the type of the stream
+     * @param toDelete - Is the name of the stream whose data we want to delete
+     * @param type - Is the type of the stream
      */
 
     public static deleteStreamData(toDelete: string, type: string) {
@@ -138,12 +137,50 @@ export default abstract class Database {
     }
 
     /**
+     * Setter method
+     * @param newData - Data that substitute current data present in database related to literary contests
+     */
+
+    public static set literaryContestsData(newData: any[]) {
+        const allData = Data;
+        allData.DataFromLiteraryContests = newData;
+        const stringedData = JSON.stringify(allData)
+        try {
+            if (Database.production) {
+                fs.writeFileSync(Config.productionDatabasePath, stringedData);
+            } else fs.writeFileSync(Config.devDatabasePath, stringedData);
+
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    /**
      * Getter method
      * @returns Data from trivia games currenctly active
      */
 
     public static get triviaGamesData() {
         return JSON.parse(JSON.stringify(Data.DataFromTriviaGames));
+    }
+
+    /**
+     * Setter method
+     * @param newData Data that substitute current data present in database related to trivia games
+     */
+
+    public static set triviaGamesData(newData: any[]) {
+        const allData = Data;
+        allData.DataFromTriviaGames = newData
+        const stringedData = JSON.stringify(allData)
+        try {
+            if (Database.production) {
+                fs.writeFileSync(Config.productionDatabasePath, stringedData);
+            } else fs.writeFileSync(Config.devDatabasePath, stringedData);
+
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     /**
@@ -157,56 +194,18 @@ export default abstract class Database {
 
     /**
      * Setter method
-     * @param newData Data that substitute current data present in database related to literary contests
+     * @param newData - Data that substitute current data present in database related to custom streams
      */
 
-    public static set literaryContestsData(newData: any[]) {
-        const allData = Data;
-        allData.DataFromLiteraryContests = newData;
-        const stringedData = JSON.stringify(allData)
-        try {
-            if(Database.production){
-                fs.writeFileSync(Config.productionDatabasePath, stringedData);
-            }else fs.writeFileSync(Config.devDatabasePath, stringedData);
-            
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    /**
-     * Setter method
-     * @param newData Data that substitute current data present in database related to trivia games
-     */
-
-    public static set triviaGamesData(newData: any[]) {
-        const allData = Data;
-        allData.DataFromTriviaGames = newData
-        const stringedData = JSON.stringify(allData)
-        try {
-            if(Database.production){
-                fs.writeFileSync(Config.productionDatabasePath, stringedData);
-            }else fs.writeFileSync(Config.devDatabasePath, stringedData);
-            
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    /**
-     * Setter method
-     * @param newData Data that substitute current data present in database related to custom streams
-     */
-
-     public static set customStreamsData(newData: any[]) {
+    public static set customStreamsData(newData: any[]) {
         const allData = Data;
         allData.DataFromCustomStreams = newData
         const stringedData = JSON.stringify(allData)
         try {
-            if(Database.production){
+            if (Database.production) {
                 fs.writeFileSync(Config.productionDatabasePath, stringedData);
-            }else fs.writeFileSync(Config.devDatabasePath, stringedData);
-            
+            } else fs.writeFileSync(Config.devDatabasePath, stringedData);
+
         } catch (error) {
             console.error(error);
         }
@@ -214,7 +213,7 @@ export default abstract class Database {
 
     /**
      * Initialize data from a new literary contest
-     * @param newStream Informations needed for data initialization
+     * @param newStream - Informations needed for data initialization
      */
 
     public static newLiteraryContest(newStream: StreamDefinition) {
@@ -224,10 +223,10 @@ export default abstract class Database {
         allData.DataFromLiteraryContests = objectData;
         const stringedData = JSON.stringify(allData)
         try {
-            if(Database.production){
+            if (Database.production) {
                 fs.writeFileSync(Config.productionDatabasePath, stringedData);
-            }else fs.writeFileSync(Config.devDatabasePath, stringedData);
-            
+            } else fs.writeFileSync(Config.devDatabasePath, stringedData);
+
         } catch (error) {
             console.error(error);
         }
@@ -236,7 +235,7 @@ export default abstract class Database {
 
     /**
      * Initialize data from a new trivia game
-     * @param newStream Informations needed for data initialization
+     * @param newStream - Informations needed for data initialization
      */
 
     public static newTriviaGame(newStream: StreamDefinition) {
@@ -256,10 +255,10 @@ export default abstract class Database {
         allData.DataFromTriviaGames = objectData;
         const stringedData = JSON.stringify(allData)
         try {
-            if(Database.production){
+            if (Database.production) {
                 fs.writeFileSync(Config.productionDatabasePath, stringedData);
-            }else fs.writeFileSync(Config.devDatabasePath, stringedData);
-            
+            } else fs.writeFileSync(Config.devDatabasePath, stringedData);
+
         } catch (error) {
             console.error(error);
         }
@@ -268,20 +267,20 @@ export default abstract class Database {
 
     /**
      * Initialize data from a new custom stream
-     * @param newStream Informations needed for data initialization
+     * @param newStream - Informations needed for data initialization
      */
 
-    public static newCustomStream(newStream: StreamDefinition){
+    public static newCustomStream(newStream: StreamDefinition) {
         const allData = Data;
         const objectData = allData.DataFromCustomStreams;
-        objectData.push({name: newStream.name, totalCount: 0, username: newStream.extras.username, keyword:newStream.extras.keyword, tweets:[]})
+        objectData.push({ name: newStream.name, totalCount: 0, username: newStream.extras.username, keyword: newStream.extras.keyword, tweets: [] })
         allData.DataFromCustomStreams = objectData;
         const stringedData = JSON.stringify(allData)
         try {
-            if(Database.production){
+            if (Database.production) {
                 fs.writeFileSync(Config.productionDatabasePath, stringedData);
-            }else fs.writeFileSync(Config.devDatabasePath, stringedData);
-            
+            } else fs.writeFileSync(Config.devDatabasePath, stringedData);
+
         } catch (error) {
             console.error(error);
         }
@@ -290,7 +289,7 @@ export default abstract class Database {
 
     /**
      * Assessment function that control if the event is already present in database
-     * @param name Name of the event to find
+     * @param name - Name of the event to find
      */
 
     public static eventAlreadyPresent(name: string) {
@@ -304,7 +303,7 @@ export default abstract class Database {
 
     /**
      * Utility function to retrieve type of a stream from its hashtag
-     * @param hashtag Name of the event to find
+     * @param hashtag - Name of the event to find
      */
 
     public static getTypeFromHashtag(hashtag: string) {
@@ -319,13 +318,13 @@ export default abstract class Database {
 
     /**
      * New book candidation
-     * @param hashtag Name of the event
-     * @param name Name of the book
-     * @param author_id Id of the author of the Tweet
+     * @param hashtag - Name of the event
+     * @param name - Name of the book
+     * @param author_id - Id of the author of the Tweet
      */
 
     public static candidateNewBook(hashtag: string, name: string, author_id: string) {
-        if (!Database.bookAlreadyPresent(hashtag, name)) {
+        if (!Database.bookAlreadyPresent(hashtag, name) && !Database.expired(hashtag)) {
             const allData = Data;
             const objectData = allData.DataFromLiteraryContests;
             for (const elem of objectData) {
@@ -336,10 +335,10 @@ export default abstract class Database {
             allData.DataFromLiteraryContests = objectData;
             const stringedData = JSON.stringify(allData)
             try {
-                if(Database.production){
+                if (Database.production) {
                     fs.writeFileSync(Config.productionDatabasePath, stringedData);
-                }else fs.writeFileSync(Config.devDatabasePath, stringedData);
-                
+                } else fs.writeFileSync(Config.devDatabasePath, stringedData);
+
             } catch (error) {
                 console.error(error);
             }
@@ -350,8 +349,8 @@ export default abstract class Database {
 
     /**
      * Assessment function that control if the book is already present in the contest
-     * @param hashtag Name of the event to find
-     * @param name Name of the book to find
+     * @param hashtag - Name of the event to find
+     * @param name - Name of the book to find
      */
 
     private static bookAlreadyPresent(hashtag: string, name: string) {
@@ -370,13 +369,13 @@ export default abstract class Database {
 
     /**
      * New book votation
-     * @param hashtag Name of the event
-     * @param name Name of the book
-     * @param author_id Id of the author of the Tweet
+     * @param hashtag - Name of the event
+     * @param name - Name of the book
+     * @param author_id - Id of the author of the Tweet
      */
 
     public static async voteBook(hashtag: string, name: string, author_id: string) {
-        if (Database.bookAlreadyPresent(hashtag, name)) {
+        if (Database.bookAlreadyPresent(hashtag, name) && !Database.expired(hashtag)) {
             if (!Database.reachedMaxVotes(hashtag, author_id) && !Database.hasVotedBook(hashtag, name, author_id)) {
                 const allData = Data;
                 const objectData = allData.DataFromLiteraryContests;
@@ -405,10 +404,10 @@ export default abstract class Database {
                 allData.DataFromLiteraryContests = objectData;
                 const stringedData = JSON.stringify(allData)
                 try {
-                    if(Database.production){
+                    if (Database.production) {
                         fs.writeFileSync(Config.productionDatabasePath, stringedData);
-                    }else fs.writeFileSync(Config.devDatabasePath, stringedData);
-                    
+                    } else fs.writeFileSync(Config.devDatabasePath, stringedData);
+
                 } catch (error) {
                     console.error(error);
                 }
@@ -416,9 +415,9 @@ export default abstract class Database {
             }
         } else {
             Database.candidateNewBook(hashtag, name, author_id)
-            await Socket.broadcast("newCandidateInLiteraryContest",{contestName:hashtag, bookName:name, candidatedBy: author_id })
+            await Socket.broadcast("newCandidateInLiteraryContest", { contestName: hashtag, bookName: name, candidatedBy: author_id })
             Database.voteBook(hashtag, name, author_id)
-            await Socket.broadcast("newVoteInLiteraryContest",{contestName:hashtag, bookName:name, votedBy: author_id })
+            await Socket.broadcast("newVoteInLiteraryContest", { contestName: hashtag, bookName: name, votedBy: author_id })
         }
         return false;
     }
@@ -438,9 +437,9 @@ export default abstract class Database {
 
     /**
      * Assessment function that control if the book was already voted by a specific user
-     * @param hashtag Name of the event to find
-     * @param name Name of the book to find
-     * @param author_id Id of the user to find
+     * @param hashtag - Name of the event to find
+     * @param name - Name of the book to find
+     * @param author_id - Id of the user to find
      */
 
     private static hasVotedBook(hashtag: string, name: string, author_id: string) {
@@ -462,15 +461,15 @@ export default abstract class Database {
 
     /**
      * New answer in a trivia game
-     * @param hashtag Name of the event
-     * @param answerNumber Number of the answer
-     * @param answer Value of the answer
-     * @param author_id Id of the author of the Tweet
-     * @param username Username of the author of the Tweet
+     * @param hashtag - Name of the event
+     * @param answerNumber - Number of the answer
+     * @param answer - Value of the answer
+     * @param author_id - Id of the author of the Tweet
+     * @param username - Username of the author of the Tweet
      */
 
     public static registerAnswer(hashtag: string, answerNumber: number, answer: string, author_id: string, username: string) {
-        if (!Database.hasAlreadyAnswered(hashtag, answerNumber, author_id)) {
+        if (!Database.hasAlreadyAnswered(hashtag, answerNumber, author_id) && !Database.expired(hashtag)) {
             const allData = Data;
             const objectData = allData.DataFromTriviaGames;
             let correct;
@@ -487,10 +486,10 @@ export default abstract class Database {
             allData.DataFromTriviaGames = objectData;
             const stringedData = JSON.stringify(allData)
             try {
-                if(Database.production){
+                if (Database.production) {
                     fs.writeFileSync(Config.productionDatabasePath, stringedData);
-                }else fs.writeFileSync(Config.devDatabasePath, stringedData);
-                
+                } else fs.writeFileSync(Config.devDatabasePath, stringedData);
+
             } catch (error) {
                 console.error(error);
             }
@@ -501,9 +500,9 @@ export default abstract class Database {
 
     /**
      * Assessment function that control if an user has already answered to a question
-     * @param hashtag Name of the event to find
-     * @param answerNumber Number of the answer
-     * @param author_id Id of the user to find
+     * @param hashtag - Name of the event to find
+     * @param answerNumber - Number of the answer
+     * @param author_id - Id of the user to find
      */
 
     private static hasAlreadyAnswered(hashtag: string, answerNumber: number, author_id: string) {
@@ -525,54 +524,74 @@ export default abstract class Database {
 
     /**
      * New Tweet related to a custom stream
-     * @param hashtag Name of the stream
-     * @param tweetId Id of the Tweet
-     * @param text Text of the Tweet
-     * @param username Username of the user that tweeted  
+     * @param hashtag - Name of the stream
+     * @param tweetId - Id of the Tweet
+     * @param text - Text of the Tweet
+     * @param username - Username of the user that tweeted  
      */
 
-    public static registerTweetInCustomStream(hashtag: string, tweetId: string, text: string, username: string){
-        const allData = Data;
-        const objectData = allData.DataFromCustomStreams;
-        let shifted = false;
-        let changed = false
-        for(const element of objectData){
-            if(element.name == hashtag && (element.username === "" || element.username === username)){
-                element.totalCount = element.totalCount + 1;
-                if(element.tweets.length >= Config.maxElementsFromCustomStream){
-                    element.tweets.shift()
-                    shifted = true;
+    public static registerTweetInCustomStream(hashtag: string, tweetId: string, text: string, username: string) {
+        if(!Database.expired(hashtag)){
+            const allData = Data;
+            const objectData = allData.DataFromCustomStreams;
+            let shifted = false;
+            let changed = false
+            for (const element of objectData) {
+                if (element.name == hashtag && (element.username === "" || element.username === username)) {
+                    element.totalCount = element.totalCount + 1;
+                    if (element.tweets.length >= Config.maxElementsFromCustomStream) {
+                        element.tweets.shift()
+                        shifted = true;
+                    }
+                    changed = true;
+                    element.tweets.push({ id: tweetId, text, username })
                 }
-                changed = true;
-                element.tweets.push({id:tweetId, text, username})
             }
-        }
-        if(!changed) return -1;
-        allData.DataFromCustomStreams = objectData;
-        const stringedData = JSON.stringify(allData)
-        try {
-            if(Database.production){
-                fs.writeFileSync(Config.productionDatabasePath, stringedData);
-            }else fs.writeFileSync(Config.devDatabasePath, stringedData);
-            
-            return shifted;
-        } catch (error) {
-            console.error(error);
-            return -1;
-        }
+            if (!changed) return -1;
+            allData.DataFromCustomStreams = objectData;
+            const stringedData = JSON.stringify(allData)
+            try {
+                if (Database.production) {
+                    fs.writeFileSync(Config.productionDatabasePath, stringedData);
+                } else fs.writeFileSync(Config.devDatabasePath, stringedData);
+
+                return shifted;
+            } catch (error) {
+                console.error(error);
+                return -1;
+            }
+        } else return -1;
     }
 
     /**
      * Function to retrieve an hashtag by a keyword in a custom stream
-     * @param kw keyword
+     * @param kw - keyword
      * @returns the name of the event
      */
 
-    public static retrieveHashtagByKeyword(kw: string){
+    public static retrieveHashtagByKeyword(kw: string) {
         const data = Database.customStreamsData;
-        for(const element of data){
-            if(element.keyword == kw)
+        for (const element of data) {
+            if (element.keyword == kw)
                 return element.name;
         }
+    }
+
+    /**
+     * Function that control if passed stream is expired
+     * @param hashtag - Name of the stream to find
+     */
+
+    private static expired(hashtag: string) {
+        const today = new Date();
+        let expired = true;
+        const streams = Database.streamDefinitions;
+        for (const stream of streams) {
+            if (stream.name == hashtag) {
+                if (today <= (new Date(stream.endDate)))
+                    expired = false;
+            }
+        }
+        return expired;
     }
 }
