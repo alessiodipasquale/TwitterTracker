@@ -238,7 +238,7 @@ class ContestView extends Component {
               {this.state.literaryContestData.map((contestData) => {
                 return (
                   <>
-                    <Card style={{marginTop: "3px"}}>
+                    <Card style={{marginBottom: "7px",marginTop: "3px", borderColor:"black"}}>
                       <Card.Body>
                         <Row>
                           <Col style={{display:"flex"}}>
@@ -333,7 +333,7 @@ class ContestView extends Component {
                 {this.state.triviaGamesData.map((gameData) => {
                   return (
                     <>
-                      <Card style={{marginTop: "3px"}}>
+                      <Card style={{marginBottom:"7px", marginTop: "3px", borderColor:"black"}}>
                         <Card.Body>
                           <Col style={{display:"flex"}}>
                             <Card.Title>{gameData.name}</Card.Title>
@@ -346,7 +346,6 @@ class ContestView extends Component {
                           <Card.Subtitle style={{marginTop:"1%", marginBottom:"1%"}}>Expiration date: {gameData.endDate.substring(0,10)}</Card.Subtitle>
                             <ListGroup as="ol" numbered>
                             {gameData.questions.map(question => {
-                              console.log("gd:",gameData);
                               const hrefForAnswer= "https://twitter.com/intent/tweet?text=%23"+(gameData.name.substring(1)).concat("%20risposta_").concat(question.number).concat("%20").concat("\"").concat("yourAnswer").concat("\"");
 
                               return (
@@ -453,7 +452,7 @@ class ContestView extends Component {
                 {this.state.customStreamsData.map((data) => {
                   return (
                     <>
-                      <Card style={{marginTop: "3px"}}>
+                      <Card style={{marginBottom: "7px", marginTop: "3px", borderColor:"black"}}>
                         <Card.Body>
                           <Col style={{display:"flex"}}>
                             <Card.Title>{data.name}</Card.Title>
