@@ -243,7 +243,12 @@ class ContestView extends Component {
                         <Row>
                           <Col style={{display:"flex"}}>
                             <Card.Title>{contestData.name}</Card.Title>
-                            <Button style={{marginLeft:"3%",height: "30px"}} size="sm" variant="danger" onClick={()=> {deleteContest(contestData.name)}}>Delete</Button>
+                            <Button style={{marginLeft:"3%",height: "30px"}} size="sm" variant="danger" onClick={()=> {
+                              deleteContest(contestData.name); 
+                              this.setState({literaryContestData: this.state.literaryContestData.filter((elem)=>{
+                                return elem.name != contestData.name;
+                              })})}
+                              }>Delete</Button>
                           </Col>
                           <Col style={{display:"flex", padding: "1%", alignItems: 'center', justifyContent: 'flex-end'}}>
                           <p style={{marginRight:"2%", marginBottom: '0'}}>Candidacy: </p>
@@ -331,7 +336,11 @@ class ContestView extends Component {
                         <Card.Body>
                           <Col style={{display:"flex"}}>
                             <Card.Title>{gameData.name}</Card.Title>
-                            <Button style={{marginLeft:"3%",height: "30px"}} size="sm" variant="danger" onClick={()=> {deleteTrivia(gameData.name)}}>Delete</Button>
+                            <Button style={{marginLeft:"3%",height: "30px"}} size="sm" variant="danger" onClick={()=> {
+                              deleteTrivia(gameData.name); 
+                              this.setState({triviaGamesData: this.state.triviaGamesData.filter((elem)=>{
+                                return elem.name != gameData.name;
+                              })}) }}>Delete</Button>
                           </Col>
                             <ListGroup as="ol" numbered>
                             {gameData.questions.map(question => {
@@ -446,7 +455,11 @@ class ContestView extends Component {
                         <Card.Body>
                           <Col style={{display:"flex"}}>
                             <Card.Title>{data.name}</Card.Title>
-                            <Button style={{marginLeft:"3%",height: "30px"}} size="sm" variant="danger" onClick={()=> {deleteCustom(data.name)}}>Delete</Button>
+                            <Button style={{marginLeft:"3%",height: "30px"}} size="sm" variant="danger" onClick={()=> {
+                              deleteCustom(data.name); 
+                              this.setState({customStreamsData: this.state.customStreamsData.filter((elem)=>{
+                                return elem.name != data.name;
+                              })}) }}>Delete</Button>
                           </Col>
                           <Card.Subtitle style={{marginTop:"1%"}}>Total count: {data.totalCount}</Card.Subtitle>
                           <ListGroup style={{marginTop:"1%"}}>
