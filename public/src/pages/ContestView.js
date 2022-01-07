@@ -250,6 +250,7 @@ class ContestView extends Component {
                               })})}
                               }>Delete</Button>
                           </Col>
+                          <Card.Subtitle style={{marginTop:"1%"}}>Expiration date: {contestData.endDate.substring(0,10)}</Card.Subtitle>
                           <Col style={{display:"flex", padding: "1%", alignItems: 'center', justifyContent: 'flex-end'}}>
                           <p style={{marginRight:"2%", marginBottom: '0'}}>Candidacy: </p>
                          { /*<a 
@@ -342,9 +343,10 @@ class ContestView extends Component {
                                 return elem.name != gameData.name;
                               })}) }}>Delete</Button>
                           </Col>
+                          <Card.Subtitle style={{marginTop:"1%", marginBottom:"1%"}}>Expiration date: {gameData.endDate.substring(0,10)}</Card.Subtitle>
                             <ListGroup as="ol" numbered>
                             {gameData.questions.map(question => {
-                              console.log(question);
+                              console.log("gd:",gameData);
                               const hrefForAnswer= "https://twitter.com/intent/tweet?text=%23"+(gameData.name.substring(1)).concat("%20risposta_").concat(question.number).concat("%20").concat("\"").concat("yourAnswer").concat("\"");
 
                               return (
@@ -461,6 +463,7 @@ class ContestView extends Component {
                                 return elem.name != data.name;
                               })}) }}>Delete</Button>
                           </Col>
+                          <Card.Subtitle style={{marginTop:"1%", marginBottom:"1%"}}>Expiration date: {data.endDate.substring(0,10)}</Card.Subtitle>
                           <Card.Subtitle style={{marginTop:"1%"}}>Total count: {data.totalCount}</Card.Subtitle>
                           <ListGroup style={{marginTop:"1%"}}>
                             {data.tweets.map((tweet) => {

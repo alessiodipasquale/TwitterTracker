@@ -1,1 +1,137 @@
-{"streamDefinitions":[{"name":"#streamTestswe4","startDate":"2022-11-28T00:00:00.000Z","endDate":"2022-11-28T00:00:00.000Z","type":"literaryContest","rules":[{"value":"#streamTestswe4 voto","tag":"voto"},{"value":"#streamTestswe4 (candido OR candidare)","tag":"candidatura"}]},{"name":"#streamTestswe4_2","startDate":"2022-11-28T00:00:00.000Z","endDate":"2022-11-28T00:00:00.000Z","type":"triviaGame","rules":[{"value":"#streamTestswe4_2 risposta_1","tag":"risposta_1"},{"value":"#streamTestswe4_2 risposta_2","tag":"risposta_2"}]},{"name":"#testCustomStream","startDate":"2022-11-28T00:00:00.000Z","endDate":"2022-11-28T00:00:00.000Z","type":"custom","rules":[{"value":"testKeyword","tag":"testKeyword"}]}],"DataFromLiteraryContests":[{"name":"#streamTestswe4","voters":[{"author_id":"123456","numVotes":1},{"author_id":"12345","numVotes":1},{"author_id":"1447929992550227969","numVotes":3}],"books":[{"candidatedBy":"12345","bookName":"Le avventure di giorgio","votes":3,"votedBy":["12345","123456","1447929992550227969"]},{"candidatedBy":"1447929992550227969","bookName":"1984","votes":1,"votedBy":["1447929992550227969"]},{"candidatedBy":"1447929992550227969","bookName":"Harry Potter","votes":1,"votedBy":["1447929992550227969"]}]}],"DataFromTriviaGames":[{"name":"#streamTestswe4_2","questions":[{"number":1,"text":"Chi ha vinto l'europeo?","correctAnswers":["italia","l'italia"],"participants":[{"username":"Luca","userId":"12345","answeredTo":1,"answer":"Italia","isCorrect":true}]}]}],"DataFromCustomStreams":[{"name":"#testCustomStream","keyword":"testKeyword","username":"","totalCount":1,"tweets":[{"id":"123","username":"Luca","text":"prova"}]}]}
+{
+    "streamDefinitions": [
+        {
+            "name": "#streamTestswe4",
+            "startDate": "2022-11-28T00:00:00.000Z",
+            "endDate": "2022-11-28T00:00:00.000Z",
+            "type": "literaryContest",
+            "rules": [
+                {
+                    "value": "#streamTestswe4 voto",
+                    "tag": "voto"
+                },
+                {
+                    "value": "#streamTestswe4 (candido OR candidare)",
+                    "tag": "candidatura"
+                }
+            ]
+        },
+        {
+            "name": "#streamTestswe4_2",
+            "startDate": "2022-11-28T00:00:00.000Z",
+            "endDate": "2022-11-28T00:00:00.000Z",
+            "type": "triviaGame",
+            "rules": [
+                {
+                    "value": "#streamTestswe4_2 risposta_1",
+                    "tag": "risposta_1"
+                },
+                {
+                    "value": "#streamTestswe4_2 risposta_2",
+                    "tag": "risposta_2"
+                }
+            ]
+        },
+        {
+            "name": "#testCustomStream",
+            "startDate": "2022-11-28T00:00:00.000Z",
+            "endDate": "2022-11-28T00:00:00.000Z",
+            "type": "custom",
+            "rules": [
+                {
+                    "value": "testKeyword",
+                    "tag": "testKeyword"
+                }
+            ]
+        }
+    ],
+    "DataFromLiteraryContests": [
+        {
+            "endDate": "2022-11-28T00:00:00.000Z",
+            "name": "#streamTestswe4",
+            "voters": [
+                {
+                    "author_id": "123456",
+                    "numVotes": 1
+                },
+                {
+                    "author_id": "12345",
+                    "numVotes": 1
+                },
+                {
+                    "author_id": "1447929992550227969",
+                    "numVotes": 3
+                }
+            ],
+            "books": [
+                {
+                    "candidatedBy": "12345",
+                    "bookName": "Le avventure di giorgio",
+                    "votes": 3,
+                    "votedBy": [
+                        "12345",
+                        "123456",
+                        "1447929992550227969"
+                    ]
+                },
+                {
+                    "candidatedBy": "1447929992550227969",
+                    "bookName": "1984",
+                    "votes": 1,
+                    "votedBy": [
+                        "1447929992550227969"
+                    ]
+                },
+                {
+                    "candidatedBy": "1447929992550227969",
+                    "bookName": "Harry Potter",
+                    "votes": 1,
+                    "votedBy": [
+                        "1447929992550227969"
+                    ]
+                }
+            ]
+        }
+    ],
+    "DataFromTriviaGames": [
+        {
+            "endDate": "2022-11-28T00:00:00.000Z",
+            "name": "#streamTestswe4_2",
+            "questions": [
+                {
+                    "number": 1,
+                    "text": "Chi ha vinto l'europeo?",
+                    "correctAnswers": [
+                        "italia",
+                        "l'italia"
+                    ],
+                    "participants": [
+                        {
+                            "username": "Luca",
+                            "userId": "12345",
+                            "answeredTo": 1,
+                            "answer": "Italia",
+                            "isCorrect": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "DataFromCustomStreams": [
+        {
+            "endDate": "2022-11-28T00:00:00.000Z",
+            "name": "#testCustomStream",
+            "keyword": "testKeyword",
+            "username": "",
+            "totalCount": 1,
+            "tweets": [
+                {
+                    "id": "123",
+                    "username": "Luca",
+                    "text": "prova"
+                }
+            ]
+        }
+    ]
+}

@@ -186,6 +186,7 @@ class ContestHandler extends Component {
       object.rules = []
       let num = 1;
       for(let question of object.extras.questions){
+        question.number = num;
         let array = question.correctAnswers.split("'").filter((element)=>{
           return element !== " " && element !== '';
         });

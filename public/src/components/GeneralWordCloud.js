@@ -39,6 +39,16 @@ function GeneralWordClout({tweets}) {
     <WordCloud
       data={wordCloudData}
       fontSize={(word) => ((word.value / 40) + 2) * 15} //old version: (word.value * 3 + 30) % 30}
+      onWordClick={(event, d) => {
+        console.log(`onWordClick: ${d.text}`);
+        if(d.text.startsWith('http')){
+          const newWindow = window.open(d.text, '_blank', 'noopener,noreferrer');
+          if (newWindow) newWindow.opener = null;
+        }else{
+          const newWindow = window.open(`https://www.google.com/search?q=${d.text}`, '_blank', 'noopener,noreferrer');
+          if (newWindow) newWindow.opener = null;
+        }
+      }}
       />
 
     </>

@@ -219,7 +219,7 @@ export default abstract class Database {
     public static newLiteraryContest(newStream: StreamDefinition) {
         const allData = Data;
         const objectData = allData.DataFromLiteraryContests;
-        objectData.push({ name: newStream.name, voters: [], books: [] });
+        objectData.push({ name: newStream.name, voters: [], books: [], endDate: new Date(newStream.endDate).toISOString().substring(0, 10) });
         allData.DataFromLiteraryContests = objectData;
         const stringedData = JSON.stringify(allData)
         try {
@@ -251,7 +251,7 @@ export default abstract class Database {
             const obj = { number: question.number, text: question.text, correctAnswers: lowerCase, participants: [] }
             buildedQuestions.push(obj)
         }
-        objectData.push({ name: newStream.name, questions: buildedQuestions });
+        objectData.push({ name: newStream.name, questions: buildedQuestions, endDate: new Date(newStream.endDate).toISOString().substring(0, 10)  });
         allData.DataFromTriviaGames = objectData;
         const stringedData = JSON.stringify(allData)
         try {
@@ -273,7 +273,7 @@ export default abstract class Database {
     public static newCustomStream(newStream: StreamDefinition) {
         const allData = Data;
         const objectData = allData.DataFromCustomStreams;
-        objectData.push({ name: newStream.name, totalCount: 0, username: newStream.extras.username, keyword: newStream.extras.keyword, tweets: [] })
+        objectData.push({ name: newStream.name, totalCount: 0, username: newStream.extras.username, keyword: newStream.extras.keyword, tweets: [], endDate: new Date(newStream.endDate).toISOString().substring(0, 10)  })
         allData.DataFromCustomStreams = objectData;
         const stringedData = JSON.stringify(allData)
         try {
