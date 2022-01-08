@@ -439,6 +439,36 @@ class ContestView extends Component {
                               );
                             })}
                           </ListGroup>
+                          <Button size="sm" variant="warning" onClick={()=> {
+                            let text = "Game name: "+gameData.name+"\n"+"Results:\n\n";
+                            let dictionary = []
+                            for(let question of gameData.questions){
+                              for(let participant of question.participants){
+                                let found = false;
+                                for(let element of dictionary){
+                                  if(element.username == participant.username){
+                                    if(participant.isCorrect){
+                                      element.points = element.points + 1;
+                                    }
+                                    found = true;
+                                  }
+                                }
+                                if(!found){
+                                  let n = participant.isCorrect ? 1 : 0;
+                                  dictionary.push({username:participant.username,points:n})
+                                }
+                              }
+                            } 
+                            dictionary = dictionary.sort((a,b)=> (a.points < b.points) ? 1 : -1)
+                            let num = 1;
+                            for(let element of dictionary){
+                              let res = "#"+num+": "+element.username+"\t points: "+element.points+"\n"
+                              text = text+res;
+                              num = num +1;
+                            }
+                            navigator.clipboard.writeText(text)
+                            alert("Data copied to clipboard");
+                          }}>Copy results to clipboard</Button>
                         </Card.Body>
                       </Card>
                     </>
