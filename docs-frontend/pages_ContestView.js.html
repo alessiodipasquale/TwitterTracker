@@ -1,4 +1,32 @@
-import React, { Component } from 'react';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/ContestView.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/ContestView.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { Component } from 'react';
 import Chart from "react-google-charts";
 import { Row, Col, Tabs, Tab, Card, Container, ListGroup, ListGroupItem, Button } from 'react-bootstrap';
 import { socketConnection } from '../services/socket-service';
@@ -209,7 +237,7 @@ class ContestView extends Component {
         for (let question of game.questions) {
           if ((question.number).toString() === (data.answerNumber).toString()) {
             let found = false;
-            for (let i = 1; i < question.formattedAnswers.length; i++) {
+            for (let i = 1; i &lt; question.formattedAnswers.length; i++) {
               if ((question.formattedAnswers[i])[0] == data.answer.toLowerCase()) {
                 (question.formattedAnswers[i])[1] = (question.formattedAnswers[i])[1] + 1;
                 found = true;
@@ -236,7 +264,7 @@ class ContestView extends Component {
           contest.formattedVotes.push([data.bookName, 0]);
         }
         if(type === "vote"){
-          for(let i = 1; i < contest.formattedVotes.length; i++){
+          for(let i = 1; i &lt; contest.formattedVotes.length; i++){
             if((contest.formattedVotes[i])[0] === data.bookName){
               (contest.formattedVotes[i])[1] = (contest.formattedVotes[i])[1] + 1;
             }
@@ -285,29 +313,29 @@ class ContestView extends Component {
    */
   render() {
     return (
-      <>
-        <Container fluid style={{ padding: '2%', overflow: 'scroll' }} >
-          <Tabs>
-            <Tab eventKey="literaryContest" title="Literary Contests">
+      &lt;>
+        &lt;Container fluid style={{ padding: '2%', overflow: 'scroll' }} >
+          &lt;Tabs>
+            &lt;Tab eventKey="literaryContest" title="Literary Contests">
               {this.state.literaryContestData.map((contestData) => {
                 return (
-                  <>
-                    <Card style={{marginBottom: "7px",marginTop: "3px", borderColor:"black"}}>
-                      <Card.Body>
-                        <Row>
-                          <Col style={{display:"flex"}}>
-                            <Card.Title>{contestData.name}</Card.Title>
-                            <Button style={{marginLeft:"3%",height: "30px"}} size="sm" variant="danger" onClick={()=> {
+                  &lt;>
+                    &lt;Card style={{marginBottom: "7px",marginTop: "3px", borderColor:"black"}}>
+                      &lt;Card.Body>
+                        &lt;Row>
+                          &lt;Col style={{display:"flex"}}>
+                            &lt;Card.Title>{contestData.name}&lt;/Card.Title>
+                            &lt;Button style={{marginLeft:"3%",height: "30px"}} size="sm" variant="danger" onClick={()=> {
                               deleteContest(contestData.name); 
                               this.setState({literaryContestData: this.state.literaryContestData.filter((elem)=>{
                                 return elem.name != contestData.name;
                               })})}
-                              }>Delete</Button>
-                          </Col>
-                          <Card.Subtitle style={{marginTop:"1%"}}>Expiration date: {contestData.endDate.substring(0,10)}</Card.Subtitle>
-                          <Col style={{display:"flex", padding: "1%", alignItems: 'center', justifyContent: 'flex-end'}}>
-                          <p style={{marginRight:"2%", marginBottom: '0'}}>Candidacy: </p>
-                         { /*<a 
+                              }>Delete&lt;/Button>
+                          &lt;/Col>
+                          &lt;Card.Subtitle style={{marginTop:"1%"}}>Expiration date: {contestData.endDate.substring(0,10)}&lt;/Card.Subtitle>
+                          &lt;Col style={{display:"flex", padding: "1%", alignItems: 'center', justifyContent: 'flex-end'}}>
+                          &lt;p style={{marginRight:"2%", marginBottom: '0'}}>Candidacy: &lt;/p>
+                         { /*&lt;a 
                               target="_blank" 
                               rel="noopener noreferrer"
                               href={hrefForCandidacy}
@@ -315,31 +343,31 @@ class ContestView extends Component {
                               data-size="large"
                               data-show-count="false">
                                 Candidacy for this contest
-                         </a>
-                         href="https://twitter.com/intent/tweet?text=optional%20promo%20text%20http://example.com/foo.htm?bar=123&baz=456" 
+                         &lt;/a>
+                         href="https://twitter.com/intent/tweet?text=optional%20promo%20text%20http://example.com/foo.htm?bar=123&amp;baz=456" 
                          */}
 
-                            <Button size="sm" variant="primary" onClick={()=> {
+                            &lt;Button size="sm" variant="primary" onClick={()=> {
                               const link = "https://twitter.com/intent/tweet?text=%23"+(contestData.name.substring(1)).concat("%20candido%20").concat("\"nomeLibro\"")
                               window.open(link,"_blank")}
                             }  style={{display: 'flex', alignItems:'center'}}>
-                              <IoLogoTwitter style={{marginRight: "3px"}}/>
-                              Candidacy for this contest</Button>
+                              &lt;IoLogoTwitter style={{marginRight: "3px"}}/>
+                              Candidacy for this contest&lt;/Button>
 
-                          </Col>
-                        </Row>
-                        <ListGroup>
+                          &lt;/Col>
+                        &lt;/Row>
+                        &lt;ListGroup>
                           {contestData.books.map((book) => {
                             const hrefForVote= "https://twitter.com/intent/tweet?text=%23"+(contestData.name.substring(1)).concat("%20voto%20").concat("\"").concat(book.bookName).concat("\"");
-                            return (<>
-                              <ListGroupItem>
-                                <Row>
-                                <Col>
-                                  <strong style={{marginRight:"10px"}}>{book.bookName}:</strong> {book.votes} votes
-                                </Col>  
-                                <Col style={{display:"flex", padding: "1%", alignItems: 'center', justifyContent: 'flex-end'}}>
-                                  <p style={{marginRight:"2%", marginBottom: '0'}}>Vote: </p>
-                                 {/* <a 
+                            return (&lt;>
+                              &lt;ListGroupItem>
+                                &lt;Row>
+                                &lt;Col>
+                                  &lt;strong style={{marginRight:"10px"}}>{book.bookName}:&lt;/strong> {book.votes} votes
+                                &lt;/Col>  
+                                &lt;Col style={{display:"flex", padding: "1%", alignItems: 'center', justifyContent: 'flex-end'}}>
+                                  &lt;p style={{marginRight:"2%", marginBottom: '0'}}>Vote: &lt;/p>
+                                 {/* &lt;a 
                                       target="_blank" 
                                       rel="noopener noreferrer"
                                       href={hrefForVote}
@@ -347,25 +375,25 @@ class ContestView extends Component {
                                       data-size="large"
                                       data-show-count="false">
                                         Vote for this book
-                                 </a>*/}
-                                  <Button size="sm" variant="primary" href={hrefForVote}  style={{display: 'flex', alignItems:'center'}}>
-                                  <IoLogoTwitter style={{marginRight: "3px"}}/>
-                                    Vote for this book</Button>
+                                 &lt;/a>*/}
+                                  &lt;Button size="sm" variant="primary" href={hrefForVote}  style={{display: 'flex', alignItems:'center'}}>
+                                  &lt;IoLogoTwitter style={{marginRight: "3px"}}/>
+                                    Vote for this book&lt;/Button>
 
-                                  </Col>
-                                </Row>
-                              </ListGroupItem>
-                            </>);
+                                  &lt;/Col>
+                                &lt;/Row>
+                              &lt;/ListGroupItem>
+                            &lt;/>);
                           })}
-                        </ListGroup>
-                        <Row >
-                          <Col >
-                            <Chart
+                        &lt;/ListGroup>
+                        &lt;Row >
+                          &lt;Col >
+                            &lt;Chart
                               style={{}}
                               width="100%"
                               height='300px'
                               chartType="PieChart"
-                              loader={<div>Loading Chart</div>}
+                              loader={&lt;div>Loading Chart&lt;/div>}
                               data={this.getFormattedDataForLiteraryContests(contestData.name)}
                               options={{
                                 title: 'Votes diagram',
@@ -373,49 +401,49 @@ class ContestView extends Component {
                               }}
                               rootProps={{ 'data-testid': '7' }}
                             />
-                          </Col>
-                        </Row>
-                      </Card.Body>
-                    </Card>
-                  </>
+                          &lt;/Col>
+                        &lt;/Row>
+                      &lt;/Card.Body>
+                    &lt;/Card>
+                  &lt;/>
                 );
               })
               }
-            </Tab>
-            <Tab eventKey="triviaGame" title="Trivia Games">
-              <ListGroup className="list-group-flush">
+            &lt;/Tab>
+            &lt;Tab eventKey="triviaGame" title="Trivia Games">
+              &lt;ListGroup className="list-group-flush">
                 {this.state.triviaGamesData.map((gameData) => {
                   return (
-                    <>
-                      <Card style={{marginBottom:"7px", marginTop: "3px", borderColor:"black"}}>
-                        <Card.Body>
-                          <Col style={{display:"flex"}}>
-                            <Card.Title>{gameData.name}</Card.Title>
-                            <Button style={{marginLeft:"3%",height: "30px"}} size="sm" variant="danger" onClick={()=> {
+                    &lt;>
+                      &lt;Card style={{marginBottom:"7px", marginTop: "3px", borderColor:"black"}}>
+                        &lt;Card.Body>
+                          &lt;Col style={{display:"flex"}}>
+                            &lt;Card.Title>{gameData.name}&lt;/Card.Title>
+                            &lt;Button style={{marginLeft:"3%",height: "30px"}} size="sm" variant="danger" onClick={()=> {
                               deleteTrivia(gameData.name); 
                               this.setState({triviaGamesData: this.state.triviaGamesData.filter((elem)=>{
                                 return elem.name != gameData.name;
-                              })}) }}>Delete</Button>
-                          </Col>
-                          <Card.Subtitle style={{marginTop:"1%", marginBottom:"1%"}}>Expiration date: {gameData.endDate.substring(0,10)}</Card.Subtitle>
-                            <ListGroup as="ol" numbered>
+                              })}) }}>Delete&lt;/Button>
+                          &lt;/Col>
+                          &lt;Card.Subtitle style={{marginTop:"1%", marginBottom:"1%"}}>Expiration date: {gameData.endDate.substring(0,10)}&lt;/Card.Subtitle>
+                            &lt;ListGroup as="ol" numbered>
                             {gameData.questions.map(question => {
                               const hrefForAnswer= "https://twitter.com/intent/tweet?text=%23"+(gameData.name.substring(1)).concat("%20risposta_").concat(question.number).concat("%20").concat("\"").concat("yourAnswer").concat("\"");
 
                               return (
-                                <>
-                                  <ListGroup.Item
+                                &lt;>
+                                  &lt;ListGroup.Item
                                     as="li"
                                     className="d-flex justify-content-between align-items-start"
                                   >
-                                      <div className="ms-2 me-auto" style={{width:"95%"}}>
-                                      <Row >
-                                        <Col style={{width:"30%"}}>
-                                          <div className="fw-bold">{question.text}</div>
-                                        </Col>
-                                        <Col style={{display:"flex", padding: "1%", alignItems: 'center', justifyContent: 'flex-end'}}>
-                                          <p style={{marginRight:"2%", marginBottom: '0'}}>Answer: </p>
-                                          {/*<a 
+                                      &lt;div className="ms-2 me-auto" style={{width:"95%"}}>
+                                      &lt;Row >
+                                        &lt;Col style={{width:"30%"}}>
+                                          &lt;div className="fw-bold">{question.text}&lt;/div>
+                                        &lt;/Col>
+                                        &lt;Col style={{display:"flex", padding: "1%", alignItems: 'center', justifyContent: 'flex-end'}}>
+                                          &lt;p style={{marginRight:"2%", marginBottom: '0'}}>Answer: &lt;/p>
+                                          {/*&lt;a 
                                               target="_blank" 
                                               rel="noopener noreferrer"
                                               href={hrefForAnswer}
@@ -423,35 +451,35 @@ class ContestView extends Component {
                                               data-size="large"
                                               data-show-count="false">
                                                 Answer the question
-                                          </a>*/}
-                                          <Button size="sm" variant="primary" href={hrefForAnswer} style={{display: 'flex', alignItems:'center'}}>
-                                          <IoLogoTwitter style={{marginRight: "3px"}}/>
-                                            Answer the question</Button>
+                                          &lt;/a>*/}
+                                          &lt;Button size="sm" variant="primary" href={hrefForAnswer} style={{display: 'flex', alignItems:'center'}}>
+                                          &lt;IoLogoTwitter style={{marginRight: "3px"}}/>
+                                            Answer the question&lt;/Button>
 
-                                        </Col>
-                                      </Row>
-                                      <ListGroup variant="flush">
+                                        &lt;/Col>
+                                      &lt;/Row>
+                                      &lt;ListGroup variant="flush">
                                         {question.participants.map((answerData) => {
                                           return (
-                                            <>
-                                              <ListGroup.Item>
-                                                <strong>{answerData.username}</strong>: {answerData.answer}
-                                              </ListGroup.Item>
-                                            </>
+                                            &lt;>
+                                              &lt;ListGroup.Item>
+                                                &lt;strong>{answerData.username}&lt;/strong>: {answerData.answer}
+                                              &lt;/ListGroup.Item>
+                                            &lt;/>
                                           );
                                         })
                                         }
-                                      </ListGroup>
-                                    </div>
-                                  </ListGroup.Item>
-                                  <Row style={{marginTop: "2%"}}>
-                                    <Col>
-                                      <Chart
+                                      &lt;/ListGroup>
+                                    &lt;/div>
+                                  &lt;/ListGroup.Item>
+                                  &lt;Row style={{marginTop: "2%"}}>
+                                    &lt;Col>
+                                      &lt;Chart
                                         
                                         width="600px"
                                         height='300px'
                                         chartType="PieChart"
-                                        loader={<div>Loading Chart</div>}
+                                        loader={&lt;div>Loading Chart&lt;/div>}
                                         data={[
                                           ["answer", "percentage"],
                                           ["correct", question.participants.filter((participant) => {
@@ -468,14 +496,14 @@ class ContestView extends Component {
                                         }}
                                         rootProps={{ 'data-testid': '7' }}
                                       />
-                                    </Col>
-                                    <Col>
-                                      <Chart
+                                    &lt;/Col>
+                                    &lt;Col>
+                                      &lt;Chart
                                         
                                         width="600px"
                                         height='300px'
                                         chartType="Bar" // or BarChart
-                                        loader={<div>Loading Chart</div>}
+                                        loader={&lt;div>Loading Chart&lt;/div>}
                                         data={this.getFormattedDataFromTrivias(gameData, question)}
                                         options={{
                                           chart: {
@@ -487,13 +515,13 @@ class ContestView extends Component {
                                         // For tests
                                         rootProps={{ 'data-testid': '2' }}
                                       />
-                                    </Col>
-                                  </Row>
-                                </>
+                                    &lt;/Col>
+                                  &lt;/Row>
+                                &lt;/>
                               );
                             })}
-                          </ListGroup>
-                          <Button size="sm" variant="warning" onClick={()=> {
+                          &lt;/ListGroup>
+                          &lt;Button size="sm" variant="warning" onClick={()=> {
                             let text = "Game name: "+gameData.name+"\n"+"Results:\n\n";
                             let dictionary = []
                             for(let question of gameData.questions){
@@ -513,7 +541,7 @@ class ContestView extends Component {
                                 }
                               }
                             } 
-                            dictionary = dictionary.sort((a,b)=> (a.points < b.points) ? 1 : -1)
+                            dictionary = dictionary.sort((a,b)=> (a.points &lt; b.points) ? 1 : -1)
                             let num = 1;
                             for(let element of dictionary){
                               let res = "#"+num+": "+element.username+"\t points: "+element.points+"\n"
@@ -522,55 +550,78 @@ class ContestView extends Component {
                             }
                             navigator.clipboard.writeText(text)
                             alert("Data copied to clipboard");
-                          }}>Copy results to clipboard</Button>
-                        </Card.Body>
-                      </Card>
-                    </>
+                          }}>Copy results to clipboard&lt;/Button>
+                        &lt;/Card.Body>
+                      &lt;/Card>
+                    &lt;/>
                   );
                 })
                 }
-              </ListGroup>
-            </Tab>
-            <Tab eventKey="customStream" title="Custom streams">
-              <ListGroup className="list-group-flush">
+              &lt;/ListGroup>
+            &lt;/Tab>
+            &lt;Tab eventKey="customStream" title="Custom streams">
+              &lt;ListGroup className="list-group-flush">
                 {this.state.customStreamsData.map((data) => {
                   return (
-                    <>
-                      <Card style={{marginBottom: "7px", marginTop: "3px", borderColor:"black"}}>
-                        <Card.Body>
-                          <Col style={{display:"flex"}}>
-                            <Card.Title>{data.name}</Card.Title>
-                            <Button style={{marginLeft:"3%",height: "30px"}} size="sm" variant="danger" onClick={()=> {
+                    &lt;>
+                      &lt;Card style={{marginBottom: "7px", marginTop: "3px", borderColor:"black"}}>
+                        &lt;Card.Body>
+                          &lt;Col style={{display:"flex"}}>
+                            &lt;Card.Title>{data.name}&lt;/Card.Title>
+                            &lt;Button style={{marginLeft:"3%",height: "30px"}} size="sm" variant="danger" onClick={()=> {
                               deleteCustom(data.name); 
                               this.setState({customStreamsData: this.state.customStreamsData.filter((elem)=>{
                                 return elem.name != data.name;
-                              })}) }}>Delete</Button>
-                          </Col>
-                          <Card.Subtitle style={{marginTop:"1%", marginBottom:"1%"}}>Expiration date: {data.endDate.substring(0,10)}</Card.Subtitle>
-                          <Card.Subtitle style={{marginTop:"1%"}}>Total count: {data.totalCount}</Card.Subtitle>
-                          <ListGroup style={{marginTop:"1%"}}>
+                              })}) }}>Delete&lt;/Button>
+                          &lt;/Col>
+                          &lt;Card.Subtitle style={{marginTop:"1%", marginBottom:"1%"}}>Expiration date: {data.endDate.substring(0,10)}&lt;/Card.Subtitle>
+                          &lt;Card.Subtitle style={{marginTop:"1%"}}>Total count: {data.totalCount}&lt;/Card.Subtitle>
+                          &lt;ListGroup style={{marginTop:"1%"}}>
                             {data.tweets.map((tweet) => {
-                              return (<>
-                                <ListGroupItem>
-                                  <p><strong>from: {tweet.username}</strong></p>
-                                  <p> Text: {tweet.text}</p>
-                                </ListGroupItem>
-                              </>);
+                              return (&lt;>
+                                &lt;ListGroupItem>
+                                  &lt;p>&lt;strong>from: {tweet.username}&lt;/strong>&lt;/p>
+                                  &lt;p> Text: {tweet.text}&lt;/p>
+                                &lt;/ListGroupItem>
+                              &lt;/>);
                             })}
-                          </ListGroup>
-                        </Card.Body>
-                      </Card>
-                    </>
+                          &lt;/ListGroup>
+                        &lt;/Card.Body>
+                      &lt;/Card>
+                    &lt;/>
                   );
                 })
                 }
-              </ListGroup>
-            </Tab>
-          </Tabs>
-        </Container>
-      </>
+              &lt;/ListGroup>
+            &lt;/Tab>
+          &lt;/Tabs>
+        &lt;/Container>
+      &lt;/>
     );
   }
 }
 
 export default ContestView
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ContestHandler.html">ContestHandler</a></li><li><a href="ContestView.html">ContestView</a></li><li><a href="Home.html">Home</a></li><li><a href="UserTracking.html">UserTracking</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createContest">createContest</a></li><li><a href="global.html#createCustom">createCustom</a></li><li><a href="global.html#createTrivia">createTrivia</a></li><li><a href="global.html#deleteContest">deleteContest</a></li><li><a href="global.html#deleteCustom">deleteCustom</a></li><li><a href="global.html#deleteTrivia">deleteTrivia</a></li><li><a href="global.html#GeneralWordClout">GeneralWordClout</a></li><li><a href="global.html#getRetweetersByTweetId">getRetweetersByTweetId</a></li><li><a href="global.html#getRetweetsByTweetId">getRetweetsByTweetId</a></li><li><a href="global.html#getSentimentFromGroupOfTweets">getSentimentFromGroupOfTweets</a></li><li><a href="global.html#getSentimentFromTweet">getSentimentFromTweet</a></li><li><a href="global.html#getTweetsByLocation">getTweetsByLocation</a></li><li><a href="global.html#httpGet">httpGet</a></li><li><a href="global.html#httpPost">httpPost</a></li><li><a href="global.html#Layout">Layout</a></li><li><a href="global.html#Navbar">Navbar</a></li><li><a href="global.html#searchTweet">searchTweet</a></li><li><a href="global.html#SidebarData">SidebarData</a></li><li><a href="global.html#socketConnection">socketConnection</a></li><li><a href="global.html#TweetCard">TweetCard</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Sun Jan 09 2022 14:31:39 GMT+0100 (Central European Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

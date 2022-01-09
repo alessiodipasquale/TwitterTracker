@@ -3,8 +3,16 @@ import { Modal, Card, Form, Row, Button, Container } from 'react-bootstrap';
 import { createContest, createTrivia, createCustom } from '../services/contest-service';
 import {socketConnection} from '../services/socket-service'
 
+/**
+ * Component that permit creation of contests, trivia games and custom streams.
+ */
 
 class ContestHandler extends Component {
+
+    /**
+     * Set state for webpage
+     * @param {*} props props for state initialization
+     */
 
     constructor(props) {
         super(props);
@@ -43,11 +51,21 @@ class ContestHandler extends Component {
         this.handleChange = this.handleChange.bind(this);
     }
 
+    /**
+     * Change handling function for page autorefreshing
+     * @param {*} e 
+     */
+
     handleChange(e) {
       const newContest = {...this.state.contest}
       newContest[e.target.id] = e.target.value;
       this.setState({contest: newContest});
     }
+
+    /**
+     * Change handling function for page autorefreshing
+     * @param {*} e 
+     */
 
     handleNewQuestion(e){
       const newContest = {...this.state.contest}
@@ -56,12 +74,22 @@ class ContestHandler extends Component {
       this.setState({contest: newContest});
     }
 
+    /**
+     * Change handling function for page autorefreshing
+     * @param {*} e 
+     */
+
     handleChangeCustom(e){
       const newContest = {...this.state.contest}
       newContest.extras[e.target.id] = e.target.value;
       this.setState({contest: newContest});
     }
   
+    /**
+     * Standard render function for react apps
+     * @returns JSX code for the page
+     */
+
     render() {
       return(
         <>
@@ -96,6 +124,11 @@ class ContestHandler extends Component {
       )
     }
 
+    /**
+     * Modal initilaizer for trivia creation
+     * @param {*} e 
+     */
+
     openCreateTriviaGame(e) {
       this.setState(prevState => ({
         showTriviaModal: true,
@@ -107,6 +140,11 @@ class ContestHandler extends Component {
       
     } 
 
+    /**
+     * Modal initilaizer for contest creation
+     * @param {*} e 
+     */
+
     openCreateLiteraryContest(e) {
       this.setState(prevState => ({
         showLiteraryModal: true,
@@ -117,6 +155,11 @@ class ContestHandler extends Component {
       }))
     }
 
+    /**
+     * Modal initilaizer for custom streams creation
+     * @param {*} e 
+     */
+
     openCreateCustomStream(e) {
       this.setState(prevState => ({
         showCustomModal: true,
@@ -126,6 +169,11 @@ class ContestHandler extends Component {
         }
       }))  
     } 
+
+    /**
+     * Utility function for trivia creation modal
+     * @param {*} e 
+     */
 
     addQuestion(e) {
       let newQuestions = this.state.contest.extras.questions
@@ -144,6 +192,10 @@ class ContestHandler extends Component {
       }))
     }
 
+    /**
+     * Utility function for trivia creation modal
+     */
+
     removeQuestion(){
       const last = this.state.contest.extras.questions.length - 1;
       let newQuestions = this.state.contest.extras.questions.slice(0,last)
@@ -157,6 +209,10 @@ class ContestHandler extends Component {
         }
       }))
     }
+
+    /**
+     * Function that prepare data and interface with the server for contest creation
+     */
 
     createLiteraryContest() {
       let object = this.state.contest;
@@ -177,6 +233,10 @@ class ContestHandler extends Component {
         this.setState({showLiteraryModal:false})
       }).catch(err => console.log(err))
     }
+
+    /**
+     * Function that prepare data and interface with the server for trivia creation
+     */
 
     createTriviaGame() {
       let object = this.state.contest;
@@ -202,6 +262,10 @@ class ContestHandler extends Component {
       }).catch(err => console.log(err))
     }
 
+    /**
+     * Function that prepare data and interface with the server for custom streams creation
+     */
+
     createCustomStream() {
       let object = this.state.contest;
       object.name = '#'+object.name;
@@ -217,6 +281,9 @@ class ContestHandler extends Component {
       }).catch(err => console.log(err))
     }
 
+    /**
+     * JSX code for modal
+     */
     literaryModal() {
       return (
         <>
@@ -255,6 +322,9 @@ class ContestHandler extends Component {
       )
     }
 
+    /**
+     * JSX code for modal
+     */
     triviaGameModal() {
       return (
         <>
@@ -316,6 +386,9 @@ class ContestHandler extends Component {
       )
     }
 
+    /**
+     * JSX code for modal
+     */
     customStreamModal(){
       return  (
         <>

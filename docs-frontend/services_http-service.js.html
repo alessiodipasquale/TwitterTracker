@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: services/http-service.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,45 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: services/http-service.js</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import Axios from "axios";
 
+/**
+ * Standard definition for http post requests used in this project
+ * @param {*} url 
+ * @param {*} body 
+ * @returns http response object
+ */
 
-    <h3> </h3>
+export const httpPost = (url,body) => {
+    // console.log(process.env)
+    const ENDPOINT=process.env.REACT_APP_ENDPOINT;
+    return Axios.post(ENDPOINT+url, body);
+}
 
+/**
+ * Standard definition for http get requests used in this project
+ * @param {*} url 
+ * @param {*} body 
+ * @returns http response object
+ */
 
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
+export const httpGet = (url,body) => {
+    // console.log(process.env)
+    const ENDPOINT =process.env.REACT_APP_ENDPOINT;
+    return Axios.get(ENDPOINT+url, body);
+}
+</code></pre>
+        </article>
+    </section>
 
 
 

@@ -16,8 +16,17 @@ import positiveImg from '../images/happy.png';
 import neutralImg from '../images/neutral.png';
 import negativeImg from '../images/sad.png';
 
+/**
+ * Component that implements visualization and interactions withe the home page, including filtered 
+ * research and geolocalization for tweets.
+ */
+
 class Home extends Component {
 
+/**
+ * Set state for webpage
+ * @param {*} props props for state initialization
+ */
   constructor(props) {
     super(props);
 
@@ -52,12 +61,20 @@ class Home extends Component {
     this.handle = this.handle.bind(this);
   }
 
+  /**
+   * Standard event handles
+   * @param {*} e event
+   */
   handle(e) {
     const newdata = { ...this.state.data };
     newdata[e.target.id] = e.target.value;
     this.setState({ data: newdata });
   }
 
+  /**
+   * Function that permit to interact with the server at the moment of a research
+   * @param {*} e event
+   */
   async submit(e) {
     e.preventDefault();
     let geocode = null;
@@ -108,6 +125,9 @@ class Home extends Component {
       }).catch(err => console.log(err));
   }
 
+  /**
+   * Wrapper for sentiment analysis visualization
+   */
   async doGeneralSentimentAnalysis() {
     let toAnalize = "";
     for (let tweet of this.state.tweets) {
@@ -119,6 +139,10 @@ class Home extends Component {
     this.setState({ showGeneralSentimentAnalysis: true })
   }
 
+  /**
+   * Function that select the appropriate emoticon based on sentiment analysis result
+   * @returns an image from assets
+   */
   selectSentimentImg() {
 
       if (this.state.generalSentimentData !== {}) {
@@ -133,6 +157,10 @@ class Home extends Component {
 
   }
 
+  /**
+   * Standard renderer function for React Apps
+   * @returns JSX code for the page
+   */
   render() {
     return (
       <Container fluid style={{ padding: '2%' }} >

@@ -11,6 +11,10 @@ import {
 } from 'react-pro-sidebar';
 import { FaBars, FaGithub } from 'react-icons/fa';
 
+/**
+ * Object that contains navbar definition and style
+ */
+
 const Navbar = ({ collapsed, toggled, handleToggleSidebar }) => {
   return (
     <>

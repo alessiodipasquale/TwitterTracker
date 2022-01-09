@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: services/geographic-service.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,32 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: services/geographic-service.js</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { httpPost } from "./http-service"
 
+/**
+ * Request for geographic service
+ * @param {*} latitude 
+ * @param {*} longitude 
+ * @param {*} radius 
+ * @param {*} text 
+ * @param {*} count 
+ * @returns Geolocalized tweets
+ */
 
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
+export const getTweetsByLocation = (latitude, longitude, radius, text, count) => {  
+    return httpPost("searchTweetsByLocation",{latitude,longitude,radius, text, count })
+}</code></pre>
+        </article>
+    </section>
 
 
 

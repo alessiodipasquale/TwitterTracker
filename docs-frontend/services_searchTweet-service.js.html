@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: services/searchTweet-service.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,34 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: services/searchTweet-service.js</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { httpPost } from "./http-service"
 
+/**
+ * Filtered research for tweets
+ * @param {*} text 
+ * @param {*} count 
+ * @param {*} author 
+ * @param {*} remove 
+ * @param {*} since 
+ * @param {*} until 
+ * @param {*} geocode 
+ * @returns http response object
+ */
 
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
+export const searchTweet = (text, count, author, remove, since, until, geocode) => {
+    return httpPost("searchTweetsByKeyword", { text, count, author, remove, since, until, geocode })
+}</code></pre>
+        </article>
+    </section>
 
 
 

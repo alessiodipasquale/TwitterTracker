@@ -1,3 +1,7 @@
+/**
+ * File that contains style and standard functionalities of a single tweets in a group of tweets
+ */
+
 import { useState } from 'react';
 import { Card, Col, Dropdown, DropdownButton, Modal, Row } from 'react-bootstrap';
 
@@ -9,7 +13,11 @@ import positiveImg from '../images/happy.png';
 import neutralImg from '../images/neutral.png';
 import negativeImg from '../images/sad.png';
 
-
+/**
+ * Returns standard characteristics of a single tweet's visualization
+ * @param {*} param0 object containing a list of tweets and some options
+ * @returns formatted tweets card
+ */
 
 function TweetCard({tweet, showOptions}) {
   const [retweetModalShow, setRetweetModalShow] = useState(false);

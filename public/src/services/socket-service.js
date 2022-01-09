@@ -1,5 +1,9 @@
 import {io} from "socket.io-client";
 
+/**
+ * Socket instantiation object
+ */
+
 export const socketConnection = {
     _instance: null,
     get instance () {

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: components/Layout.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,65 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: components/Layout.js</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState } from 'react';
+import Navbar from './Navbar';
+import { Switch, Route, HashRouter } from 'react-router-dom';
+import GeographicFilter from '../pages/GeographicFilter';
+import Home from '../pages/Home';
+import ContestHandler from '../pages/ContestHandler';
+import ContestView from '../pages/ContestView';
+import UserTracking from '../pages/UserTracking';
 
+/**
+ * Function that contains base page layout
+ */
 
-    <h3> </h3>
+function Layout({ setLocale }) {
+  const [collapsed, setCollapsed] = useState(false);
+  const [toggled, setToggled] = useState(false);
 
+  /**
+   * Fonction that hide sidebar
+   * @param {*} value boolean for toggling identification
+   */
 
+  const handleToggleSidebar = (value) => {
+    setToggled(value);
+  };
 
+  return (
+    &lt;div className={`app  ${toggled ? 'toggled' : ''}`}>
+    &lt;HashRouter>
+      &lt;Navbar
+        collapsed={collapsed}
+        toggled={toggled}
+        handleToggleSidebar={handleToggleSidebar}
+      />
+        &lt;Switch>
+          &lt;Route path='/' exact component={Home} />
+          &lt;Route path='/geographic-filter' component={GeographicFilter} />
+          &lt;Route path='/contest-handler' component={ContestHandler} />
+          &lt;Route path='/contest-viewer' component={ContestView} />
+          &lt;Route path='/user-tracking' component={UserTracking} />
+        &lt;/Switch>
+      &lt;/HashRouter>
+    &lt;/div>
+  );
+}
 
-
-
-
-
-
-
-    
-
-
-
-
-
+export default Layout;
+</code></pre>
+        </article>
+    </section>
 
 
 

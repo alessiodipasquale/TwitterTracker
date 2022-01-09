@@ -1,4 +1,32 @@
-import L, { LatLng } from "leaflet";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/UserTracking.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/UserTracking.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import L, { LatLng } from "leaflet";
 import TweetCard from '../components/TweetCard';
 import React, { Component} from 'react';
 import { Card, Form, Row, Col, Button, Container, Alert} from 'react-bootstrap';
@@ -178,73 +206,73 @@ class UserTracking extends Component {
      */
     render() {
       return (
-        <Container fluid style={{ padding: '2%' }} >
-          <Row style={{ height: '100%' }}>
-            <Col lg={6} style={{ display: 'flex', flexDirection: 'column' }}>
-              <Form style={{ flex: '1 auto' }} hidden={this.state.usernameSelected}>
-                <Row >
-                  <Col >
-                    <Form.Group class="mb-3" controlId="name">
-                      <Form.Control onChange={(e) => this.handle(e)} type="text" placeholder="Enter user name" value={this.state.data.name} />
-                    </Form.Group>
-                  </Col>
-                  <Col>
-                    <Button disabled={this.state.data.name == ""} onClick={(e) => this.submit(e)} variant="primary">Follow User</Button>
-                  </Col>
-                </Row>
-              </Form>
-              <Row hidden={!this.state.usernameSelected}>
-                <Col style={{ marginBottom: '2%' }}>
-                  You are following: <b>{this.state.data.name}</b>
-                </Col>
-                <Col>
-                  <a href="#" onClick={() => this.clean(true)}>Stop following</a>
-                </Col>
-              </Row>
-              <MapContainer
+        &lt;Container fluid style={{ padding: '2%' }} >
+          &lt;Row style={{ height: '100%' }}>
+            &lt;Col lg={6} style={{ display: 'flex', flexDirection: 'column' }}>
+              &lt;Form style={{ flex: '1 auto' }} hidden={this.state.usernameSelected}>
+                &lt;Row >
+                  &lt;Col >
+                    &lt;Form.Group class="mb-3" controlId="name">
+                      &lt;Form.Control onChange={(e) => this.handle(e)} type="text" placeholder="Enter user name" value={this.state.data.name} />
+                    &lt;/Form.Group>
+                  &lt;/Col>
+                  &lt;Col>
+                    &lt;Button disabled={this.state.data.name == ""} onClick={(e) => this.submit(e)} variant="primary">Follow User&lt;/Button>
+                  &lt;/Col>
+                &lt;/Row>
+              &lt;/Form>
+              &lt;Row hidden={!this.state.usernameSelected}>
+                &lt;Col style={{ marginBottom: '2%' }}>
+                  You are following: &lt;b>{this.state.data.name}&lt;/b>
+                &lt;/Col>
+                &lt;Col>
+                  &lt;a href="#" onClick={() => this.clean(true)}>Stop following&lt;/a>
+                &lt;/Col>
+              &lt;/Row>
+              &lt;MapContainer
                 center={this.center}
                 zoom={13}
                 scrollWheelZoom={false}
                 style={{ flex: "70", width: '100%', borderRadius: '4%', height: '80vh' }}
                 whenCreated={(m) => { this.setState({map:m}); }}
               >
-                <TileLayer
-                  attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                &lt;TileLayer
+                  attribution='&amp;copy; &lt;a href="http://osm.org/copyright">OpenStreetMap&lt;/a> contributors'
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
-              </MapContainer>
-            </Col>
-            <Col >
-              <Row>
+              &lt;/MapContainer>
+            &lt;/Col>
+            &lt;Col >
+              &lt;Row>
                 {
-                  this.state.showUserNotFound ? <Alert variant="danger">User could not be found.</Alert> : null
+                  this.state.showUserNotFound ? &lt;Alert variant="danger">User could not be found.&lt;/Alert> : null
                 }
-              </Row>
-              <Row style={{ height: '100%' }}>
-                <Card style={{ height: '100%', overflow: 'scroll' }}>
+              &lt;/Row>
+              &lt;Row style={{ height: '100%' }}>
+                &lt;Card style={{ height: '100%', overflow: 'scroll' }}>
                   {this.state.tweets.length == 0 ?
-                    <Card.Body style={{ display: "flex", justifyContent: "center", alignItems: "center", textAlign: 'center' }}>
-                      <div >
-                        <h3 className="text-muted">
+                    &lt;Card.Body style={{ display: "flex", justifyContent: "center", alignItems: "center", textAlign: 'center' }}>
+                      &lt;div >
+                        &lt;h3 className="text-muted">
                           Tweets from the user will appear here.
-                        </h3>
-                      </div>
-                    </Card.Body> :
-                    <Card.Body>
+                        &lt;/h3>
+                      &lt;/div>
+                    &lt;/Card.Body> :
+                    &lt;Card.Body>
                       {
-                        this.state.tweets && this.state.tweets.map(tweet => {
+                        this.state.tweets &amp;&amp; this.state.tweets.map(tweet => {
                           return (
-                            <TweetCard tweet={tweet} showOptions={false} />
+                            &lt;TweetCard tweet={tweet} showOptions={false} />
                           )
                         })
                       }
-                    </Card.Body>
+                    &lt;/Card.Body>
                   }
-                </Card>
-              </Row>
-            </Col>
-          </Row>
-        </Container>
+                &lt;/Card>
+              &lt;/Row>
+            &lt;/Col>
+          &lt;/Row>
+        &lt;/Container>
       );
     }
 
@@ -252,4 +280,26 @@ class UserTracking extends Component {
     
 }
 
-export default UserTracking;
+export default UserTracking;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ContestHandler.html">ContestHandler</a></li><li><a href="ContestView.html">ContestView</a></li><li><a href="Home.html">Home</a></li><li><a href="UserTracking.html">UserTracking</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createContest">createContest</a></li><li><a href="global.html#createCustom">createCustom</a></li><li><a href="global.html#createTrivia">createTrivia</a></li><li><a href="global.html#deleteContest">deleteContest</a></li><li><a href="global.html#deleteCustom">deleteCustom</a></li><li><a href="global.html#deleteTrivia">deleteTrivia</a></li><li><a href="global.html#GeneralWordClout">GeneralWordClout</a></li><li><a href="global.html#getRetweetersByTweetId">getRetweetersByTweetId</a></li><li><a href="global.html#getRetweetsByTweetId">getRetweetsByTweetId</a></li><li><a href="global.html#getSentimentFromGroupOfTweets">getSentimentFromGroupOfTweets</a></li><li><a href="global.html#getSentimentFromTweet">getSentimentFromTweet</a></li><li><a href="global.html#getTweetsByLocation">getTweetsByLocation</a></li><li><a href="global.html#httpGet">httpGet</a></li><li><a href="global.html#httpPost">httpPost</a></li><li><a href="global.html#Layout">Layout</a></li><li><a href="global.html#Navbar">Navbar</a></li><li><a href="global.html#searchTweet">searchTweet</a></li><li><a href="global.html#SidebarData">SidebarData</a></li><li><a href="global.html#socketConnection">socketConnection</a></li><li><a href="global.html#TweetCard">TweetCard</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Sun Jan 09 2022 14:31:39 GMT+0100 (Central European Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

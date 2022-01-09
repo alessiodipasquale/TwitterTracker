@@ -11,7 +11,7 @@
     "test-frontend": "npm --prefix ./public/ run test -- --watchAll=false",
     "test": "npm run test-backend && npm run test-frontend",
     "lint": "eslint . --fix --ext .ts",
-    "docgen": "npx typedoc --entryPointStrategy expand ./server --out ./docs && npx jsdoc ./public/src -r -d ./docs-frontend/"
+    "docgen": "npx typedoc --entryPointStrategy expand ./server --out ./docs && npx jsdoc ./public/src -r -c ./JSDoc-Conf.json -d ./docs-frontend/"
   },
   "repository": {
     "type": "git",

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: services/sentiment-analysis.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,38 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: services/sentiment-analysis.js</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { httpGet, httpPost } from "./http-service";
 
+/**
+ * Sentiment analysis for a single tweet
+ * @param {*} tweets 
+ * @returns http response object
+ */
 
-    <h3> </h3>
+export const getSentimentFromTweet = (tweetId) => {
+    return httpGet("getSentimentFromTweet/"+tweetId);
+}
 
+/**
+ * Sentiment analysis for a group of tweets passed
+ * @param {*} tweets 
+ * @returns http response object
+ */
 
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
+export const getSentimentFromGroupOfTweets = (tweets) => {
+    return httpPost("getSentimentFromGroupOfTweets/", tweets);
+}</code></pre>
+        </article>
+    </section>
 
 
 

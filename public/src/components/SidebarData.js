@@ -3,6 +3,10 @@ import * as AiIcons from 'react-icons/ai';
 import * as IoIcons from 'react-icons/io';
 import * as RiIcons from 'react-icons/ri';
 
+/**
+ * Object that contains navbar definition and style
+ */
+
 export const SidebarData = [
   {
     title: 'Home',

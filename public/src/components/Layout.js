@@ -7,16 +7,18 @@ import ContestHandler from '../pages/ContestHandler';
 import ContestView from '../pages/ContestView';
 import UserTracking from '../pages/UserTracking';
 
+/**
+ * Function that contains base page layout
+ */
+
 function Layout({ setLocale }) {
   const [collapsed, setCollapsed] = useState(false);
   const [toggled, setToggled] = useState(false);
 
-  /*
-  *This may be considered unused
-  *const handleCollapsedChange = (checked) => {
-  *  setCollapsed(checked);
-  *};
-  */
+  /**
+   * Fonction that hide sidebar
+   * @param {*} value boolean for toggling identification
+   */
 
   const handleToggleSidebar = (value) => {
     setToggled(value);
