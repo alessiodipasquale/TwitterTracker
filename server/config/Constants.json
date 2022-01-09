@@ -2,6 +2,7 @@
     "port": 8000,
     "distPath":"./webapp/dist",
     "docsPath":"./webapp/docs",
+    "docsFrontendPath":"./webapp/docs-frontend",
     "productionDatabasePath":"/webapp/server/config/Data.json'",
     "devDatabasePath":"./server/config/Data.json",
     "maxVotes":10,

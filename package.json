@@ -11,7 +11,7 @@
     "test-frontend": "npm --prefix ./public/ run test -- --watchAll=false",
     "test": "npm run test-backend && npm run test-frontend",
     "lint": "eslint . --fix --ext .ts",
-    "docgen": "npx typedoc --entryPointStrategy expand ./server --out ./docs"
+    "docgen": "npx typedoc --entryPointStrategy expand ./server --out ./docs && npx jsdoc ./public/src -r -d ./docs-frontend/"
   },
   "repository": {
     "type": "git",
@@ -52,6 +52,7 @@
     "chai": "^4.3.4",
     "eslint": "^8.5.0",
     "execa": "^6.0.0",
+    "jsdoc": "^3.6.7",
     "mocha": "^9.1.3",
     "nodemon": "^2.0.15",
     "ts-node": "^10.4.0",
