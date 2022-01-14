@@ -34,7 +34,7 @@ class ContestHandler extends Component {
             rules: [],
             extras: {
               questions: [],
-              keyword: '',
+              keyword: "",
               username: ""
             }
           }
@@ -282,6 +282,30 @@ class ContestHandler extends Component {
     }
 
     /**
+     * Function that verify if all fields are correctly filled
+     * @returns a boolean
+     */
+    submitAvailableForContest() {
+      return (this.state.contest.name != '' && this.state.contest.endDate != null)
+    }
+    
+    /**
+     * Function that verify if all fields are correctly filled
+     * @returns a boolean
+     */
+    submitAvailableForTrivia() {
+      return (this.state.contest.name != '' && this.state.contest.endDate != null)
+    }
+
+    /**
+     * Function that verify if all fields are correctly filled
+     * @returns a boolean
+     */
+    submitAvailableForCustom() {
+      return (this.state.contest.name != '' && this.state.contest.endDate != null && this.state.contest.extras.keyword != '')
+    }
+
+    /**
      * JSX code for modal
      */
     literaryModal() {
@@ -308,14 +332,14 @@ class ContestHandler extends Component {
               </Form.Group>
               <Form.Group className="mb-3" controlId="endDate">
                   <Form.Label>Insert End Date for the Literary Contest</Form.Label>
-                  <Form.Control value={this.state.contest.endDate} onChange={this.handleChange} type="date"/>
+                  <Form.Control value={this.state.contest.endDate.toISOString().substring(0, 10)} onChange={this.handleChange} type="date"/>
               </Form.Group>
             </Row>
           } 
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={() => this.setState({showLiteraryModal:false})} variant="secondary">Close</Button>
-            <Button variant="primary" onClick={() => this.createLiteraryContest()}>Create contest</Button>
+            <Button disabled={!this.submitAvailableForContest()} variant="primary" onClick={() => this.createLiteraryContest()}>Create contest</Button>
           </Modal.Footer>
           </Modal>
         </>
@@ -349,7 +373,7 @@ class ContestHandler extends Component {
               </Form.Group>
               <Form.Group className="mb-3" controlId="endDate">
                   <Form.Label>Insert End Date for the Trivia Game</Form.Label>
-                  <Form.Control value={this.state.contest.endDate} onChange={this.handleChange} type="date"/>
+                  <Form.Control value={this.state.contest.endDate.toISOString().substring(0, 10)} onChange={this.handleChange} type="date"/>
               </Form.Group>
               
               {
@@ -379,7 +403,7 @@ class ContestHandler extends Component {
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={() => this.setState({showTriviaModal:false})} variant="secondary">Close</Button>
-            <Button variant="primary" onClick={() => this.createTriviaGame()}>Create game</Button>
+            <Button disabled={!this.submitAvailableForTrivia()} variant="primary" onClick={() => this.createTriviaGame()}>Create game</Button>
           </Modal.Footer>
           </Modal>
         </>
@@ -413,7 +437,7 @@ class ContestHandler extends Component {
               </Form.Group>
               <Form.Group className="mb-3" controlId="endDate">
                   <Form.Label>Insert End Date for the custom stream</Form.Label>
-                  <Form.Control value={this.state.contest.endDate} onChange={this.handleChange} type="date"/>
+                  <Form.Control value={this.state.contest.endDate.toISOString().substring(0, 10)} onChange={this.handleChange} type="date"/>
               </Form.Group>
               <Form.Group className="mb-3" controlId="keyword">
                   <Form.Label>Insert Keyword for the Custom stream</Form.Label>
@@ -430,7 +454,7 @@ class ContestHandler extends Component {
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={() => this.setState({showCustomModal:false})} variant="secondary">Close</Button>
-            <Button variant="primary" onClick={() => this.createCustomStream()}>Create stream</Button>
+            <Button disabled={!this.submitAvailableForCustom()} variant="primary" onClick={() => this.createCustomStream()}>Create stream</Button>
           </Modal.Footer>
           </Modal>
         </>

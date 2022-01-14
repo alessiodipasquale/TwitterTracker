@@ -17,7 +17,7 @@ import neutralImg from '../images/neutral.png';
 import negativeImg from '../images/sad.png';
 
 /**
- * Component that implements visualization and interactions withe the home page, including filtered 
+ * Component that implements visualization and interactions with the home page, including filtered 
  * research and geolocalization for tweets.
  */
 
@@ -55,7 +55,8 @@ class Home extends Component {
       dataRetrievingInfo: " ",
       showGeneralWordCloud: false,
       showGeneralSentimentAnalysis: false,
-      generalSentimentData: {}
+      generalSentimentData: {},
+      forceGeo: false
     }
 
     this.handle = this.handle.bind(this);
@@ -78,14 +79,18 @@ class Home extends Component {
   async submit(e) {
     e.preventDefault();
     let geocode = null;
-    const data = this.state.data;
+    const data = JSON.parse(JSON.stringify(this.state.data));
     const map = this.state.map;
+
+    if(this.state.forceGeo == true){
+      data.text = data.text+" has:geo";
+    }
 
     if (this.state.circ.circ != null) {
       console.log('rimuovo')
       this.state.circ.circ.removeFrom(map);
     }
-
+    console.log(this.state.markers)
     this.state.markers.forEach(marker => {
       marker.removeFrom(map);
     })
@@ -112,13 +117,13 @@ class Home extends Component {
             if (tweet.placeDetails) {
               const lat = new LatLng(tweet.placeDetails.geo.bbox[3], tweet.placeDetails.geo.bbox[2]);
               const marker = L.marker(lat).bindTooltip("@" + tweet.userDetails.username).addTo(map).on('click', (event) => {
-                console.log(event) //insert operations to do on click
+                console.log(event) //operations to do on click
               });
               markersList.push(marker);
             }
           });
           this.setState({ tweets: res.data.tweets })
-          this.setState({ marksers: markersList });
+          this.setState({ markers: markersList });
         } else {
           this.setState({ tweets: [] })
         }
@@ -243,7 +248,9 @@ class Home extends Component {
                 Because of how the twitter api works, the since and before date will only a week back.
               </Alert>
             </Row>*/}
-
+              <Row>
+                <Form.Check style={{marginBottom:"6px"}} type="checkbox" label="Force geolocalization" value={this.state.forceGeo} onClick={()=>{this.state.forceGeo = 1-this.state.forceGeo}}/>
+              </Row>
               <Row>
                 <Button disabled={this.state.data.text == "" && this.state.data.author == "" && this.state.data.city == ""} onClick={(e) => this.submit(e)} variant="primary">Search Tweets</Button>
               </Row>
