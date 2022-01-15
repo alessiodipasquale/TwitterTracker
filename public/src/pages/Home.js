@@ -180,7 +180,7 @@ class Home extends Component {
                 </Col>
                 <Col>
                   <Form.Group class="mb-3" controlId="count">
-                    <Form.Control onChange={(e) => this.handle(e)} type="number" placeholder="Max number of tweets" value={this.state.data.count} />
+                    <Form.Control min={10} max={500} onChange={(e) => this.handle(e)} type="number" placeholder="Max number of tweets" value={this.state.data.count} />
                   </Form.Group>
                 </Col>
               </Row>
@@ -238,7 +238,7 @@ class Home extends Component {
                 </Col>
                 <Col>
                   <Form.Group className="mb-3" controlId="radius">
-                    <Form.Control onChange={(e) => { this.handle(e) }} type="number" placeholder="Insert Radius" value={this.state.data.radius} />
+                    <Form.Control min={5} max={40} onChange={(e) => { this.handle(e) }} type="number" placeholder="Insert Radius" value={this.state.data.radius} />
                   </Form.Group>
                 </Col>
               </Row>

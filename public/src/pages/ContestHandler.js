@@ -332,7 +332,7 @@ class ContestHandler extends Component {
               </Form.Group>
               <Form.Group className="mb-3" controlId="endDate">
                   <Form.Label>Insert End Date for the Literary Contest</Form.Label>
-                  <Form.Control value={this.state.contest.endDate.toISOString().substring(0, 10)} onChange={this.handleChange} type="date"/>
+                  <Form.Control value={this.state.contest.endDate} onChange={this.handleChange} type="date"/>
               </Form.Group>
             </Row>
           } 
@@ -373,7 +373,7 @@ class ContestHandler extends Component {
               </Form.Group>
               <Form.Group className="mb-3" controlId="endDate">
                   <Form.Label>Insert End Date for the Trivia Game</Form.Label>
-                  <Form.Control value={this.state.contest.endDate.toISOString().substring(0, 10)} onChange={this.handleChange} type="date"/>
+                  <Form.Control value={this.state.contest.endDate} onChange={this.handleChange} type="date"/>
               </Form.Group>
               
               {
@@ -437,7 +437,7 @@ class ContestHandler extends Component {
               </Form.Group>
               <Form.Group className="mb-3" controlId="endDate">
                   <Form.Label>Insert End Date for the custom stream</Form.Label>
-                  <Form.Control value={this.state.contest.endDate.toISOString().substring(0, 10)} onChange={this.handleChange} type="date"/>
+                  <Form.Control value={this.state.contest.endDate} onChange={this.handleChange} type="date"/>
               </Form.Group>
               <Form.Group className="mb-3" controlId="keyword">
                   <Form.Label>Insert Keyword for the Custom stream</Form.Label>
