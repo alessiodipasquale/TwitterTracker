@@ -55,8 +55,14 @@ function GeneralWordClout({tweets}) {
           const newWindow = window.open(d.text, '_blank', 'noopener,noreferrer');
           if (newWindow) newWindow.opener = null;
         }else{
-          const newWindow = window.open(`https://www.google.com/search?q=${d.text}`, '_blank', 'noopener,noreferrer');
-          if (newWindow) newWindow.opener = null;
+          if(d.text.startsWith('#')){
+            const substr = d.text.substring(1);
+            const newWindow = window.open(`https://www.google.com/search?q=${substr}`, '_blank', 'noopener,noreferrer');
+            if (newWindow) newWindow.opener = null;
+          }else{
+            const newWindow = window.open(`https://www.google.com/search?q=${d.text}`, '_blank', 'noopener,noreferrer');
+            if (newWindow) newWindow.opener = null;
+          }
         }
       }}
       />

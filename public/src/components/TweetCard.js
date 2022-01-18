@@ -103,8 +103,15 @@ function TweetCard({tweet, showOptions}) {
     function searchWord(word) {
         if(word.startsWith('http'))
           openInNewTab(word)
-        else
-          openInNewTab(`https://www.google.com/search?q=${word}`);
+        else{
+          if(word.startsWith('#')){
+            const substr = word.substring(1);
+            openInNewTab(`https://www.google.com/search?q=${substr}`);
+          }else{
+            openInNewTab(`https://www.google.com/search?q=${word}`);
+          }
+        }
+          
     }
 
     function makeClickable(paragraph) {
